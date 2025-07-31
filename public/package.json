@@ -1,0 +1,22 @@
+{
+  "name": "ccii-app",
+  "version": "1.0.0",
+  "description": "Aplicação web para agendamento de salas e formações (ULSAS)",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "dev": "nodemon main.js"
+  },
+  "keywords": [
+    "agendamento",
+    "formação",
+    "ULSAS",
+    "node",
+    "python"
+  ],
+  "author": "Bruno Simões",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

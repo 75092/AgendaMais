@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>Novo Agendamento</title>
+  <link rel="stylesheet" href="style.css" />
+  
+  <script src="auth.js"></script>
+</head>
+<body>
+
+<style>
+  #logout-btn {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    padding: 8px 14px;
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9999;
+  }
+</style>
+<button id="logout-btn" onclick="logout()">Logout</button>
+<script>
+  ensureAuthenticated();
+  showLogoutIfAuthenticated();
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/login.html";
+  }
+</script>
+
+  
+<div class="sidebar">
+  <ul>
+    <li><a href="index.html">Início</a></li>
+    <li><a href="agendamentos.html">Agendamentos</a></li>
+    <li><a href="calendario.html">Calendário</a></li>
+    <li><a href="salas.html">Salas</a></li>
+    <li><a href="admin.html">Administração</a></li>
+  </ul>
+</div>
+
+  
+<div class="top-logo">
+  <img src="img/ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
+</div>
+
+  <div class="main-content">
+    
+<h1>Formulário de Agendamento</h1>
+<form>
+  <fieldset>
+    <legend><strong>Requerente</strong></legend>
+    <label>Número Mecanográfico:<br><input type="text" name="num_mec" required></label><br><br>
+    <label>Nome do Requerente:<br><input type="text" name="nome" required></label><br><br>
+    <label>Serviço do Requerente:<br><input type="text" name="servico" required></label><br><br>
+    <label>Email:<br><input type="email" name="email" required></label>
+    <label style="margin-left: 30px;">Contacto:<br><input type="tel" name="contacto" required></label>
+  </fieldset><br>
+
+  <fieldset>
+    <legend><strong>Evento</strong></legend>
+    <label>Sala Pretendida:<br>
+      <select name="sala" required>
+        <option value="">-- Selecione --</option>
+        <option>Sala Tejo</option>
+        <option>Sala Almada</option>
+        <option>Sala Formação</option>
+      </select>
+    </label><br><br>
+    <label>Nome do Evento:<br><input type="text" name="evento" required></label>
+    <label style="margin-left: 30px;">N.º de Participantes:<br><input type="number" name="participantes"></label>
+  </fieldset><br>
+
+  <fieldset>
+    <legend><strong>Data e Hora</strong></legend>
+    <label>Data:<br><input type="date" name="data" required></label><br><br>
+    <label>Hora de Início:<br><input type="time" name="hora_inicio" required></label><br><br>
+    <label>Hora de Fim:<br><input type="time" name="hora_fim" required></label><br><br>
+    <label><input type="checkbox" name="multi_dias"> Agendar para mais de um dia</label>
+  </fieldset><br>
+
+  <fieldset>
+    <legend><strong>Recursos Necessários</strong></legend>
+    <label><input type="checkbox" name="recursos" value="projetor"> Projetor</label><br>
+    <label><input type="checkbox" name="recursos" value="computador"> Computador</label><br>
+    <label><input type="checkbox" name="recursos" value="som"> Som</label><br>
+    <label><input type="checkbox" name="recursos" value="coffee"> Coffee Break</label>
+  </fieldset><br>
+
+  <fieldset>
+    <legend><strong>Observações</strong></legend>
+    <textarea name="observacoes" rows="5" style="width: 100%;"></textarea>
+  </fieldset><br>
+
+  <button type="submit" class="botao-novo">Submeter Agendamento</button>
+</form>
+
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        if (calendarEl) {
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth'
+            });
+            calendar.render();
+        }
+    });
+  </script>
+</body>
+</html>
