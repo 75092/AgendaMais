@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<title>Salas</title>
+<link href="style.css" rel="stylesheet"/>
+<style>
+    .salas-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .sala-card {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .sala-card h3 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+    .sala-card p {
+      margin: 8px 0;
+    }
+    .local-titulo {
+      margin-top: 40px;
+      margin-bottom: 10px;
+      color: #1565c0;
+    }
+  </style>
+<script src="auth.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "/login.html";
+  } else {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const now = Math.floor(Date.now() / 1000);
+
+      if (payload.exp < now) {
+        localStorage.removeItem("token");
+        window.location.href = "/login.html";
+      } else {
+        const logoutBtn = document.getElementById("logout-btn");
+        if (logoutBtn) logoutBtn.style.display = "block";
+
+        if (payload?.role !== "admin") {
+          const adminLink = document.querySelector('a[href="admin.html"]');
+          if (adminLink) adminLink.style.display = "none";
+        }
+      }
+    } catch (e) {
+      localStorage.removeItem("token");
+      window.location.href = "/login.html";
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/login.html";
+  }
+
+  window.logout = logout;
+});
+</script>
+</head>
+<body>
+<style>
+  #logout-btn {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    padding: 8px 14px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 2000;
+    display: none;
+  }
+</style>
+<button id="logout-btn" onclick="logout()">Logout</button>
+
+<div class="header">
+<img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
+</div>
+<div class="sidebar">
+<ul>
+<li><a href="index.html">Início</a></li>
+<li><a href="agendamentos.html">Agendamentos</a></li>
+<li><a href="calendario.html">Calendário</a></li>
+<li><a href="salas.html">Salas</a></li>
+<li><a href="admin.html">Administração</a></li>
+</ul>
+</div>
+<div class="main-content">
+<h1>Salas Disponíveis</h1>
+<h2 class="local-titulo">🏥 Piso 2 HGO</h2>
+<div class="salas-container">
+<div class="sala-card">
+<h3>Sala Almada</h3>
+<p><strong>Capacidade:</strong> 20 pessoas</p>
+</div>
+<div class="sala-card">
+<h3>Sala Garcia de Orta</h3>
+<p><strong>Capacidade:</strong> 50 pessoas</p>
+</div>
+<div class="sala-card">
+<h3>Sala Tejo</h3>
+<p><strong>Capacidade:</strong> 25 pessoas</p>
+<p><strong>Disposição:</strong> Em U</p>
+<p><em>Possibilidade de marcação em conjunto</em></p>
+</div>
+</div>
+<h2 class="local-titulo">📍 CF Sobreda</h2>
+<div class="salas-container">
+<div class="sala-card">
+<h3>Auditório Dr. Luís Amaro (CF Sobreda)</h3>
+<p><strong>Capacidade:</strong> 100 pessoas</p>
+</div>
+<div class="sala-card">
+<h3>Tejo</h3>
+<p><strong>Disposição:</strong> Em U</p>
+<p><strong>Capacidade:</strong> 20 pessoas</p>
+</div>
+<div class="sala-card">
+<h3>Sado</h3>
+<p><strong>Disposição:</strong> Em U</p>
+<p><strong>Capacidade:</strong> 20 pessoas</p>
+</div>
+</div>
+</div>
+</body>
+</html>
