@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .cover-wrapper {
+      margin-top: 80px;
+      text-align: center;
+    }
+
+    .cover-wrapper img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .start-button {
+      position: absolute;
+      top: 90px;
+      right: 30px;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #2e7d32; /* verde ULSAS */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1002;
+    }
+
+    .start-button:hover {
+      background-color: #256628;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: #aaa;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      width: 100%;
+      background-color: #2e7d32; /* verde ULSAS */
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .modal-content button:hover {
+      background-color: #256628;
+    }
+
+    #error {
+      color: red;
+      margin-top: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <script src="auth.js"></script>
+</head>
+<body>
+
+  <!-- Cabeçalho fixo com logotipo -->
+  <div class="header">
+    <img src="ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
+  </div>
+
+  <!-- Botão no canto superior direito -->
+  <button class="start-button" onclick="abrirModal()">Iniciar Sessão</button>
+
+  <!-- Imagem de capa atualizada -->
+  <div class="cover-wrapper">
+    <img src="foto capa.png" alt="Imagem de Capa" />
+  </div>
+
+  <!-- Modal Login -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModal()">&times;</span>
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Utilizador" required />
+        <input type="password" id="password" placeholder="Senha" required />
+        <button type="submit">Entrar</button>
+      </form>
+      <p id="error"></p>
+    </div>
+  </div>
+
+  <script>
+  ensureAuthenticated();
+  showLogoutIfAuthenticated();
+    function abrirModal() {
+      document.getElementById("loginModal").style.display = "block";
+    }
+
+    function fecharModal() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById("loginModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem("token", data.token);
+
+          const payload = JSON.parse(atob(data.token.split('.')[1]));
+          const role = payload.role;
+
+          if (role === "admin") {
+            window.location.href = "/admin.html";
+          } else if (role === "user") {
+            window.location.href = "/index.html";
+          } else {
+            document.getElementById("error").innerText = "Role desconhecido!";
+          }
+        } else {
+          document.getElementById("error").innerText = data.error || "Erro ao fazer login.";
+        }
+
+      } catch (err) {
+        document.getElementById("error").innerText = "Erro de rede ou servidor.";
+      }
+    });
+  </script>
+
+</body>
+</html>

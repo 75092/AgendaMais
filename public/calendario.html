@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<title>Calendário</title>
+<link href="style.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<style>
+    .fc-event-title,
+    .fc-event-time {
+      cursor: pointer;
+    }
+  
+    .modal-evento {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-evento-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 400px;
+      border-radius: 10px;
+      font-family: sans-serif;
+    }
+
+    .fechar-modal {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .fechar-modal:hover,
+    .fechar-modal:focus {
+      color: black;
+    }
+
+
+.modal-evento-content {
+  background-color: #ffffff;
+  margin: 5% auto;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  width: 500px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+#detalhesEvento strong {
+  display: inline-block;
+  width: 160px;
+  font-weight: 600;
+  color: #444;
+}
+</style>
+<script src="auth.js"></script>
+</head>
+<body>
+<style>
+  #logout-btn {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    padding: 8px 14px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 2000;
+    display: none;
+  }
+</style>
+<button id="logout-btn" onclick="logout()">Logout</button>
+<script>
+  ensureAuthenticated();
+  showLogoutIfAuthenticated();
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "/login.html";
+  } else {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const now = Math.floor(Date.now() / 1000);
+      if (payload.exp < now) {
+        localStorage.removeItem("token");
+        window.location.href = "/login.html";
+      } else {
+        document.getElementById("logout-btn").style.display = "block";
+      }
+    } catch (e) {
+      localStorage.removeItem("token");
+      window.location.href = "/login.html";
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/login.html";
+  }
+</script>
+<div class="header">
+<img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
+</div>
+<div class="sidebar">
+<ul>
+<li><a href="index.html">Início</a></li>
+<li><a href="agendamentos.html">Agendamentos</a></li>
+<li><a href="calendario.html">Calendário</a></li>
+<li><a href="salas.html">Salas</a></li>
+<li><a href="admin.html">Administração</a></li>
+</ul>
+</div>
+<div class="main-content">
+<h1>Calendário</h1>
+<div id="calendar"></div>
+</div>
+<div class="modal-evento" id="modalEvento">
+<div class="modal-evento-content">
+<span class="fechar-modal" onclick="document.getElementById('modalEvento').style.display='none'">×</span>
+<h3>Detalhes do Evento</h3>
+<p id="detalhesEvento"></p>
+</div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  let horaLimite = '18:00:00';
+  try {
+    const token = localStorage.getItem("token");
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.role === "admin") {
+      horaLimite = '21:00:00';
+    }
+  } catch (e) {
+    console.error("Erro ao verificar o role:", e);
+  }
+
+    const calendarEl = document.getElementById('calendar');
+
+    const agendamentos = JSON.parse(localStorage.getItem("agendamentos") || "[]");
+
+    
+const coresSalas = {
+  "Sala Almada": "#2196f3",
+  "Sala Garcia de Orta": "#4caf50",
+  "Sala Tejo": "#ff9800",
+  "Sala Tejo (HGO)": "#795548",
+  "Sala Tejo (Sobreda)": "#009688",
+  "Sala Sado": "#f44336",
+  "Sala Auditório": "#9c27b0",
+  "Auditório": "#9c27b0",
+  "": "#607d8b",
+  "Tejo": "#3f51b5",
+  "Sado": "#cddc39"
+};
+
+
+    if (calendarEl) {
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+        slotMinTime: '08:00:00',
+        slotMaxTime: horaLimite,
+        locale: 'pt',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listYear'
+        },
+
+        dateClick: function(info) {
+          if (calendar.view.type === "dayGridMonth") {
+            calendar.changeView("timeGridDay", info.dateStr);
+          }
+        },
+        slotDuration: '00:30:00',
+        expandRows: true,
+        height: 'auto',
+        slotEventOverlap: false,
+        allDaySlot: false,
+
+
+        
+eventClick: function(info) {
+  const props = info.event.extendedProps;
+  const detalhes = `
+    <strong>Evento:</strong> ${info.event.title}<br>
+    <strong>Início:</strong> ${info.event.start.toLocaleString()}<br>
+    <strong>Fim:</strong> ${info.event.end ? info.event.end.toLocaleString() : "N/D"}<br>
+    <strong>Participantes:</strong> ${props.participantes || "N/D"}<br>
+    <strong>Requerente:</strong> ${props.nomeReq || "N/D"}<br>
+    <strong>N.º Mecanográfico:</strong> ${props.numMec || "N/D"}<br>
+    <strong>Serviço:</strong> ${props.servicoReq || "N/D"}<br>
+    <strong>Email:</strong> ${props.emailReq || "N/D"}<br>
+    <strong>Contacto:</strong> ${props.contactoReq || "N/D"}<br>
+    <strong>Recursos:</strong> ${(props.recursos || []).join(", ") || "N/D"}<br>
+    <strong>Observações:</strong> ${props.observacoes || "N/D"}
+  `;
+  document.getElementById('detalhesEvento').innerHTML = detalhes;
+  document.getElementById('modalEvento').style.display = 'block';
+},
+events: agendamentos
+          .filter(ev => ev.extendedProps?.status === 'aprovado')
+          .map(ev => {
+            const sala = ev.extendedProps?.sala || "";
+            const cor = coresSalas[sala] || "#607d8b";
+            return { ...ev, backgroundColor: cor, borderColor: cor };
+          })
+      });
+
+      calendar.render();
+    }
+  });
+
+
+try {
+  const payload = getTokenPayload();
+  if (payload?.role !== "admin") {
+    const adminLink = document.querySelector('a[href="admin.html"]');
+    if (adminLink) adminLink.style.display = "none";
+  }
+} catch (e) {}
+</script>
+</body>
+</html>
