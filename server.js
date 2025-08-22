@@ -66,6 +66,11 @@ insertUser('admin', 'admin');
 
 // ---------------- ROTAS ----------------
 
+// Rota de teste
+app.get("/", (req, res) => {
+  res.send("Servidor online 🚀");
+});
+
 // Login
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
