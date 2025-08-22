@@ -1,6 +1,7 @@
 {
   "name": "form.app",
   "version": "1.0.0",
+  "type": "module",
   "main": "server.js",
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -25,3 +26,4 @@
   "homepage": "https://github.com/75092/Forma-o#readme",
   "description": ""
 }
+
