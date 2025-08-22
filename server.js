@@ -10,37 +10,64 @@ const { Pool } = pkg;
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Necessário para obter __dirname em ES Modules
+// Necessário para __dirname em ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public"))); // <-- Servir site
+app.use(express.static(path.join(__dirname, "public"))); // servir frontend
 
-// Configuração da ligação PostgreSQL
+// PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// Testar a ligação à base de dados
-pool.connect()
-  .then(() => console.log("✅ Ligação ao PostgreSQL feita com sucesso!"))
-  .catch(err => console.error("❌ Erro ao ligar ao PostgreSQL:", err));
+// -------------------
+// Criar tabela + utilizador admin inicial
+// -------------------
+async function initDatabase() {
+  const client = await pool.connect();
+  try {
+    // Criar tabela se não existir
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) DEFAULT 'user'
+      )
+    `);
 
-// Rota principal -> carrega index.html
+    // Verificar se admin já existe
+    const result = await client.query("SELECT * FROM users WHERE username = $1", ["admin"]);
+    if (result.rows.length === 0) {
+      const hashedPassword = await bcrypt.hash("12345", 10);
+      await client.query(
+        "INSERT INTO users (username, password, role) VALUES ($1, $2, $3)",
+        ["admin", hashedPassword, "admin"]
+      );
+      console.log("✅ Utilizador admin criado: admin / 12345");
+    }
+  } catch (err) {
+    console.error("❌ Erro ao inicializar base de dados:", err);
+  } finally {
+    client.release();
+  }
+}
+initDatabase();
+
+// -------------------
+// Rotas
+// -------------------
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// -------------------
-// Rotas de autenticação
-// -------------------
-
-// Registo de utilizador
+// Registo
 app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, role } = req.body;
 
   if (!username || !password) {
     return res.status(400).json({ error: "Username e password obrigatórios" });
@@ -48,12 +75,10 @@ app.post("/register", async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-
     await pool.query(
-      "INSERT INTO users (username, password) VALUES ($1, $2)",
-      [username, hashedPassword]
+      "INSERT INTO users (username, password, role) VALUES ($1, $2, $3)",
+      [username, hashedPassword, role || "user"]
     );
-
     res.status(201).json({ message: "✅ Utilizador registado com sucesso!" });
   } catch (err) {
     console.error(err);
@@ -61,7 +86,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// Login de utilizador
+// Login
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -83,12 +108,16 @@ app.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, username: user.username },
+      { id: user.id, username: user.username, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    res.json({ message: "✅ Login efetuado com sucesso!", token });
+    res.json({ 
+      message: "✅ Login efetuado com sucesso!", 
+      token,
+      role: user.role 
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Erro ao fazer login" });
@@ -101,4 +130,3 @@ app.post("/login", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Servidor online na porta ${PORT}`);
 });
-
