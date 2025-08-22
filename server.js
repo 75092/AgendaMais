@@ -1,22 +1,25 @@
-
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const PORT = 3000;
-const SECRET = 'segredo-super-seguro';
 
-app.use(bodyParser.json());
+// Porta → usa a do Render/Heroku ou 3000 local
+const PORT = process.env.PORT || 3000;
+
+// Secret → NUNCA deixar fixo em produção
+const SECRET = process.env.JWT_SECRET || 'dev-secret';
+
+// Middleware
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Base de dados
+// Base de dados SQLite (ficheiro local)
 const db = new sqlite3.Database('database.db');
 
-// Criar tabelas se não existirem
+// Criar tabelas
 db.run(`CREATE TABLE IF NOT EXISTS agendamentos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nomeEvento TEXT,
@@ -35,17 +38,22 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
   role TEXT NOT NULL
 )`);
 
-// Inserir utilizadores iniciais (user e admin)
+// Inserir utilizadores iniciais (se não existirem)
 const insertUser = (username, role) => {
   const password = '123';
   bcrypt.hash(password, 10, (err, hash) => {
     if (err) return console.error(err);
-    db.run(`INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)`, [username, hash, role]);
+    db.run(
+      `INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)`,
+      [username, hash, role]
+    );
   });
 };
 
 insertUser('utilizador', 'user');
 insertUser('admin', 'admin');
+
+// ---------------- ROTAS ----------------
 
 // Login
 app.post('/login', (req, res) => {
@@ -56,7 +64,11 @@ app.post('/login', (req, res) => {
     bcrypt.compare(password, user.password, (err, result) => {
       if (!result) return res.status(401).json({ error: 'Credenciais inválidas' });
 
-      const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, SECRET, { expiresIn: '2h' });
+      const token = jwt.sign(
+        { id: user.id, username: user.username, role: user.role },
+        SECRET,
+        { expiresIn: '2h' }
+      );
       res.json({ token });
     });
   });
@@ -75,7 +87,7 @@ function authenticate(req, res, next) {
   });
 }
 
-// Middleware de autorização por role
+// Middleware de autorização
 function authorize(roles = []) {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) return res.sendStatus(403);
@@ -83,11 +95,13 @@ function authorize(roles = []) {
   };
 }
 
-// Rota protegida: guardar agendamento (user ou admin)
+// Guardar agendamento (user/admin)
 app.post('/api/agendamentos', authenticate, authorize(['user', 'admin']), (req, res) => {
   const { nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes } = req.body;
 
-  const stmt = db.prepare('INSERT INTO agendamentos (nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?)');
+  const stmt = db.prepare(
+    'INSERT INTO agendamentos (nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  );
   stmt.run(nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes, function (err) {
     if (err) {
       console.error(err.message);
@@ -97,7 +111,7 @@ app.post('/api/agendamentos', authenticate, authorize(['user', 'admin']), (req, 
   });
 });
 
-// Rota protegida: listar agendamentos (user ou admin)
+// Listar agendamentos (user/admin)
 app.get('/api/agendamentos', authenticate, authorize(['user', 'admin']), (req, res) => {
   db.all('SELECT * FROM agendamentos', [], (err, rows) => {
     if (err) {
@@ -108,12 +122,12 @@ app.get('/api/agendamentos', authenticate, authorize(['user', 'admin']), (req, r
   });
 });
 
-// Exemplo: rota só para admin
+// Apenas admin
 app.get('/api/admin-area', authenticate, authorize(['admin']), (req, res) => {
   res.send('Bem-vindo à área de administração!');
 });
 
-// Iniciar servidor
+// ---------------- START ----------------
 app.listen(PORT, () => {
   console.log(`Servidor a correr em http://localhost:${PORT}`);
 });
