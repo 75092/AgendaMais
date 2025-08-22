@@ -1,53 +1,64 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
 
-// Porta → usa a do Render/Heroku ou 3000 local
+// Porta → Render usa process.env.PORT
 const PORT = process.env.PORT || 3000;
 
-// Secret → NUNCA deixar fixo em produção
+// Secret → vem de variável de ambiente
 const SECRET = process.env.JWT_SECRET || 'dev-secret';
+
+// Conexão à base de dados Postgres
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // necessário no Render
+});
 
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Base de dados SQLite (ficheiro local)
-const db = new sqlite3.Database('database.db');
-
 // Criar tabelas
-db.run(`CREATE TABLE IF NOT EXISTS agendamentos (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nomeEvento TEXT,
-  data TEXT,
-  horaInicio TEXT,
-  horaFim TEXT,
-  sala TEXT,
-  participantes INTEGER,
-  observacoes TEXT
-)`);
+db.query(`
+  CREATE TABLE IF NOT EXISTS agendamentos (
+    id SERIAL PRIMARY KEY,
+    nomeEvento TEXT,
+    data TEXT,
+    horaInicio TEXT,
+    horaFim TEXT,
+    sala TEXT,
+    participantes INTEGER,
+    observacoes TEXT
+  )
+`);
 
-db.run(`CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  role TEXT NOT NULL
-)`);
+db.query(`
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL
+  )
+`);
 
 // Inserir utilizadores iniciais (se não existirem)
-const insertUser = (username, role) => {
-  const password = '123';
-  bcrypt.hash(password, 10, (err, hash) => {
-    if (err) return console.error(err);
-    db.run(
-      `INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)`,
+const insertUser = async (username, role) => {
+  try {
+    const password = '123';
+    const hash = await bcrypt.hash(password, 10);
+    await db.query(
+      `INSERT INTO users (username, password, role)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (username) DO NOTHING`,
       [username, hash, role]
     );
-  });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 insertUser('utilizador', 'user');
@@ -56,22 +67,26 @@ insertUser('admin', 'admin');
 // ---------------- ROTAS ----------------
 
 // Login
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, user) => {
-    if (err || !user) return res.status(401).json({ error: 'Credenciais inválidas' });
+  try {
+    const result = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
+    const user = result.rows[0];
+    if (!user) return res.status(401).json({ error: 'Credenciais inválidas' });
 
-    bcrypt.compare(password, user.password, (err, result) => {
-      if (!result) return res.status(401).json({ error: 'Credenciais inválidas' });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ error: 'Credenciais inválidas' });
 
-      const token = jwt.sign(
-        { id: user.id, username: user.username, role: user.role },
-        SECRET,
-        { expiresIn: '2h' }
-      );
-      res.json({ token });
-    });
-  });
+    const token = jwt.sign(
+      { id: user.id, username: user.username, role: user.role },
+      SECRET,
+      { expiresIn: '2h' }
+    );
+    res.json({ token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro no login' });
+  }
 });
 
 // Middleware de autenticação
@@ -96,30 +111,33 @@ function authorize(roles = []) {
 }
 
 // Guardar agendamento (user/admin)
-app.post('/api/agendamentos', authenticate, authorize(['user', 'admin']), (req, res) => {
+app.post('/api/agendamentos', authenticate, authorize(['user', 'admin']), async (req, res) => {
   const { nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes } = req.body;
 
-  const stmt = db.prepare(
-    'INSERT INTO agendamentos (nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  );
-  stmt.run(nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes, function (err) {
-    if (err) {
-      console.error(err.message);
-      return res.status(500).json({ error: 'Erro ao guardar agendamento' });
-    }
-    res.status(200).json({ message: 'Agendamento guardado com sucesso!', id: this.lastID });
-  });
+  try {
+    const result = await db.query(
+      `INSERT INTO agendamentos
+      (nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING id`,
+      [nomeEvento, data, horaInicio, horaFim, sala, participantes, observacoes]
+    );
+    res.status(200).json({ message: 'Agendamento guardado com sucesso!', id: result.rows[0].id });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Erro ao guardar agendamento' });
+  }
 });
 
 // Listar agendamentos (user/admin)
-app.get('/api/agendamentos', authenticate, authorize(['user', 'admin']), (req, res) => {
-  db.all('SELECT * FROM agendamentos', [], (err, rows) => {
-    if (err) {
-      console.error(err.message);
-      return res.status(500).json({ error: 'Erro ao buscar agendamentos' });
-    }
-    res.json(rows);
-  });
+app.get('/api/agendamentos', authenticate, authorize(['user', 'admin']), async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM agendamentos');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Erro ao buscar agendamentos' });
+  }
 });
 
 // Apenas admin
@@ -129,5 +147,5 @@ app.get('/api/admin-area', authenticate, authorize(['admin']), (req, res) => {
 
 // ---------------- START ----------------
 app.listen(PORT, () => {
-  console.log(`Servidor a correr em http://localhost:${PORT}`);
+  console.log(`Servidor a correr na porta ${PORT}`);
 });
