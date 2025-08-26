@@ -16,7 +16,7 @@
       border-radius: 5px;
       cursor: pointer;
       z-index: 2000;
-      display: none; /* Esconde até verificar o token */
+      display: none;
     }
 
     .home-section {
@@ -28,7 +28,7 @@
     }
 
     .home-section img {
-      max-width: 250px;
+      max-width: 350px; /* imagem maior */
     }
 
     .noticias, .contactos {
@@ -56,7 +56,7 @@
 </head>
 <body>
 
-  <!-- Botão Logout (visível apenas com token válido) -->
+  <!-- Botão Logout -->
   <button id="logout-btn" onclick="logout()">Logout</button>
 
   <!-- Header com logotipo -->
@@ -64,7 +64,7 @@
     <img src="/ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
   </div>
 
-  <!-- Sidebar de navegação -->
+  <!-- Sidebar -->
   <div class="sidebar">
     <ul>
       <li><a href="index.html">Início</a></li>
@@ -77,9 +77,6 @@
 
   <!-- Conteúdo principal -->
   <div class="main-content">
-    <h1>Página Inicial</h1>
-    <p>Bem-vindo à aplicação de agendamento de salas.</p>
-
     <div class="home-section">
       <!-- Imagem CCII -->
       <img src="imagem CCII.png" alt="Logo CCII">
@@ -87,12 +84,7 @@
       <!-- Notícias -->
       <div class="noticias">
         <h2>Notícias</h2>
-        <div class="noticia">
-          <strong>📢 Nova Formação:</strong> Curso de Atualização em Investigação Clínica começa em Setembro.
-        </div>
-        <div class="noticia">
-          <strong>📰 Evento:</strong> Jornada de Inovação em Saúde – inscrições abertas até 15 de Outubro.
-        </div>
+        <div id="lista-noticias"></div>
       </div>
 
       <!-- Contactos -->
@@ -132,6 +124,28 @@
       localStorage.removeItem("token");
       window.location.href = "/login.html";
     }
+
+    // Carregar notícias do ficheiro JSON
+    async function carregarNoticias() {
+      try {
+        const response = await fetch("noticias.json");
+        const noticias = await response.json();
+
+        const container = document.getElementById("lista-noticias");
+        container.innerHTML = "";
+
+        noticias.forEach(noticia => {
+          const div = document.createElement("div");
+          div.classList.add("noticia");
+          div.innerHTML = `<strong>📢 ${noticia.titulo}:</strong> ${noticia.conteudo}`;
+          container.appendChild(div);
+        });
+      } catch (e) {
+        console.error("Erro ao carregar notícias", e);
+      }
+    }
+
+    carregarNoticias();
   </script>
 
 </body>
