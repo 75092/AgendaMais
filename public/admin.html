@@ -5,32 +5,48 @@
 <title>Administração</title>
 <link href="style.css" rel="stylesheet"/>
 <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9;}
-    .sidebar { width:200px; background:#2d6a4f; position:fixed; top:0; bottom:0; padding:1em 0; color:white; }
-    .sidebar ul { list-style:none; padding:0; }
-    .sidebar ul li { margin:10px 0; }
-    .sidebar ul li a { color:white; text-decoration:none; padding:8px 16px; display:block; }
-    .sidebar ul li a:hover { background:#1b4332; }
-    .main-content { margin-left:220px; padding:20px; }
+  body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9;}
+  .sidebar { width:220px; background:#2d6a4f; position:fixed; top:0; bottom:0; padding:1em 0; color:white; }
+  .sidebar ul { list-style:none; padding:0; }
+  .sidebar ul li { margin:10px 0; }
+  .sidebar ul li a { color:white; text-decoration:none; padding:8px 16px; display:block; }
+  .sidebar ul li a:hover { background:#1b4332; }
+  .main-content { margin-left:240px; padding:20px; }
 
-    .tabs { margin-bottom:1em; }
-    .tab-button { padding:10px 15px; margin-right:5px; border:none; background:#eee; cursor:pointer; }
-    .tab-button.active { background:#ccc; }
-    .tab-content { display:none; padding:1em; background:#fff; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-    .tab-content.active { display:block; }
+  header { display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f1f1f1; }
+  header img { height:40px; }
 
-    .sub-tabs { margin-top:1em; }
-    .sub-tab-button { padding:8px 12px; margin-right:5px; border:none; background:#007bff; color:white; cursor:pointer; border-radius:5px; }
-    .sub-tab-button.active { background:#0056b3; }
+  .tabs { margin-bottom:1em; }
+  .tab-button { padding:10px 15px; margin-right:5px; border:none; background:#eee; cursor:pointer; border-radius:5px; }
+  .tab-button.active { background:#ccc; }
+  .tab-content { display:none; padding:1em; background:#fff; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+  .tab-content.active { display:block; }
 
-    .sub-tab-content { display:none; margin-top:1em; }
-    .sub-tab-content.active { display:block; }
+  .sub-tabs { margin-top:1em; }
+  .sub-tab-button { padding:8px 12px; margin-right:5px; border:none; background:#007bff; color:white; cursor:pointer; border-radius:5px; }
+  .sub-tab-button.active { background:#0056b3; }
 
-    .news-list { margin-top:1em; }
-    .news-item { background:#f1f1f1; padding:10px; border-radius:5px; margin-bottom:8px; }
+  .sub-tab-content { display:none; margin-top:1em; }
+  .sub-tab-content.active { display:block; }
+
+  .agendamento-card { background:#fafafa; border-radius:8px; padding:15px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:15px; }
+  .agendamento-card button { margin-top:10px; margin-right:8px; padding:6px 10px; border:none; border-radius:5px; background-color:#2b7cff; color:white; cursor:pointer; }
+  .agendamento-card button:hover { background-color:#195ecb; }
+
+  #logout-btn { position:fixed; top:15px; right:20px; padding:8px 14px; background-color:#e74c3c; color:white; border:none; border-radius:5px; cursor:pointer; z-index:2000; display:none; }
+
+  .popup-confirmacao { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#4CAF50; color:white; padding:20px 30px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.4); z-index:9999; }
 </style>
+
+<script src="auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
+<header>
+  <img src="ulsas_logotipo.png" alt="Logotipo ULSAS">
+  <h2>Painel Administração</h2>
+</header>
+
 <div class="sidebar">
   <ul>
     <li><a href="index.html">Início</a></li>
@@ -43,6 +59,7 @@
 
 <div class="main-content">
   <h1>Administração</h1>
+
   <div class="tabs">
     <button class="tab-button active" data-tab="aprovacao">Aprovado</button>
     <button class="tab-button" data-tab="pendente">Pendente</button>
@@ -51,43 +68,47 @@
     <button class="tab-button" data-tab="definicoes">Definições</button>
   </div>
 
-  <div id="aprovacao" class="tab-content active">
-    <h2>Lista de Aprovados</h2>
-    <p>[Aqui fica a lógica de agendamentos aprovados]</p>
-  </div>
-
-  <div id="pendente" class="tab-content">
-    <h2>Lista de Pendentes</h2>
-    <p>[Aqui fica a lógica de pendentes]</p>
-  </div>
-
-  <div id="reservas" class="tab-content">
-    <h2>Reservas</h2>
-    <p>[Aqui fica a lógica de reservas]</p>
-  </div>
-
+  <div id="aprovacao" class="tab-content active"></div>
+  <div id="pendente" class="tab-content"></div>
+  <div id="reservas" class="tab-content"></div>
   <div id="concluido" class="tab-content">
-    <h2>Concluídos</h2>
-    <p>[Aqui fica a lógica de concluídos]</p>
+    <label><strong>Filtrar por sala:</strong></label>
+    <select id="filtro-concluido" onchange="render()">
+      <option value="todas">Todas as salas</option>
+      <option value="hgo">Salas HGO</option>
+      <option value="sobreda">Salas Sobreda</option>
+    </select>
+    <div id="lista-concluido"></div>
   </div>
 
   <div id="definicoes" class="tab-content">
-    <h2>Definições</h2>
     <div class="sub-tabs">
       <button class="sub-tab-button active" data-subtab="ocupacao">Taxa de Ocupação</button>
       <button class="sub-tab-button" data-subtab="noticias">Gestão de Notícias</button>
     </div>
 
     <div id="ocupacao" class="sub-tab-content active">
-      <h3>Taxa de Ocupação de Espaços ULSAS</h3>
-      <p>[Aqui fica a lógica existente da taxa de ocupação]</p>
+      <h3>Taxa de Ocupação</h3>
+      <label for="ocupacao-sala">Sala:</label>
+      <select id="ocupacao-sala">
+        <option value="todas">Todas</option>
+        <option value="hgo">Todas as salas HGO</option>
+        <option value="sobreda">Todas as salas Sobreda</option>
+      </select>
+      <label for="ocupacao-ano">Ano:</label>
+      <select id="ocupacao-ano"></select>
+      <button onclick="calcularTaxaOcupacao()">Calcular</button>
+      <button onclick="exportarParaExcel()">Exportar para Excel</button>
+      <div id="resultado-ocupacao"></div>
     </div>
 
     <div id="noticias" class="sub-tab-content">
       <h3>Gestão de Notícias</h3>
       <form id="noticiaForm">
-        <input type="text" id="titulo" placeholder="Título" required/><br/><br/>
-        <textarea id="conteudo" placeholder="Conteúdo" required></textarea><br/><br/>
+        <label for="titulo">Título</label><br/>
+        <input type="text" id="titulo" required/><br/><br/>
+        <label for="conteudo">Conteúdo</label><br/>
+        <textarea id="conteudo" required></textarea><br/><br/>
         <button type="submit">Adicionar Notícia</button>
       </form>
       <div class="news-list" id="listaNoticias"></div>
@@ -95,14 +116,33 @@
   </div>
 </div>
 
+<button id="logout-btn" onclick="logout()">Logout</button>
+<div class="popup-confirmacao" id="popupEmailConfirmado"><p>Email enviado com sucesso!</p></div>
+
 <script>
+// Segurança login
+(function(){
+  const token = localStorage.getItem("token");
+  if (!token) { window.location.href = "/login.html"; return; }
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.exp < Math.floor(Date.now()/1000)) throw new Error("Token expirado");
+    document.getElementById("logout-btn").style.display="block";
+  } catch(e) {
+    localStorage.removeItem("token");
+    window.location.href = "/login.html";
+  }
+})();
+
+function logout(){ localStorage.removeItem("token"); window.location.href="/login.html"; }
+
 // Tabs principais
 document.querySelectorAll(".tab-button").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
     btn.classList.add("active");
-    document.getElementById(btn.getAttribute("data-tab")).classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
   });
 });
 
@@ -112,48 +152,49 @@ document.querySelectorAll(".sub-tab-button").forEach(btn => {
     document.querySelectorAll(".sub-tab-button").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(".sub-tab-content").forEach(c => c.classList.remove("active"));
     btn.classList.add("active");
-    document.getElementById(btn.getAttribute("data-subtab")).classList.add("active");
+    document.getElementById(btn.dataset.subtab).classList.add("active");
   });
 });
 
-// Gestão de Notícias
-async function carregarNoticias() {
-  const res = await fetch("noticias.json");
-  const noticias = await res.json();
-  const lista = document.getElementById("listaNoticias");
-  lista.innerHTML = "";
-  noticias.forEach((n, i) => {
-    const div = document.createElement("div");
-    div.className = "news-item";
-    div.innerHTML = `<strong>${n.titulo}</strong><p>${n.conteudo}</p><button onclick="removerNoticia(${i})">Remover</button>`;
-    lista.appendChild(div);
-  });
+// Placeholder funções agendamentos (importar do ficheiro antigo aqui)
+function render(){ console.log("Render agendamentos..."); }
+function calcularTaxaOcupacao(){ document.getElementById("resultado-ocupacao").innerHTML="<p>Função em desenvolvimento...</p>"; }
+function exportarParaExcel(){ alert("Exportação em desenvolvimento"); }
+
+// Gestão de notícias
+async function carregarNoticias(){
+  try {
+    const res = await fetch("noticias.json");
+    const noticias = await res.json();
+    const lista=document.getElementById("listaNoticias");
+    lista.innerHTML="";
+    noticias.forEach((n,i)=>{
+      const div=document.createElement("div");
+      div.className="news-item";
+      div.innerHTML=`<strong>${n.titulo}</strong><p>${n.conteudo}</p><button onclick="removerNoticia(${i})">Remover</button>`;
+      lista.appendChild(div);
+    });
+  } catch(e){ console.error(e); }
 }
 
 document.getElementById("noticiaForm").addEventListener("submit", async e => {
   e.preventDefault();
-  const titulo = document.getElementById("titulo").value;
-  const conteudo = document.getElementById("conteudo").value;
-  await fetch("noticias.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ acao:"adicionar", titulo, conteudo })
-  });
-  document.getElementById("titulo").value = "";
-  document.getElementById("conteudo").value = "";
+  const titulo=document.getElementById("titulo").value;
+  const conteudo=document.getElementById("conteudo").value;
+  await fetch("noticias.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({acao:"adicionar",titulo,conteudo})});
+  document.getElementById("titulo").value=""; document.getElementById("conteudo").value="";
   carregarNoticias();
 });
 
-async function removerNoticia(index) {
-  await fetch("noticias.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ acao:"remover", index })
-  });
+async function removerNoticia(index){
+  await fetch("noticias.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({acao:"remover",index})});
   carregarNoticias();
 }
-
 carregarNoticias();
+
+// EmailJS init
+(function(){ emailjs.init({publicKey:"8jlE16f213Mla1ihS"}); })();
 </script>
+
 </body>
 </html>
