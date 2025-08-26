@@ -18,16 +18,59 @@
       z-index: 2000;
       display: none; /* Esconde até verificar o token */
     }
+
+    .upload-section {
+      display: flex;
+      align-items: flex-start;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .upload-section img {
+      max-width: 250px;
+      border-radius: 10px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .upload-section form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 300px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+
+    .upload-section input,
+    .upload-section textarea,
+    .upload-section button {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .upload-section button {
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .upload-section button:hover {
+      background: #2980b9;
+    }
   </style>
   <script src="auth.js">
-try {
-  const payload = getTokenPayload();
-  if (payload?.role !== "admin") {
-    const adminLink = document.querySelector('a[href="admin.html"]');
-    if (adminLink) adminLink.style.display = "none";
-  }
-} catch (e) {}
-</script>
+  try {
+    const payload = getTokenPayload();
+    if (payload?.role !== "admin") {
+      const adminLink = document.querySelector('a[href="admin.html"]');
+      if (adminLink) adminLink.style.display = "none";
+    }
+  } catch (e) {}
+  </script>
 </head>
 <body>
 
@@ -54,6 +97,26 @@ try {
   <div class="main-content">
     <h1>Página Inicial</h1>
     <p>Bem-vindo à aplicação de agendamento de salas.</p>
+
+    <!-- Secção de upload (apenas admin) -->
+    <div class="upload-section" id="uploadSection" style="display:none;">
+      <!-- Imagem -->
+      <div>
+        <img src="ChatGPT Image 26_08_2025, 10_32_09.png" alt="Logo CCII">
+      </div>
+
+      <!-- Formulário -->
+      <div>
+        <h2>Envie-nos os seus contactos e ficheiros</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+          <input type="text" name="nome" placeholder="Nome" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <textarea name="mensagem" placeholder="Mensagem" rows="4"></textarea>
+          <input type="file" name="ficheiro" accept=".pdf,.doc,.docx,.xls,.xlsx" required>
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <!-- Script de autenticação e logout -->
@@ -72,6 +135,9 @@ try {
           window.location.href = "/login.html";
         } else {
           document.getElementById("logout-btn").style.display = "block";
+          if (payload.role === "admin") {
+            document.getElementById("uploadSection").style.display = "flex";
+          }
         }
       } catch (e) {
         localStorage.removeItem("token");
@@ -83,15 +149,25 @@ try {
       localStorage.removeItem("token");
       window.location.href = "/login.html";
     }
-  
-try {
-  const payload = getTokenPayload();
-  if (payload?.role !== "admin") {
-    const adminLink = document.querySelector('a[href="admin.html"]');
-    if (adminLink) adminLink.style.display = "none";
-  }
-} catch (e) {}
-</script>
+
+    // Upload protegido
+    document.getElementById("uploadForm")?.addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      const response = await fetch("upload.php", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token
+        },
+        body: formData
+      });
+
+      const result = await response.text();
+      alert(result);
+    });
+  </script>
 
 </body>
 </html>
