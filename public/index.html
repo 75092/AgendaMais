@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>ULSAS - Início</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f6f8;
-    }
-    header {
-      background: #2b7cff;
+    #logout-btn {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      padding: 8px 14px;
+      background-color: #e74c3c;
       color: white;
-      padding: 15px;
-      text-align: center;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 2000;
+      display: none;
     }
     .container {
       display: flex;
@@ -29,7 +30,7 @@
       justify-content: center;
     }
     .imagem img {
-      max-width: 90%;
+      max-width: 95%;
       height: auto;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -61,44 +62,74 @@
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    footer {
-      background: #2b7cff;
-      color: white;
-      text-align: center;
-      padding: 10px;
-      margin-top: 20px;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>ULSAS - Unidade Local de Saúde Almada Seixal</h1>
-  </header>
+  <!-- Botão Logout -->
+  <button id="logout-btn" onclick="logout()">Logout</button>
 
-  <div class="container">
-    <div class="imagem">
-      <img src="imagem CCII.png" alt="Imagem CCII">
-    </div>
-    <div class="conteudo">
-      <h2>Últimas Notícias</h2>
-      <div id="noticias-container">
-        <p>A carregar notícias...</p>
+  <!-- Header com logotipo -->
+  <div class="header">
+    <img src="/ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <ul>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="agendamentos.html">Agendamentos</a></li>
+      <li><a href="calendario.html">Calendário</a></li>
+      <li><a href="salas.html">Salas</a></li>
+      <li><a href="admin.html">Administração</a></li>
+    </ul>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <div class="container">
+      <div class="imagem">
+        <img src="imagem CCII.png" alt="Imagem CCII">
       </div>
+      <div class="conteudo">
+        <h2>Últimas Notícias</h2>
+        <div id="noticias-container">
+          <p>A carregar notícias...</p>
+        </div>
 
-      <div class="contactos">
-        <h2>Contactos - Departamento de Formação</h2>
-        <p><strong>Email:</strong> formacao@ulsas.pt</p>
-        <p><strong>Telefone:</strong> 21 000 000</p>
-        <p><strong>Morada:</strong> Av. Principal, 123 - Almada</p>
+        <div class="contactos">
+          <h2>Contactos - Departamento de Formação</h2>
+          <p><strong>Email:</strong> formacao@ulsas.pt</p>
+          <p><strong>Telefone:</strong> 21 000 000</p>
+          <p><strong>Morada:</strong> Av. Principal, 123 - Almada</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <footer>
-    <p>&copy; 2025 ULSAS - Todos os direitos reservados</p>
-  </footer>
-
   <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login.html";
+    } else {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
+        if (payload.exp < now) {
+          localStorage.removeItem("token");
+          window.location.href = "/login.html";
+        } else {
+          document.getElementById("logout-btn").style.display = "block";
+        }
+      } catch (e) {
+        localStorage.removeItem("token");
+        window.location.href = "/login.html";
+      }
+    }
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/login.html";
+    }
+
     async function carregarNoticias() {
       const container = document.getElementById("noticias-container");
       try {

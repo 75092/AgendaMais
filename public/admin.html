@@ -1,181 +1,123 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="utf-8"/>
-<title>Administração</title>
-<link href="style.css" rel="stylesheet"/>
-
-<style>
-  /* estilos existentes */
-  .agendamento-card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 15px; transition: box-shadow 0.3s ease; }
-  .agendamento-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-  .agendamento-card button { margin-top: 10px; margin-right: 8px; padding: 6px 10px; border: none; border-radius: 5px; background-color: #2b7cff; color: white; cursor: pointer; }
-  .agendamento-card button:hover { background-color: #195ecb; }
-  .tabs { margin-bottom: 1em; }
-  .tab-button { padding: 10px 15px; margin-right: 5px; border: none; background-color: #eee; cursor: pointer; }
-  .tab-button.active { background-color: #ccc; }
-  .tab-content { display: none; padding: 1em; border: 1px solid #ddd; background: #fafafa; }
-  .tab-content.active { display: block; }
-  .extras { display: none !important; }
-
-  /* Submenu definições */
-  .subtabs { margin-bottom: 1em; }
-  .subtab-button { padding: 8px 12px; margin-right: 5px; border: none; background-color: #eee; cursor: pointer; }
-  .subtab-button.active { background-color: #ccc; }
-  .tab-subcontent { display: none; margin-top: 1em; }
-  .tab-subcontent.active { display: block; }
-
-  .noticia { background: #f9f9f9; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 6px; }
-  .noticia button { margin-top: 5px; background: #e74c3c; color: white; }
-</style>
-
-<script src="auth.js"></script>
+  <meta charset="utf-8"/>
+  <title>Administração</title>
+  <link href="style.css" rel="stylesheet"/>
+  <style>
+    .tab-submenu button {
+      margin: 5px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      background: #2b7cff;
+      color: white;
+      cursor: pointer;
+    }
+    .tab-submenu button.active {
+      background: #195ecb;
+    }
+    .noticia-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-<header style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
-  <img src="ulsas_logotipo.png" alt="Logotipo" style="height: 40px;">
-  <button id="logoutBtn" style="padding: 6px 12px; border-radius: 6px;">Logout</button>
-</header>
-
-<script>
-  ensureAuthenticated();
-  showLogoutIfAuthenticated();
-  token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login.html";
-  } else {
-    if (!ensureRole("admin")) {
-      alert("Acesso restrito a administradores.");
-      window.location.href = "/index.html";
-    }
-  }
-</script>
-
+<div class="header">
+  <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
+</div>
 <div class="sidebar">
-<ul>
-<li><a href="index.html">Início</a></li>
-<li><a href="agendamentos.html">Agendamentos</a></li>
-<li><a href="calendario.html">Calendário</a></li>
-<li><a href="salas.html">Salas</a></li>
-<li><a href="admin.html">Administração</a></li>
-</ul>
+  <ul>
+    <li><a href="index.html">Início</a></li>
+    <li><a href="agendamentos.html">Agendamentos</a></li>
+    <li><a href="calendario.html">Calendário</a></li>
+    <li><a href="salas.html">Salas</a></li>
+    <li><a href="admin.html">Administração</a></li>
+  </ul>
 </div>
-
 <div class="main-content">
-<h1>Administração</h1>
-<div style="margin-bottom: 1em;">
-<label for="filtro-data"><strong>Filtrar por data:</strong></label>
-<input id="filtro-data" onchange="render()" type="date"/>
-<button onclick="document.getElementById('filtro-data').value=''; render();">Limpar filtro</button>
-</div>
-
-<div class="tabs">
-  <button class="tab-button active" data-tab="aprovacao">Aprovado</button>
-  <button class="tab-button" data-tab="pendente">Pendente</button>
-  <button class="tab-button" data-tab="em_aprovacao">Reservas</button>
-  <button class="tab-button" data-tab="concluido">Concluído</button>
-  <button class="tab-button" data-tab="definicoes">Definições</button>
-</div>
-
-<div class="tab-content active" id="aprovacao"></div>
-<div class="tab-content" id="pendente"></div>
-<div class="tab-content" id="em_aprovacao"></div>
-<div class="tab-content" id="concluido">
-  <label><strong>Filtrar por sala:</strong></label>
-  <select id="filtro-concluido" onchange="render()">
-    <option value="todas">Todas as salas</option>
-    <option value="hgo">Salas HGO</option>
-    <option value="sobreda">Salas Sobreda</option>
-  </select>
-  <div id="lista-concluido"></div>
-</div>
-
-<!-- Definições com submenu -->
-<div class="tab-content" id="definicoes">
-  <h2>Definições</h2>
-  <div class="subtabs">
-    <button class="subtab-button active" data-subtab="ocupacao">📊 Taxa de Ocupação</button>
-    <button class="subtab-button" data-subtab="noticias">📰 Gestão de Notícias</button>
+  <h1>Administração</h1>
+  <div class="tabs">
+    <button class="tab-button" data-tab="definicoes">Definições</button>
   </div>
-
-  <!-- Subtab Ocupação (mantém o que já tens) -->
-  <div class="tab-subcontent active" id="ocupacao">
-    <!-- (mantive o teu código de taxa de ocupação) -->
-    <!-- ... -->
-    <div id="resultado-ocupacao" style="margin-top: 1em;"></div>
-  </div>
-
-  <!-- Subtab Notícias -->
-  <div class="tab-subcontent" id="noticias">
-    <h3>Adicionar Notícia</h3>
-    <form id="form-noticia">
-      <input type="text" name="titulo" placeholder="Título" required>
-      <textarea name="conteudo" placeholder="Conteúdo" required></textarea>
-      <button type="submit">Publicar</button>
-    </form>
-    <h3>Notícias Publicadas</h3>
-    <div id="lista-admin-noticias"></div>
+  <div class="tab-content active" id="definicoes">
+    <div class="tab-submenu">
+      <button class="submenu-button active" data-subtab="ocupacao">Taxa de Ocupação</button>
+      <button class="submenu-button" data-subtab="noticias">Gestão de Notícias</button>
+    </div>
+    <div class="subtab-content active" id="ocupacao">
+      <h2>Taxa de Ocupação de Espaços ULSAS</h2>
+      <p>[Aqui fica a lógica existente da taxa de ocupação]</p>
+    </div>
+    <div class="subtab-content" id="noticias" style="display:none;">
+      <h2>Gestão de Notícias</h2>
+      <form id="form-noticia">
+        <label>Título:<br><input type="text" id="titulo"></label><br><br>
+        <label>Conteúdo:<br><textarea id="conteudo"></textarea></label><br><br>
+        <button type="submit">Adicionar Notícia</button>
+      </form>
+      <div id="lista-noticias"></div>
+    </div>
   </div>
 </div>
-</div>
-
 <script>
-// Subtabs dentro de definições
-document.addEventListener("DOMContentLoaded", () => {
-  const subButtons = document.querySelectorAll('[data-subtab]');
-  const subContents = document.querySelectorAll('.tab-subcontent');
-  subButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const subtab = button.getAttribute('data-subtab');
-      subButtons.forEach(btn => btn.classList.remove('active'));
-      subContents.forEach(content => content.classList.remove('active'));
-      button.classList.add('active');
-      document.getElementById(subtab).classList.add('active');
-    });
+document.querySelectorAll('.submenu-button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.submenu-button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.subtab-content').forEach(c => c.style.display = 'none');
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.subtab).style.display = 'block';
   });
 });
 
-// Gestão de notícias
-document.getElementById("form-noticia")?.addEventListener("submit", async function(e) {
+const form = document.getElementById('form-noticia');
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const token = localStorage.getItem("token");
-  if (!token) { alert("Precisa estar autenticado como administrador."); return; }
-  const formData = new FormData(this);
-  const response = await fetch("noticias.php", { method: "POST", headers: { "Authorization": "Bearer " + token }, body: formData });
-  const result = await response.text();
-  alert(result);
-  carregarNoticiasAdmin();
+  const titulo = document.getElementById('titulo').value;
+  const conteudo = document.getElementById('conteudo').value;
+  const token = localStorage.getItem('token');
+  const res = await fetch('noticias.php', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: new URLSearchParams({ titulo, conteudo })
+  });
+  const txt = await res.text();
+  alert(txt);
+  carregarNoticias();
 });
 
-async function carregarNoticiasAdmin() {
-  try {
-    const response = await fetch("noticias.json");
-    const noticias = await response.json();
-    const container = document.getElementById("lista-admin-noticias");
-    container.innerHTML = "";
-    noticias.forEach((noticia, index) => {
-      const div = document.createElement("div");
-      div.classList.add("noticia");
-      div.innerHTML = `<p><strong>${noticia.titulo}</strong>: ${noticia.conteudo}</p>
-                       <button onclick="removerNoticia(${index})">❌ Remover</button>`;
-      container.appendChild(div);
-    });
-  } catch (e) {
-    console.error("Erro ao carregar notícias admin", e);
-  }
+async function carregarNoticias() {
+  const res = await fetch('noticias.json');
+  if (!res.ok) return;
+  const noticias = await res.json();
+  const lista = document.getElementById('lista-noticias');
+  lista.innerHTML = '';
+  noticias.forEach((n, i) => {
+    const div = document.createElement('div');
+    div.className = 'noticia-card';
+    div.innerHTML = `<strong>${n.titulo}</strong><br><small>${n.data}</small><p>${n.conteudo}</p>
+      <button onclick="removerNoticia(${i})">Remover</button>`;
+    lista.appendChild(div);
+  });
 }
-carregarNoticiasAdmin();
 
-async function removerNoticia(index) {
-  const token = localStorage.getItem("token");
-  if (!token) { alert("Precisa estar autenticado como administrador."); return; }
-  const formData = new FormData();
-  formData.append("remover", index);
-  const response = await fetch("noticias.php", { method: "POST", headers: { "Authorization": "Bearer " + token }, body: formData });
-  const result = await response.text();
-  alert(result);
-  carregarNoticiasAdmin();
+async function removerNoticia(i) {
+  const token = localStorage.getItem('token');
+  const res = await fetch('noticias.php', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: new URLSearchParams({ remover: i })
+  });
+  const txt = await res.text();
+  alert(txt);
+  carregarNoticias();
 }
+
+carregarNoticias();
 </script>
 </body>
 </html>
