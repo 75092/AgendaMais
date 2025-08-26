@@ -1,152 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <title>Index</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>ULSAS - Início</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    #logout-btn {
-      position: fixed;
-      top: 15px;
-      right: 20px;
-      padding: 8px 14px;
-      background-color: #e74c3c;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f6f8;
+    }
+    header {
+      background: #2b7cff;
       color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 2000;
-      display: none;
+      padding: 15px;
+      text-align: center;
     }
-
-    .home-section {
-      margin-top: 30px;
+    .container {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-    }
-
-    .home-section img {
-      max-width: 350px; /* imagem maior */
-    }
-
-    .noticias, .contactos {
-      width: 80%;
-      max-width: 800px;
-      background: #f9f9f9;
-      border: 1px solid #ccc;
-      border-radius: 10px;
+      justify-content: space-between;
       padding: 20px;
-      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
     }
-
-    .noticias h2, .contactos h2 {
-      margin-bottom: 15px;
-      color: #2c3e50;
+    .imagem {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
+    .imagem img {
+      max-width: 90%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .conteudo {
+      flex: 1;
+      padding: 20px;
+    }
     .noticia {
-      margin-bottom: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #ddd;
+      background: white;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .noticia h3 {
+      margin: 0 0 10px;
+      color: #2b7cff;
+    }
+    .noticia small {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    .contactos {
+      margin-top: 30px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    footer {
+      background: #2b7cff;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
     }
   </style>
-  <script src="auth.js"></script>
 </head>
 <body>
+  <header>
+    <h1>ULSAS - Unidade Local de Saúde Almada Seixal</h1>
+  </header>
 
-  <!-- Botão Logout -->
-  <button id="logout-btn" onclick="logout()">Logout</button>
-
-  <!-- Header com logotipo -->
-  <div class="header">
-    <img src="/ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
-  </div>
-
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <ul>
-      <li><a href="index.html">Início</a></li>
-      <li><a href="agendamentos.html">Agendamentos</a></li>
-      <li><a href="calendario.html">Calendário</a></li>
-      <li><a href="salas.html">Salas</a></li>
-      <li><a href="admin.html">Administração</a></li>
-    </ul>
-  </div>
-
-  <!-- Conteúdo principal -->
-  <div class="main-content">
-    <div class="home-section">
-      <!-- Imagem CCII -->
-      <img src="imagem CCII.png" alt="Logo CCII">
-
-      <!-- Notícias -->
-      <div class="noticias">
-        <h2>Notícias</h2>
-        <div id="lista-noticias"></div>
+  <div class="container">
+    <div class="imagem">
+      <img src="imagem CCII.png" alt="Imagem CCII">
+    </div>
+    <div class="conteudo">
+      <h2>Últimas Notícias</h2>
+      <div id="noticias-container">
+        <p>A carregar notícias...</p>
       </div>
 
-      <!-- Contactos -->
       <div class="contactos">
-        <h2>Contactos do Departamento de Formação</h2>
-        <p><strong>Email:</strong> formacao@ulsas.min-saude.pt</p>
-        <p><strong>Telefone:</strong> 212 000 000</p>
-        <p><strong>HGO Piso 2</p>
+        <h2>Contactos - Departamento de Formação</h2>
+        <p><strong>Email:</strong> formacao@ulsas.pt</p>
+        <p><strong>Telefone:</strong> 21 000 000</p>
+        <p><strong>Morada:</strong> Av. Principal, 123 - Almada</p>
       </div>
     </div>
   </div>
 
-  <!-- Script de autenticação e logout -->
+  <footer>
+    <p>&copy; 2025 ULSAS - Todos os direitos reservados</p>
+  </footer>
+
   <script>
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      window.location.href = "/login.html";
-    } else {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const now = Math.floor(Date.now() / 1000);
-
-        if (payload.exp < now) {
-          localStorage.removeItem("token");
-          window.location.href = "/login.html";
-        } else {
-          document.getElementById("logout-btn").style.display = "block";
-        }
-      } catch (e) {
-        localStorage.removeItem("token");
-        window.location.href = "/login.html";
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/login.html";
-    }
-
-    // Carregar notícias do ficheiro JSON
     async function carregarNoticias() {
+      const container = document.getElementById("noticias-container");
       try {
         const response = await fetch("noticias.json");
+        if (!response.ok) throw new Error("Sem ficheiro");
         const noticias = await response.json();
-
-        const container = document.getElementById("lista-noticias");
+        if (!noticias.length) {
+          container.innerHTML = "<p>Ainda não existem notícias publicadas.</p>";
+          return;
+        }
         container.innerHTML = "";
-
-        noticias.forEach(noticia => {
+        noticias.slice().reverse().forEach(noticia => {
           const div = document.createElement("div");
           div.classList.add("noticia");
-          div.innerHTML = `<strong>📢 ${noticia.titulo}:</strong> ${noticia.conteudo}`;
+          div.innerHTML = `
+            <h3>${noticia.titulo}</h3>
+            <small>${noticia.data}</small>
+            <p>${noticia.conteudo}</p>
+          `;
           container.appendChild(div);
         });
       } catch (e) {
-        console.error("Erro ao carregar notícias", e);
+        container.innerHTML = "<p>Ainda não existem notícias publicadas.</p>";
       }
     }
-
     carregarNoticias();
   </script>
-
 </body>
 </html>
