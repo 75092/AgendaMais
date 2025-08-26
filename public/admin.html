@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="utf-8"/>
-  <title>Administração</title>
-  <link href="style.css" rel="stylesheet"/>
-  <style>
-    .tab-submenu button {
-      margin: 5px;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 5px;
-      background: #2b7cff;
-      color: white;
-      cursor: pointer;
-    }
-    .tab-submenu button.active {
-      background: #195ecb;
-    }
-    .noticia-card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-  </style>
+<meta charset="utf-8"/>
+<title>Administração</title>
+<link href="style.css" rel="stylesheet"/>
+<style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9;}
+    .sidebar { width:200px; background:#2d6a4f; position:fixed; top:0; bottom:0; padding:1em 0; color:white; }
+    .sidebar ul { list-style:none; padding:0; }
+    .sidebar ul li { margin:10px 0; }
+    .sidebar ul li a { color:white; text-decoration:none; padding:8px 16px; display:block; }
+    .sidebar ul li a:hover { background:#1b4332; }
+    .main-content { margin-left:220px; padding:20px; }
+
+    .tabs { margin-bottom:1em; }
+    .tab-button { padding:10px 15px; margin-right:5px; border:none; background:#eee; cursor:pointer; }
+    .tab-button.active { background:#ccc; }
+    .tab-content { display:none; padding:1em; background:#fff; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    .tab-content.active { display:block; }
+
+    .sub-tabs { margin-top:1em; }
+    .sub-tab-button { padding:8px 12px; margin-right:5px; border:none; background:#007bff; color:white; cursor:pointer; border-radius:5px; }
+    .sub-tab-button.active { background:#0056b3; }
+
+    .sub-tab-content { display:none; margin-top:1em; }
+    .sub-tab-content.active { display:block; }
+
+    .news-list { margin-top:1em; }
+    .news-item { background:#f1f1f1; padding:10px; border-radius:5px; margin-bottom:8px; }
+</style>
 </head>
 <body>
-<div class="header">
-  <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
-</div>
 <div class="sidebar">
   <ul>
     <li><a href="index.html">Início</a></li>
@@ -39,81 +40,116 @@
     <li><a href="admin.html">Administração</a></li>
   </ul>
 </div>
+
 <div class="main-content">
   <h1>Administração</h1>
   <div class="tabs">
+    <button class="tab-button active" data-tab="aprovacao">Aprovado</button>
+    <button class="tab-button" data-tab="pendente">Pendente</button>
+    <button class="tab-button" data-tab="reservas">Reservas</button>
+    <button class="tab-button" data-tab="concluido">Concluído</button>
     <button class="tab-button" data-tab="definicoes">Definições</button>
   </div>
-  <div class="tab-content active" id="definicoes">
-    <div class="tab-submenu">
-      <button class="submenu-button active" data-subtab="ocupacao">Taxa de Ocupação</button>
-      <button class="submenu-button" data-subtab="noticias">Gestão de Notícias</button>
+
+  <div id="aprovacao" class="tab-content active">
+    <h2>Lista de Aprovados</h2>
+    <p>[Aqui fica a lógica de agendamentos aprovados]</p>
+  </div>
+
+  <div id="pendente" class="tab-content">
+    <h2>Lista de Pendentes</h2>
+    <p>[Aqui fica a lógica de pendentes]</p>
+  </div>
+
+  <div id="reservas" class="tab-content">
+    <h2>Reservas</h2>
+    <p>[Aqui fica a lógica de reservas]</p>
+  </div>
+
+  <div id="concluido" class="tab-content">
+    <h2>Concluídos</h2>
+    <p>[Aqui fica a lógica de concluídos]</p>
+  </div>
+
+  <div id="definicoes" class="tab-content">
+    <h2>Definições</h2>
+    <div class="sub-tabs">
+      <button class="sub-tab-button active" data-subtab="ocupacao">Taxa de Ocupação</button>
+      <button class="sub-tab-button" data-subtab="noticias">Gestão de Notícias</button>
     </div>
-    <div class="subtab-content active" id="ocupacao">
-      <h2>Taxa de Ocupação de Espaços ULSAS</h2>
+
+    <div id="ocupacao" class="sub-tab-content active">
+      <h3>Taxa de Ocupação de Espaços ULSAS</h3>
       <p>[Aqui fica a lógica existente da taxa de ocupação]</p>
     </div>
-    <div class="subtab-content" id="noticias" style="display:none;">
-      <h2>Gestão de Notícias</h2>
-      <form id="form-noticia">
-        <label>Título:<br><input type="text" id="titulo"></label><br><br>
-        <label>Conteúdo:<br><textarea id="conteudo"></textarea></label><br><br>
+
+    <div id="noticias" class="sub-tab-content">
+      <h3>Gestão de Notícias</h3>
+      <form id="noticiaForm">
+        <input type="text" id="titulo" placeholder="Título" required/><br/><br/>
+        <textarea id="conteudo" placeholder="Conteúdo" required></textarea><br/><br/>
         <button type="submit">Adicionar Notícia</button>
       </form>
-      <div id="lista-noticias"></div>
+      <div class="news-list" id="listaNoticias"></div>
     </div>
   </div>
 </div>
+
 <script>
-document.querySelectorAll('.submenu-button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.submenu-button').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.subtab-content').forEach(c => c.style.display = 'none');
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.subtab).style.display = 'block';
+// Tabs principais
+document.querySelectorAll(".tab-button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.getAttribute("data-tab")).classList.add("active");
   });
 });
 
-const form = document.getElementById('form-noticia');
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const titulo = document.getElementById('titulo').value;
-  const conteudo = document.getElementById('conteudo').value;
-  const token = localStorage.getItem('token');
-  const res = await fetch('noticias.php', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token },
-    body: new URLSearchParams({ titulo, conteudo })
+// Sub-tabs
+document.querySelectorAll(".sub-tab-button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".sub-tab-button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".sub-tab-content").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.getAttribute("data-subtab")).classList.add("active");
   });
-  const txt = await res.text();
-  alert(txt);
-  carregarNoticias();
 });
 
+// Gestão de Notícias
 async function carregarNoticias() {
-  const res = await fetch('noticias.json');
-  if (!res.ok) return;
+  const res = await fetch("noticias.json");
   const noticias = await res.json();
-  const lista = document.getElementById('lista-noticias');
-  lista.innerHTML = '';
+  const lista = document.getElementById("listaNoticias");
+  lista.innerHTML = "";
   noticias.forEach((n, i) => {
-    const div = document.createElement('div');
-    div.className = 'noticia-card';
-    div.innerHTML = `<strong>${n.titulo}</strong><br><small>${n.data}</small><p>${n.conteudo}</p>
-      <button onclick="removerNoticia(${i})">Remover</button>`;
+    const div = document.createElement("div");
+    div.className = "news-item";
+    div.innerHTML = `<strong>${n.titulo}</strong><p>${n.conteudo}</p><button onclick="removerNoticia(${i})">Remover</button>`;
     lista.appendChild(div);
   });
 }
 
-async function removerNoticia(i) {
-  const token = localStorage.getItem('token');
-  const res = await fetch('noticias.php', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token },
-    body: new URLSearchParams({ remover: i })
+document.getElementById("noticiaForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const titulo = document.getElementById("titulo").value;
+  const conteudo = document.getElementById("conteudo").value;
+  await fetch("noticias.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ acao:"adicionar", titulo, conteudo })
   });
-  const txt = await res.text();
-  alert(txt);
+  document.getElementById("titulo").value = "";
+  document.getElementById("conteudo").value = "";
+  carregarNoticias();
+});
+
+async function removerNoticia(index) {
+  await fetch("noticias.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ acao:"remover", index })
+  });
   carregarNoticias();
 }
 
