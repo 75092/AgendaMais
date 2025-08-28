@@ -1,15 +1,13 @@
-
 <!DOCTYPE html>
-
 <html lang="pt">
 <head>
-<meta charset="utf-8"/>
-<title>Salas</title>
-<link href="style.css" rel="stylesheet"/>
-<style>
+  <meta charset="utf-8"/>
+  <title>Salas</title>
+  <link href="style.css" rel="stylesheet"/>
+  <style>
     .salas-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 20px;
     }
     .sala-card {
@@ -23,7 +21,12 @@
       color: #2e7d32;
     }
     .sala-card p {
-      margin: 8px 0;
+      margin: 6px 0;
+    }
+    .sala-card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
     .local-titulo {
       margin-top: 40px;
@@ -31,44 +34,44 @@
       color: #1565c0;
     }
   </style>
-<script src="auth.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("token");
+  <script src="auth.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
 
-  if (!token) {
-    window.location.href = "/login.html";
-  } else {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const now = Math.floor(Date.now() / 1000);
+    if (!token) {
+      window.location.href = "/login.html";
+    } else {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
 
-      if (payload.exp < now) {
+        if (payload.exp < now) {
+          localStorage.removeItem("token");
+          window.location.href = "/login.html";
+        } else {
+          const logoutBtn = document.getElementById("logout-btn");
+          if (logoutBtn) logoutBtn.style.display = "block";
+
+          if (payload?.role !== "admin") {
+            const adminLink = document.querySelector('a[href="admin.html"]');
+            if (adminLink) adminLink.style.display = "none";
+          }
+        }
+      } catch (e) {
         localStorage.removeItem("token");
         window.location.href = "/login.html";
-      } else {
-        const logoutBtn = document.getElementById("logout-btn");
-        if (logoutBtn) logoutBtn.style.display = "block";
-
-        if (payload?.role !== "admin") {
-          const adminLink = document.querySelector('a[href="admin.html"]');
-          if (adminLink) adminLink.style.display = "none";
-        }
       }
-    } catch (e) {
+    }
+
+    function logout() {
       localStorage.removeItem("token");
       window.location.href = "/login.html";
     }
-  }
 
-  function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "/login.html";
-  }
-
-  window.logout = logout;
-});
-</script>
+    window.logout = logout;
+  });
+  </script>
 </head>
 <body>
 <style>
@@ -89,53 +92,112 @@ document.addEventListener("DOMContentLoaded", () => {
 <button id="logout-btn" onclick="logout()">Logout</button>
 
 <div class="header">
-<img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
+  <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
 </div>
 <div class="sidebar">
-<ul>
-<li><a href="index.html">Início</a></li>
-<li><a href="agendamentos.html">Agendamentos</a></li>
-<li><a href="calendario.html">Calendário</a></li>
-<li><a href="salas.html">Salas</a></li>
-<li><a href="admin.html">Administração</a></li>
-</ul>
+  <ul>
+    <li><a href="index.html">Início</a></li>
+    <li><a href="agendamentos.html">Agendamentos</a></li>
+    <li><a href="calendario.html">Calendário</a></li>
+    <li><a href="salas.html">Salas</a></li>
+    <li><a href="admin.html">Administração</a></li>
+  </ul>
 </div>
+
 <div class="main-content">
-<h1>Salas Disponíveis</h1>
-<h2 class="local-titulo">🏥 Piso 2 HGO</h2>
-<div class="salas-container">
-<div class="sala-card">
-<h3>Sala Almada</h3>
-<p><strong>Capacidade:</strong> 20 pessoas</p>
-</div>
-<div class="sala-card">
-<h3>Sala Garcia de Orta</h3>
-<p><strong>Capacidade:</strong> 50 pessoas</p>
-</div>
-<div class="sala-card">
-<h3>Sala Tejo</h3>
-<p><strong>Capacidade:</strong> 25 pessoas</p>
-<p><strong>Disposição:</strong> Em U</p>
-<p><em>Possibilidade de marcação em conjunto</em></p>
-</div>
-</div>
-<h2 class="local-titulo">📍 CF Sobreda</h2>
-<div class="salas-container">
-<div class="sala-card">
-<h3>Auditório Dr. Luís Amaro (CF Sobreda)</h3>
-<p><strong>Capacidade:</strong> 100 pessoas</p>
-</div>
-<div class="sala-card">
-<h3>Tejo</h3>
-<p><strong>Disposição:</strong> Em U</p>
-<p><strong>Capacidade:</strong> 20 pessoas</p>
-</div>
-<div class="sala-card">
-<h3>Sado</h3>
-<p><strong>Disposição:</strong> Em U</p>
-<p><strong>Capacidade:</strong> 20 pessoas</p>
-</div>
-</div>
+  <h1>Salas Disponíveis</h1>
+
+  <!-- HGO -->
+  <h2 class="local-titulo"> HGO</h2>
+  <div class="salas-container">
+    <div class="sala-card">
+      <h3>HGO - Sala Almada</h3>
+      <img src="img/HGO - Sala Almada.jpg" alt="HGO - Sala Almada">
+      <p><strong>Tipologia:</strong> Plateia</p>
+      <p><strong>Capacidade:</strong> 20 pessoas</p>
+      <p><strong>Mobiliário:</strong> Cadeiras com pala individual</p>
+      <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção, equipamento de som</p>
+      <p><strong>Climatização:</strong> Ar condicionado</p>
+    </div>
+
+    <div class="sala-card">
+      <h3>HGO - Sala Garcia de Orta</h3>
+      <img src="img/HGO - Sala Garcia de Orta.jpg" alt="HGO - Sala Garcia de Orta">
+      <p><strong>Tipologia:</strong> Plateia</p>
+      <p><strong>Capacidade:</strong> 50 pessoas</p>
+      <p><strong>Mobiliário:</strong> Cadeiras com pala individual</p>
+      <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção, equipamento de som</p>
+      <p><strong>Climatização:</strong> Ar condicionado</p>
+    </div>
+
+    <div class="sala-card">
+      <h3>HGO - Sala Tejo</h3>
+      <img src="img/HGO - Sala Tejo.jpg" alt="HGO - Sala Tejo">
+      <p><strong>Tipologia:</strong> Sala em U</p>
+      <p><strong>Capacidade:</strong> 25 pessoas</p>
+      <p><strong>Mobiliário:</strong> Mesas de sala de aula e cadeiras</p>
+      <p><strong>Equipamentos:</strong> Computador, projetor, equipamento de som, quadro branco</p>
+      <p><strong>Climatização:</strong> Ar condicionado</p>
+    </div>
+
+    <div class="sala-card">
+      <h3>HGO - Sala Almada + Garcia de Orta</h3>
+      <img src="img/HGO - Sala Almada + Garcia de Orta.jpg" alt="HGO - Sala Almada + Garcia de Orta">
+      <p><strong>Tipologia:</strong> Plateia</p>
+      <p><strong>Capacidade:</strong> 70 pessoas</p>
+      <p><strong>Mobiliário:</strong> Cadeiras com pala individual</p>
+      <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção, equipamento de som</p>
+      <p><strong>Climatização:</strong> Ar condicionado</p>
+    </div>
+  </div>
+
+  <!-- CF Sobreda -->
+  <h2 class="local-titulo"> CF Sobreda</h2>
+  <div class="salas-container">
+    <div class="sala-card">
+      <h3>CF Sobreda - Auditório Dr. Luís Amaro</h3>
+      <img src="img/CF Sobreda - Auditório Dr Luis Amaro.jpg" alt="CF Sobreda - Auditório Dr. Luís Amaro">
+      <p><strong>Tipologia:</strong> Plateia</p>
+      <p><strong>Capacidade:</strong> 100 pessoas</p>
+      <p><strong>Mobiliário:</strong> Cadeiras fixas com pala individual</p>
+      <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção, equipamento de som</p>
+      <p><strong>Climatização:</strong> Ar condicionado</p>
+    </div>
+
+    <div class="sala-card">
+      <h3>CF Sobreda - Sala Sado</h3>
+      <img src="img/CF Sobreda - Sala Sado.jpg" alt="CF Sobreda - Sala Sado">
+      <p><strong>Tipologia:</strong> Sala em U</p>
+      <p><strong>Capacidade:</strong> 30 pessoas</p>
+      <p><strong>Mobiliário:</strong> Mesas de sala de aula e cadeiras</p>
+      <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção</p>
+      <p><strong>Climatização:</strong> Ar condicionado</p>
+    </div>
+
+    <div class="sala-card">
+      <h3>CF Sobreda - Sala Tejo</h3>
+      <img src="img/CF Sobreda - Sala Tejo.jpg" alt="CF Sobreda - Sala Tejo">
+      <p><strong>Tipologia:</strong> Sala em U</p>
+      <p><strong>Capacidade:</strong> 30 pessoas</p>
+      <p><strong>Mobiliário:</strong> Mesas de sala de aula e cadeiras</p>
+      <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção</p>
+      <p><strong>Climatização:</strong> Ar condicionado</p>
+    </div>
+  </div>
+
+  <!-- CF Amora -->
+  <h2 class="local-titulo"> CF Amora</h2>
+  <div class="salas-container">
+    <div class="sala-card">
+      <h3>CF Amora - Sala Amora</h3>
+      <!-- sem imagem ainda -->
+      <p><strong>Tipologia:</strong> Sala em U</p>
+      <p><strong>Capacidade:</strong> 24 pessoas (2 formandos por computador)</p>
+      <p><strong>Mobiliário:</strong> Mesas de sala de aula e cadeiras</p>
+      <p><strong>Equipamentos:</strong> 13 Computadores, projetor, tela de projeção</p>
+    </div>
+  </div>
+
 </div>
 </body>
 </html>
