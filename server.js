@@ -5,6 +5,8 @@ import bcrypt from "bcrypt";
 import sql from "mssql";
 import path from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,9 +22,10 @@ const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   server: process.env.DB_SERVER,
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 1433,
   database: process.env.DB_NAME,
   options: {
-    encrypt: true,
+    encrypt: false, // true se usares Azure
     trustServerCertificate: true
   }
 };
@@ -31,6 +34,8 @@ const config = {
 async function initDatabase() {
   try {
     await sql.connect(config);
+
+    // Criar tabela users se não existir
     await sql.query(`
       IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='users' AND xtype='U')
       CREATE TABLE users (
@@ -40,8 +45,10 @@ async function initDatabase() {
         role NVARCHAR(50) DEFAULT 'user'
       );
     `);
-    const result = await sql.query(`SELECT * FROM users WHERE username = 'admin'`);
-    if (result.recordset.length === 0) {
+
+    // Criar admin se não existir
+    const adminCheck = await sql.query(`SELECT * FROM users WHERE username = 'admin'`);
+    if (adminCheck.recordset.length === 0) {
       const hashedPassword = await bcrypt.hash("12345", 10);
       await sql.query(`
         INSERT INTO users (username, password, role)
@@ -49,6 +56,18 @@ async function initDatabase() {
       `);
       console.log("✅ Utilizador admin criado: admin / 12345");
     }
+
+    // Criar convidado se não existir
+    const guestCheck = await sql.query(`SELECT * FROM users WHERE username = 'convidado'`);
+    if (guestCheck.recordset.length === 0) {
+      const hashedPassword = await bcrypt.hash("12345", 10);
+      await sql.query(`
+        INSERT INTO users (username, password, role)
+        VALUES ('convidado', '${hashedPassword}', 'user')
+      `);
+      console.log("✅ Utilizador convidado criado: convidado / 12345");
+    }
+
   } catch (err) {
     console.error("❌ Erro ao inicializar base de dados:", err);
   }
