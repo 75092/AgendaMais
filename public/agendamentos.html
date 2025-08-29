@@ -112,7 +112,7 @@ fieldset#recursos label {
 </div>
 <div class="main-content">
 <h1>Agendamentos</h1>
-<a class="botao-novo" href="#" onclick="abrirModal()">+ Novo Agendamento</a>
+<a class="botao-novo" href="#" onclick="abrirPopup()">+ Novo Agendamento</a>
 <h2>Agendamentos da Semana</h2>
 <label for="filtroSala"><strong>Filtrar por Sala:</strong></label>
 <select class="input-estilo input-sala" id="filtroSala" onchange="mostrarAgendamentosSemana()">
@@ -382,3 +382,31 @@ try {
 </script>
 </body>
 </html>
+
+<script>
+function abrirPopup() {
+  fetch('novo-agendamento.html')
+    .then(response => response.text())
+    .then(data => {
+      const popup = document.createElement('div');
+      popup.id = 'popup-agendamento';
+      popup.style.position = 'fixed';
+      popup.style.top = '10%';
+      popup.style.left = '10%';
+      popup.style.width = '80%';
+      popup.style.height = '80%';
+      popup.style.backgroundColor = '#fff';
+      popup.style.border = '2px solid #000';
+      popup.style.padding = '20px';
+      popup.style.overflow = 'auto';
+      popup.style.zIndex = '1000';
+      popup.innerHTML = '<button onclick="fecharPopup()">Fechar</button>' + data;
+      document.body.appendChild(popup);
+    });
+}
+
+function fecharPopup() {
+  const popup = document.getElementById('popup-agendamento');
+  if (popup) popup.remove();
+}
+</script>
