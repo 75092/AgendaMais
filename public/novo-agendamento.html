@@ -103,11 +103,11 @@
     }
   </style>
 </head>
-<body style='margin-left:250px;'>
-  <button id="logout-btn" onclick="logout()">Logout</button>
+<body style='display:flex;'>
+  <button id="logout-btn" onclick="logout()"><div class='sidebar' style='width:250px; position:fixed; left:0; top:0; bottom:0; z-index:2;'>Logout</button>
   <script>
     ensureAuthenticated();
-    showLogoutIfAuthenticated();
+    show<div class='sidebar' style='width:250px; position:fixed; left:0; top:0; bottom:0; z-index:2;'>LogoutIfAuthenticated();
     function logout() {
       localStorage.removeItem("token");
       window.location.href = "/login.html";
@@ -125,7 +125,7 @@
   </div>
 
   <div class="top-logo">
-    <img src="img/ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
+    <img src="img/ulsas_logotipo.png" alt="Logotipo ULSAS</div><div class='main-content' style='margin-left:250px; padding:20px; z-index:1;'>" class="logo" />
   </div>
 
   <div class="main-content">
@@ -153,21 +153,13 @@
           </select>
         </label><br><br>
         <div class="inline-inputs">
-          <label>Hora de Início:
-<input type='time' id='horaInicio'>
-Hora de Fim:
-<input type='time' id='horaFim'>
-Nome do Evento:<br><input type="text" name="evento" required></label>
+          <label>Nome do Evento:<br><input type="text" name="evento" required></label>
           <label>N.º de Participantes:<br><input type="number" name="participantes"></label>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend><strong>Data e Hora</strong></legend>
-        <label>Data:<br><input type="date" name="data" required></label><br>
-        <label>Hora de Início:<br><input type="time" name="hora_inicio" required></label><br>
-        <label>Hora de Fim:<br><input type="time" name="hora_fim" required></label><br>
-        <label><input type="checkbox" name="multi_dias"> Agendar para mais de um dia</label>
+        <legend><strong></label>
       </fieldset>
 
       <fieldset>
@@ -208,53 +200,7 @@ Nome do Evento:<br><input type="text" name="evento" required></label>
         }
     });
   </script>
-
-<div id='confirmacao' style='display:none; position:fixed; top:20px; right:20px; background:#4CAF50; color:white; padding:10px; border-radius:5px;'>
-✅ Olá, o agendamento foi confirmado!
-</div>
-
-<script>
-document.querySelector("#btnSubmeter").addEventListener("click", function(e) {
-  e.preventDefault();
-  const dados = {
-    nome: document.querySelector("#nome").value,
-    sala: document.querySelector("#sala").value,
-    evento: document.querySelector("#evento").value,
-    horaInicio: document.querySelector("#horaInicio").value,
-    horaFim: document.querySelector("#horaFim").value
-  };
-  fetch("/api/agendar", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(dados)
-  }).then(res => {
-    if (res.ok) {
-      document.getElementById("confirmacao").style.display = "block";
-      setTimeout(() => document.getElementById("confirmacao").style.display = "none", 3000);
-    }
-  });
-});
-</script>
-
-<script>
-function atualizarSalasDisponiveis() {
-  const data = document.querySelector("#data").value;
-  const inicio = document.querySelector("#horaInicio").value;
-  const fim = document.querySelector("#horaFim").value;
-  fetch(`/api/salas-disponiveis?data=${data}&inicio=${inicio}&fim=${fim}`)
-    .then(res => res.json())
-    .then(salas => {
-      const select = document.querySelector("#sala");
-      select.innerHTML = "<option>-- Selecione --</option>";
-      salas.forEach(sala => {
-        select.innerHTML += `<option value='${sala.id}'>${sala.nome}</option>`;
-      });
-    });
-}
-document.querySelector("#data").addEventListener("change", atualizarSalasDisponiveis);
-document.querySelector("#horaInicio").addEventListener("change", atualizarSalasDisponiveis);
-document.querySelector("#horaFim").addEventListener("change", atualizarSalasDisponiveis);
-</script>
 </body>
 </html>
 
+</div>
