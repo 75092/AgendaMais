@@ -75,12 +75,12 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <ul>
+    <ul id="menu">
       <li><a href="index.html">Início</a></li>
       <li><a href="agendamentos.html">Agendamentos</a></li>
       <li><a href="calendario.html">Calendário</a></li>
       <li><a href="salas.html">Salas</a></li>
-      <li><a href="admin.html">Administração</a></li>
+      <!-- A aba Administração será adicionada via JavaScript apenas se o role for admin -->
     </ul>
   </div>
 
@@ -108,6 +108,8 @@
 
   <script>
     const token = localStorage.getItem("token");
+    let role = null;
+
     if (!token) {
       window.location.href = "/login.html";
     } else {
@@ -119,15 +121,25 @@
           window.location.href = "/login.html";
         } else {
           document.getElementById("logout-btn").style.display = "block";
+          role = payload.role; // guarda a role
         }
       } catch (e) {
         localStorage.removeItem("token");
         window.location.href = "/login.html";
       }
     }
+
     function logout() {
       localStorage.removeItem("token");
       window.location.href = "/login.html";
+    }
+
+    // Só mostra a aba Administração se for admin
+    if (role === "admin") {
+      const menu = document.getElementById("menu");
+      const adminItem = document.createElement("li");
+      adminItem.innerHTML = '<a href="admin.html">Administração</a>';
+      menu.appendChild(adminItem);
     }
 
     async function carregarNoticias() {

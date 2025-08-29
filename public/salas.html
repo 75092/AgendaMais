@@ -33,11 +33,25 @@
       margin-bottom: 10px;
       color: #1565c0;
     }
+    #logout-btn {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      padding: 8px 14px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 2000;
+      display: none;
+    }
   </style>
   <script src="auth.js"></script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
+    let role = null;
 
     if (!token) {
       window.location.href = "/login.html";
@@ -50,13 +64,8 @@
           localStorage.removeItem("token");
           window.location.href = "/login.html";
         } else {
-          const logoutBtn = document.getElementById("logout-btn");
-          if (logoutBtn) logoutBtn.style.display = "block";
-
-          if (payload?.role !== "admin") {
-            const adminLink = document.querySelector('a[href="admin.html"]');
-            if (adminLink) adminLink.style.display = "none";
-          }
+          document.getElementById("logout-btn").style.display = "block";
+          role = payload.role;
         }
       } catch (e) {
         localStorage.removeItem("token");
@@ -68,39 +77,31 @@
       localStorage.removeItem("token");
       window.location.href = "/login.html";
     }
-
     window.logout = logout;
+
+    // Só adiciona a aba Administração se for admin
+    if (role === "admin") {
+      const menu = document.getElementById("menu");
+      const adminItem = document.createElement("li");
+      adminItem.innerHTML = '<a href="admin.html">Administração</a>';
+      menu.appendChild(adminItem);
+    }
   });
   </script>
 </head>
 <body>
-<style>
-  #logout-btn {
-    position: fixed;
-    top: 15px;
-    right: 20px;
-    padding: 8px 14px;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 2000;
-    display: none;
-  }
-</style>
 <button id="logout-btn" onclick="logout()">Logout</button>
 
 <div class="header">
   <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
 </div>
 <div class="sidebar">
-  <ul>
+  <ul id="menu">
     <li><a href="index.html">Início</a></li>
     <li><a href="agendamentos.html">Agendamentos</a></li>
     <li><a href="calendario.html">Calendário</a></li>
     <li><a href="salas.html">Salas</a></li>
-    <li><a href="admin.html">Administração</a></li>
+    <!-- Administração só aparece se for admin -->
   </ul>
 </div>
 
@@ -201,3 +202,4 @@
 </div>
 </body>
 </html>
+

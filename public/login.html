@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -135,6 +134,7 @@
   <script>
   ensureAuthenticated();
   showLogoutIfAuthenticated();
+
     function abrirModal() {
       document.getElementById("loginModal").style.display = "block";
     }
@@ -169,15 +169,11 @@
           localStorage.setItem("token", data.token);
 
           const payload = JSON.parse(atob(data.token.split('.')[1]));
-          const role = payload.role;
+          localStorage.setItem("role", payload.role); // Guarda a role se precisares mais tarde
 
-          if (role === "admin") {
-            window.location.href = "/admin.html";
-          } else if (role === "user") {
-            window.location.href = "/index.html";
-          } else {
-            document.getElementById("error").innerText = "Role desconhecido!";
-          }
+          // 🚀 Todos os utilizadores vão sempre para o index.html
+          window.location.href = "/index.html";
+
         } else {
           document.getElementById("error").innerText = data.error || "Erro ao fazer login.";
         }
