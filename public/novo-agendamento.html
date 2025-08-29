@@ -103,7 +103,7 @@
     }
   </style>
 </head>
-<body>
+<body style='margin-left:250px;'>
   <button id="logout-btn" onclick="logout()">Logout</button>
   <script>
     ensureAuthenticated();
@@ -153,7 +153,11 @@
           </select>
         </label><br><br>
         <div class="inline-inputs">
-          <label>Nome do Evento:<br><input type="text" name="evento" required></label>
+          <label>Hora de Início:
+<input type='time' id='horaInicio'>
+Hora de Fim:
+<input type='time' id='horaFim'>
+Nome do Evento:<br><input type="text" name="evento" required></label>
           <label>N.º de Participantes:<br><input type="number" name="participantes"></label>
         </div>
       </fieldset>
@@ -192,7 +196,65 @@
 
       <button type="submit" class="botao-novo">Submeter Agendamento</button>
     </form>
-  </div>
+</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        if (calendarEl) {
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth'
+            });
+            calendar.render();
+        }
+    });
+  </script>
+
+<div id='confirmacao' style='display:none; position:fixed; top:20px; right:20px; background:#4CAF50; color:white; padding:10px; border-radius:5px;'>
+✅ Olá, o agendamento foi confirmado!
+</div>
+
+<script>
+document.querySelector("#btnSubmeter").addEventListener("click", function(e) {
+  e.preventDefault();
+  const dados = {
+    nome: document.querySelector("#nome").value,
+    sala: document.querySelector("#sala").value,
+    evento: document.querySelector("#evento").value,
+    horaInicio: document.querySelector("#horaInicio").value,
+    horaFim: document.querySelector("#horaFim").value
+  };
+  fetch("/api/agendar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dados)
+  }).then(res => {
+    if (res.ok) {
+      document.getElementById("confirmacao").style.display = "block";
+      setTimeout(() => document.getElementById("confirmacao").style.display = "none", 3000);
+    }
+  });
+});
+</script>
+
+<script>
+function atualizarSalasDisponiveis() {
+  const data = document.querySelector("#data").value;
+  const inicio = document.querySelector("#horaInicio").value;
+  const fim = document.querySelector("#horaFim").value;
+  fetch(`/api/salas-disponiveis?data=${data}&inicio=${inicio}&fim=${fim}`)
+    .then(res => res.json())
+    .then(salas => {
+      const select = document.querySelector("#sala");
+      select.innerHTML = "<option>-- Selecione --</option>";
+      salas.forEach(sala => {
+        select.innerHTML += `<option value='${sala.id}'>${sala.nome}</option>`;
+      });
+    });
+}
+document.querySelector("#data").addEventListener("change", atualizarSalasDisponiveis);
+document.querySelector("#horaInicio").addEventListener("change", atualizarSalasDisponiveis);
+document.querySelector("#horaFim").addEventListener("change", atualizarSalasDisponiveis);
+</script>
 </body>
 </html>
 
