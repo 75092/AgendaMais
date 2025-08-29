@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt">
 <head>
 <meta charset="utf-8"/>
@@ -62,10 +61,10 @@
     #tabela-semanal tbody tr:nth-child(even) { background-color: #fafafa; }
     #tabela-semanal tbody tr:hover { background-color: #f1f1f1; }
   
-fieldset#recursos label {
-  display: block;
-  margin-bottom: 8px;
-}
+    fieldset#recursos label {
+      display: block;
+      margin-bottom: 8px;
+    }
 </style>
 <script src="auth.js"></script>
 </head>
@@ -90,14 +89,12 @@ fieldset#recursos label {
   ensureAuthenticated();
   showLogoutIfAuthenticated();
 
-
   function logout() {
     localStorage.removeItem("token");
-    
+    window.location.href = "/login.html";
   }
 </script>
-<script>
-</script>
+
 <div class="header">
 <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
 </div>
@@ -110,21 +107,34 @@ fieldset#recursos label {
 <li><a href="admin.html">Administração</a></li>
 </ul>
 </div>
+
 <div class="main-content">
 <h1>Agendamentos</h1>
-<a class="botao-novo" href="#" onclick="abrirPopup()">+ Novo Agendamento</a>
+<a class="botao-novo" href="#" onclick="abrirModal()">+ Novo Agendamento</a>
+
 <h2>Agendamentos da Semana</h2>
 <label for="filtroSala"><strong>Filtrar por Sala:</strong></label>
 <select class="input-estilo input-sala" id="filtroSala" onchange="mostrarAgendamentosSemana()">
-<option value="todas">Ver Todas</option>
-<option value="Sala Almada">Sala Almada</option>
-<option value="Sala Tejo (HGO)">Sala Tejo (HGO)</option>
-<option value="Sala Tejo (Sobreda)">Sala Tejo (Sobreda)</option>
-<option value="Sala Garcia de Orta">Sala Garcia de Orta</option>
-<option value="Sala Sado">Sala Sado</option>
-<option value="Sala Auditório">Sala Auditório</option>
-<option value=""></option>
+  <option value="todas">Ver Todas</option>
+
+  <optgroup label="HGO">
+    <option>HGO - Sala Almada</option>
+    <option>HGO - Sala Garcia de Orta</option>
+    <option>HGO - Sala Tejo</option>
+    <option>HGO - Sala Almada + Garcia de Orta</option>
+  </optgroup>
+
+  <optgroup label="CF Sobreda">
+    <option>CF Sobreda - Auditório Dr. Luís Amaro</option>
+    <option>CF Sobreda - Sala Sado</option>
+    <option>CF Sobreda - Sala Tejo</option>
+  </optgroup>
+
+  <optgroup label="CF Amora">
+    <option>CF Amora - Sala Amora</option>
+  </optgroup>
 </select>
+
 <table id="tabela-semanal">
 <thead>
 <tr>
@@ -138,6 +148,7 @@ fieldset#recursos label {
 </thead>
 <tbody></tbody>
 </table>
+
 <!-- Modal -->
 <div class="modal" id="modalAgendamento">
 <div class="modal-content">
@@ -146,23 +157,25 @@ fieldset#recursos label {
 <form id="form-agendamento">
 <fieldset>
 <legend><strong>Requerente</strong></legend>
-<label>Número Mecanográfico:<br/><input id="numMec" required="" type="text"/></label><br/>
-<label>Nome do Requerente:<br/><input id="nomeReq" required="" type="text"/></label><br/>
-<label>Serviço do Requerente:<br/><input id="servicoReq" required="" type="text"/></label><br/>
-<label>E-mail:<br/><input id="emailReq" required="" type="email"/></label><br/>
-<label>Contacto:<br/><input id="contactoReq" required="" type="tel"/></label><br/>
+<label>Número Mecanográfico:<br/><input id="numMec" required type="text"/></label><br/>
+<label>Nome do Requerente:<br/><input id="nomeReq" required type="text"/></label><br/>
+<label>Serviço do Requerente:<br/><input id="servicoReq" required type="text"/></label><br/>
+<label>E-mail:<br/><input id="emailReq" required type="email"/></label><br/>
+<label>Contacto:<br/><input id="contactoReq" required type="tel"/></label><br/>
 </fieldset><br/>
+
 <fieldset>
 <legend><strong>Data e Hora</strong></legend>
-<label>Data:<br/><input id="data" onchange="atualizarSalasDisponiveis()" required="" type="date"/></label><br/>
-<label>Hora Início:<br/><input id="horaInicio" onchange="atualizarSalasDisponiveis()" required="" type="time"/></label><br/>
-<label>Hora Fim:<br/><input id="horaFim" onchange="atualizarSalasDisponiveis()" required="" type="time"/></label><br/>
+<label>Data:<br/><input id="data" onchange="atualizarSalasDisponiveis()" required type="date"/></label><br/>
+<label>Hora Início:<br/><input id="horaInicio" onchange="atualizarSalasDisponiveis()" required type="time"/></label><br/>
+<label>Hora Fim:<br/><input id="horaFim" onchange="atualizarSalasDisponiveis()" required type="time"/></label><br/>
 </fieldset><br/>
+
 <fieldset>
 <legend><strong>Evento</strong></legend>
-<label>Sala:<br/><select id="sala" required=""></select></label><br/>
+<label>Sala:<br/><select id="sala" required></select></label><br/>
 <label>Tipo de Evento:<br/>
-<select class="input-estilo" id="tipoEvento" required="">
+<select class="input-estilo" id="tipoEvento" required>
 <option value="">-- Selecione --</option>
 <option value="Reuniões clínicas">Reuniões clínicas</option>
 <option value="Reuniões Entidades Externas">Reuniões Entidades Externas</option>
@@ -173,34 +186,34 @@ fieldset#recursos label {
 <option value="Formação para Utentes">Formação para Utentes</option>
 </select>
 </label><br/>
-<label>Nome do Evento:<br/><input id="nomeEvento" required="" type="text"/></label><br/>
+<label>Nome do Evento:<br/><input id="nomeEvento" required type="text"/></label><br/>
 <label>Participantes:<br/><input id="participantes" type="number"/></label><br/>
 </fieldset><br/>
+
 <fieldset id="recursos">
 <legend><strong>Recursos</strong></legend>
-<br/>
-<br/>
-<br/>
-<br/>
-<label><input name="recursos" type="checkbox" value="Projetor"/> Projetor</label><br/><label><input name="recursos" type="checkbox" value="Computador"/> Computador</label><br/><label><input name="recursos" type="checkbox" value="Áudio"/> Áudio</label><br/><label><input name="recursos" type="checkbox" value="Ponteiro"/> Ponteiro</label><br/><label><input name="recursos" type="checkbox" value="Coffee break"/> Coffee break</label><br/></fieldset><br/>
+<label><input name="recursos" type="checkbox" value="Projetor"/> Projetor</label>
+<label><input name="recursos" type="checkbox" value="Computador"/> Computador</label>
+<label><input name="recursos" type="checkbox" value="Áudio"/> Áudio</label>
+<label><input name="recursos" type="checkbox" value="Ponteiro"/> Ponteiro</label>
+<label><input name="recursos" type="checkbox" value="Coffee break"/> Coffee break</label>
+</fieldset><br/>
+
 <fieldset>
 <legend><strong>Observações</strong></legend>
 <textarea id="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
 </fieldset><br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<button class="botao-novo" onclick="guardarAgendamento()" type="button">Submeter</button></form>
+
+<button class="botao-novo" onclick="guardarAgendamento()" type="button">Submeter</button>
+</form>
 </div>
 </div>
+
 <div class="popup-confirmacao" id="popupConfirmacao">
 <p>O seu pedido foi submetido com sucesso<br/>Aguarde e-mail de confirmação<br/>Obrigado</p>
 </div>
 </div>
+
 <script>
 function abrirModal() {
   document.getElementById('modalAgendamento').style.display = 'block';
@@ -209,19 +222,6 @@ function abrirModal() {
 function fecharModal() {
   document.getElementById('modalAgendamento').style.display = 'none';
 }
-
-function existeConflito(novoAgendamento, agendamentos) {
-  return agendamentos.some(a => (
-    a.sala === novoAgendamento.sala &&
-    a.data === novoAgendamento.data &&
-    (
-      (novoAgendamento.horaInicio >= a.horaInicio && novoAgendamento.horaInicio < a.horaFim) ||
-      (novoAgendamento.horaFim > a.horaInicio && novoAgendamento.horaFim <= a.horaFim) ||
-      (novoAgendamento.horaInicio <= a.horaInicio && novoAgendamento.horaFim >= a.horaFim)
-    )
-  ));
-}
-
 
 function guardarAgendamento() {
   const nomeEvento = document.getElementById("nomeEvento").value;
@@ -285,11 +285,9 @@ function guardarAgendamento() {
     document.getElementById("popupConfirmacao").style.display = "none";
   }, 5000);
 
-  
   document.getElementById("form-agendamento").reset();
   fecharModal();
   mostrarAgendamentosSemana();
-
 }
 
 function atualizarSalasDisponiveis() {
@@ -299,7 +297,16 @@ function atualizarSalasDisponiveis() {
   if (!data || !inicio || !fim) return;
 
   const agendamentos = JSON.parse(localStorage.getItem("agendamentos") || "[]");
-  const salas = ["Sala Almada", "Sala Tejo (HGO)", "Sala Tejo (Sobreda)", "Sala Garcia de Orta", "Sala Sado", "Sala Auditório", ""];
+  const salas = [
+    "HGO - Sala Almada",
+    "HGO - Sala Garcia de Orta",
+    "HGO - Sala Tejo",
+    "HGO - Sala Almada + Garcia de Orta",
+    "CF Sobreda - Auditório Dr. Luís Amaro",
+    "CF Sobreda - Sala Sado",
+    "CF Sobreda - Sala Tejo",
+    "CF Amora - Sala Amora"
+  ];
   const ocupadas = new Set();
 
   const inicioSel = new Date(`${data}T${inicio}`);
@@ -360,7 +367,6 @@ function mostrarAgendamentosSemana() {
 document.addEventListener("DOMContentLoaded", mostrarAgendamentosSemana);
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Evitar agendamentos para hoje ou datas passadas
   const dataInput = document.getElementById("data");
   const hoje = new Date();
   hoje.setDate(hoje.getDate() + 1); // amanhã
@@ -369,8 +375,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const dia = String(hoje.getDate()).padStart(2, '0');
   dataInput.min = `${ano}-${mes}-${dia}`;
 });
-
-
 
 try {
   const payload = getTokenPayload();
@@ -382,31 +386,3 @@ try {
 </script>
 </body>
 </html>
-
-<script>
-function abrirPopup() {
-  fetch('novo-agendamento.html')
-    .then(response => response.text())
-    .then(data => {
-      const popup = document.createElement('div');
-      popup.id = 'popup-agendamento';
-      popup.style.position = 'fixed';
-      popup.style.top = '10%';
-      popup.style.left = '10%';
-      popup.style.width = '80%';
-      popup.style.height = '80%';
-      popup.style.backgroundColor = '#fff';
-      popup.style.border = '2px solid #000';
-      popup.style.padding = '20px';
-      popup.style.overflow = 'auto';
-      popup.style.zIndex = '1000';
-      popup.innerHTML = '<button onclick="fecharPopup()">Fechar</button>' + data;
-      document.body.appendChild(popup);
-    });
-}
-
-function fecharPopup() {
-  const popup = document.getElementById('popup-agendamento');
-  if (popup) popup.remove();
-}
-</script>

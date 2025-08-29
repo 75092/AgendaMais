@@ -11,12 +11,13 @@
       background-color: #f4f7f6;
       margin: 0;
       padding: 0;
+      display: flex;
     }
 
     .main-content {
       max-width: 800px;
       margin: 40px auto;
-      background-color: #e8f5e9; /* fundo verde suave */
+      background-color: #e8f5e9;
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
@@ -87,7 +88,6 @@
       background-color: #1b5e20;
     }
 
-    /* logout */
     #logout-btn {
       position: fixed;
       top: 10px;
@@ -101,18 +101,46 @@
       cursor: pointer;
       z-index: 9999;
     }
+
+    .sidebar {
+      width: 250px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: #ffffff;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+      padding: 20px;
+      z-index: 2;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      margin: 15px 0;
+    }
+
+    .sidebar ul li a {
+      text-decoration: none;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    .top-logo {
+      margin-left: 250px;
+      padding: 20px;
+    }
+
+    .top-logo img {
+      max-width: 200px;
+    }
   </style>
 </head>
-<body style='display:flex;'>
-  <button id="logout-btn" onclick="logout()"><div class='sidebar' style='width:250px; position:fixed; left:0; top:0; bottom:0; z-index:2;'>Logout</button>
-  <script>
-    ensureAuthenticated();
-    show<div class='sidebar' style='width:250px; position:fixed; left:0; top:0; bottom:0; z-index:2;'>LogoutIfAuthenticated();
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/login.html";
-    }
-  </script>
+<body>
+  <button id="logout-btn" onclick="logout()">Logout</button>
 
   <div class="sidebar">
     <ul>
@@ -124,83 +152,124 @@
     </ul>
   </div>
 
-  <div class="top-logo">
-    <img src="img/ulsas_logotipo.png" alt="Logotipo ULSAS</div><div class='main-content' style='margin-left:250px; padding:20px; z-index:1;'>" class="logo" />
+  <div style="margin-left:250px; width:100%;">
+    <div class="top-logo">
+      <img src="img/ulsas_logotipo.png" alt="Logotipo ULSAS" />
+    </div>
+
+    <div class="main-content">
+      <h1>Formulário de Agendamento</h1>
+      <form id="agendamento-form">
+        <fieldset>
+          <legend><strong>Requerente</strong></legend>
+          <label>Número Mecanográfico:<br><input type="text" name="num_mec" required></label>
+          <label>Nome:<br><input type="text" name="nome" required></label>
+          <label>Serviço:<br><input type="text" name="servico" required></label>
+          <div class="inline-inputs">
+            <label>Email:<br><input type="email" name="email" required></label>
+            <label>Telefone/Telemóvel:<br><input type="tel" name="contacto" required></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><strong>Evento</strong></legend>
+          <label>Sala Pretendida:<br>
+            <select name="sala" required>
+              <option value="">-- Selecione --</option>
+
+              <optgroup label="HGO">
+                <option>HGO - Sala Almada</option>
+                <option>HGO - Sala Garcia de Orta</option>
+                <option>HGO - Sala Tejo</option>
+                <option>HGO - Sala Almada + Garcia de Orta</option>
+              </optgroup>
+
+              <optgroup label="CF Sobreda">
+                <option>CF Sobreda - Auditório Dr. Luís Amaro</option>
+                <option>CF Sobreda - Sala Sado</option>
+                <option>CF Sobreda - Sala Tejo</option>
+              </optgroup>
+
+              <optgroup label="CF Amora">
+                <option>CF Amora - Sala Amora</option>
+              </optgroup>
+            </select>
+          </label>
+          <div class="inline-inputs">
+            <label>Nome do Evento:<br><input type="text" name="evento" required></label>
+            <label>N.º de Participantes:<br><input type="number" name="participantes"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><strong>Data e Hora</strong></legend>
+          <label>Data:<br><input type="date" name="data" required></label>
+          <label>Hora de Início:<br><input type="time" name="hora_inicio" required></label>
+          <label>Hora de Fim:<br><input type="time" name="hora_fim" required></label>
+          <label><input type="checkbox" name="multi_dias"> Agendar para mais de um dia</label>
+        </fieldset>
+
+        <fieldset>
+          <legend><strong>Recursos Necessários</strong></legend>
+          <label><input type="checkbox" name="recursos" value="Limpeza"> Limpeza</label>
+          <label><input type="checkbox" name="recursos" value="Catering/Coffee-Break"> Catering / Coffee-Break</label>
+          <label><input type="checkbox" name="recursos" value="Segurança"> Segurança</label>
+          <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
+          <label><input type="checkbox" name="recursos" value="Projetor"> Projetor</label>
+          <label><input type="checkbox" name="recursos" value="Computador"> Computador</label>
+          <label><input type="checkbox" name="recursos" value="Som"> Som</label>
+          <label><input type="checkbox" name="recursos" value="Coffee"> Coffee Break</label>
+        </fieldset>
+
+        <fieldset>
+          <legend><strong>Observações</strong></legend>
+          <textarea name="observacoes" rows="5"></textarea>
+        </fieldset>
+
+        <button type="submit" class="botao-novo">Submeter Agendamento</button>
+      </form>
+    </div>
   </div>
 
-  <div class="main-content">
-    <h1>Formulário de Agendamento</h1>
-    <form>
-      <fieldset>
-        <legend><strong>Requerente</strong></legend>
-        <label>Número Mecanográfico:<br><input type="text" name="num_mec" required></label><br>
-        <label>Nome:<br><input type="text" name="nome" required></label><br>
-        <label>Serviço:<br><input type="text" name="servico" required></label><br>
-        <div class="inline-inputs">
-          <label>Email:<br><input type="email" name="email" required></label>
-          <label>Telefone/Telemóvel:<br><input type="tel" name="contacto" required></label>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend><strong>Evento</strong></legend>
-        <label>Sala Pretendida:<br>
-          <select name="sala" required>
-            <option value="">-- Selecione --</option>
-            <option>Sala Tejo</option>
-            <option>Sala Almada</option>
-            <option>Sala Formação</option>
-          </select>
-        </label><br><br>
-        <div class="inline-inputs">
-          <label>Nome do Evento:<br><input type="text" name="evento" required></label>
-          <label>N.º de Participantes:<br><input type="number" name="participantes"></label>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend><strong></label>
-      </fieldset>
-
-      <fieldset>
-        <legend><strong>Recursos Necessários</strong></legend>
-        <h4>Serviços de Apoio</h4>
-        <label><input type="checkbox" name="recursos" value="Limpeza"> Limpeza</label>
-        <label><input type="checkbox" name="recursos" value="Catering/Coffee-Break"> Catering / Coffee-Break</label>
-        <label><input type="checkbox" name="recursos" value="Segurança"> Segurança</label>
-        <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
-        <label><input type="checkbox" name="recursos" value="Material Informativo"> Material Informativo</label>
-        <label><input type="checkbox" name="recursos" value="Apoio de Secretariado"> Apoio de Secretariado</label>
-
-        <h4>Equipamento Audiovisual e Informático</h4>
-        <label><input type="checkbox" name="recursos" value="TV"> TV</label>
-        <label><input type="checkbox" name="recursos" value="Colunas"> Colunas</label>
-        <label><input type="checkbox" name="recursos" value="Microfone"> Microfone</label>
-        <label><input type="checkbox" name="recursos" value="Projetor"> Projetor</label>
-        <label><input type="checkbox" name="recursos" value="Ponteiro"> Ponteiro</label>
-        <label><input type="checkbox" name="recursos" value="Computador"> Computador</label>
-      </fieldset>
-
-      <fieldset>
-        <legend><strong>Observações</strong></legend>
-        <textarea name="observacoes" rows="5"></textarea>
-      </fieldset>
-
-      <button type="submit" class="botao-novo">Submeter Agendamento</button>
-    </form>
-</div>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
-        if (calendarEl) {
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth'
-            });
-            calendar.render();
+    ensureAuthenticated();
+    showLogoutIfAuthenticated();
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/login.html";
+    }
+
+    document.getElementById("agendamento-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const dados = Object.fromEntries(formData.entries());
+      dados.recursos = formData.getAll("recursos"); // múltiplos checkboxes
+
+      try {
+        const token = localStorage.getItem("token");
+        const resposta = await fetch("/api/agendamentos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify(dados)
+        });
+
+        if (resposta.ok) {
+          alert("Agendamento submetido com sucesso!");
+          window.location.href = "agendamentos.html";
+        } else {
+          const erro = await resposta.json();
+          alert("Erro: " + (erro.message || "Não foi possível gravar o agendamento."));
         }
+      } catch (err) {
+        console.error(err);
+        alert("Erro de ligação ao servidor.");
+      }
     });
   </script>
 </body>
 </html>
-
-</div>
