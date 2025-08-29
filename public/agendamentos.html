@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt">
 <head>
 <meta charset="utf-8"/>
@@ -94,7 +95,6 @@ fieldset#recursos label {
     window.location.href = "index.html"; // redireciona após logout
   }
 </script>
-
 <div class="header">
 <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
 </div>
@@ -179,7 +179,7 @@ fieldset#recursos label {
 <label><input name="recursos" type="checkbox" value="Computador"/> Computador</label>
 <label><input name="recursos" type="checkbox" value="Áudio"/> Áudio</label>
 <label><input name="recursos" type="checkbox" value="Ponteiro"/> Ponteiro</label>
-<label><input name="recursos" type="checkbox" value="Coffee break"/> Coffee break</label>
+<label><input name="recursos" type="checkbox" value="Coffee-break"/> Coffee break</label>
 </fieldset><br/>
 <fieldset>
 <legend><strong>Observações</strong></legend>
@@ -367,5 +367,195 @@ try {
   }
 } catch (e) {}
 </script>
+<a href="#" onclick="document.getElementById('formulario-agendamento').style.display='block'">+ Novo Agendamento</a><div id="formulario-agendamento" style="display: none;">
+<!DOCTYPE html>
+
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<title>Novo Agendamento</title>
+<link href="style.css" rel="stylesheet"/>
+<script src="auth.js"></script>
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7f6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .main-content {
+      max-width: 800px;
+      margin: 40px auto;
+      background-color: #e8f5e9; /* fundo verde suave */
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+
+    fieldset {
+      border: 1px solid #c8e6c9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background: #ffffff;
+    }
+
+    legend {
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #bdbdbd;
+      border-radius: 6px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #2e7d32;
+      outline: none;
+      box-shadow: 0 0 4px #a5d6a7;
+    }
+
+    .inline-inputs label {
+      display: inline-block;
+      width: 48%;
+    }
+
+    button.botao-novo {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background-color: #2e7d32;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button.botao-novo:hover {
+      background-color: #1b5e20;
+    }
+
+    /* logout */
+    #logout-btn {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      padding: 8px 14px;
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+<button id="logout-btn" onclick="logout()">Logout</button>
+<script>
+    ensureAuthenticated();
+    showLogoutIfAuthenticated();
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/login.html";
+    }
+  </script>
+<div class="sidebar">
+<ul>
+<li><a href="index.html">Início</a></li>
+<li><a href="agendamentos.html">Agendamentos</a></li>
+<li><a href="calendario.html">Calendário</a></li>
+<li><a href="salas.html">Salas</a></li>
+<li><a href="admin.html">Administração</a></li>
+</ul>
+</div>
+<div class="top-logo">
+<img alt="Logotipo ULSAS" class="logo" src="img/ulsas_logotipo.png"/>
+</div>
+<div class="main-content">
+<h1>Formulário de Agendamento</h1>
+<form>
+<fieldset>
+<legend><strong>Requerente</strong></legend>
+<label>Número Mecanográfico:<br/><input name="num_mec" required="" type="text"/></label><br/>
+<label>Nome:<br/><input name="nome" required="" type="text"/></label><br/>
+<label>Serviço:<br/><input name="servico" required="" type="text"/></label><br/>
+<div class="inline-inputs">
+<label>Email:<br/><input name="email" required="" type="email"/></label>
+<label>Telefone/Telemóvel:<br/><input name="contacto" required="" type="tel"/></label>
+</div>
+</fieldset>
+<fieldset>
+<legend><strong>Evento</strong></legend>
+<label>Sala Pretendida:<br/>
+<select name="sala" required="">
+<option value="">-- Selecione --</option>
+<option>Sala Tejo</option>
+<option>Sala Almada</option>
+<option>Sala Formação</option>
+</select>
+</label><br/><br/>
+<div class="inline-inputs">
+<label>Nome do Evento:<br/><input name="evento" required="" type="text"/></label>
+<label>N.º de Participantes:<br/><input name="participantes" type="number"/></label>
+</div>
+</fieldset>
+<fieldset>
+<legend><strong>Data e Hora</strong></legend>
+<label>Data:<br/><input name="data" required="" type="date"/></label><br/>
+<label>Hora de Início:<br/><input name="hora_inicio" required="" type="time"/></label><br/>
+<label>Hora de Fim:<br/><input name="hora_fim" required="" type="time"/></label><br/>
+<label><input name="multi_dias" type="checkbox"/> Agendar para mais de um dia</label>
+</fieldset>
+<fieldset>
+<legend><strong>Recursos Necessários</strong></legend>
+<h4>Serviços de Apoio</h4>
+<label><input name="recursos" type="checkbox" value="Limpeza"/> Limpeza</label>
+<label><input name="recursos" type="checkbox" value="Catering/Coffee-Break"/> Catering / Coffee-Break</label>
+<label><input name="recursos" type="checkbox" value="Segurança"/> Segurança</label>
+<label><input name="recursos" type="checkbox" value="Material Clínico"/> Material Clínico</label>
+<label><input name="recursos" type="checkbox" value="Material Informativo"/> Material Informativo</label>
+<label><input name="recursos" type="checkbox" value="Apoio de Secretariado"/> Apoio de Secretariado</label>
+<h4>Equipamento Audiovisual e Informático</h4>
+<label><input name="recursos" type="checkbox" value="TV"/> TV</label>
+<label><input name="recursos" type="checkbox" value="Colunas"/> Colunas</label>
+<label><input name="recursos" type="checkbox" value="Microfone"/> Microfone</label>
+<label><input name="recursos" type="checkbox" value="Projetor"/> Projetor</label>
+<label><input name="recursos" type="checkbox" value="Ponteiro"/> Ponteiro</label>
+<label><input name="recursos" type="checkbox" value="Computador"/> Computador</label>
+</fieldset>
+<fieldset>
+<legend><strong>Observações</strong></legend>
+<textarea name="observacoes" rows="5"></textarea>
+</fieldset>
+<button class="botao-novo" type="submit">Submeter Agendamento</button>
+</form>
+</div>
 </body>
+</html>
+</div></body>
 </html>
