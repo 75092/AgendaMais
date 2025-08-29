@@ -1,206 +1,113 @@
+
 <!DOCTYPE html>
-<html lang="pt">
+<html lang='pt'>
 <head>
-  <meta charset="UTF-8" />
-  <title>Novo Agendamento</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="auth.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7f6;
-      margin: 0;
-      padding: 0;
-    }
-
-    .main-content {
-      max-width: 800px;
-      margin: 40px auto;
-      background-color: #e8f5e9; /* fundo verde suave */
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      text-align: center;
-      color: #2e7d32;
-      margin-bottom: 20px;
-    }
-
-    fieldset {
-      border: 1px solid #c8e6c9;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      background: #ffffff;
-    }
-
-    legend {
-      font-weight: bold;
-      color: #2e7d32;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 12px;
-      font-size: 0.95rem;
-      color: #333;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #bdbdbd;
-      border-radius: 6px;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: #2e7d32;
-      outline: none;
-      box-shadow: 0 0 4px #a5d6a7;
-    }
-
-    .inline-inputs label {
-      display: inline-block;
-      width: 48%;
-    }
-
-    button.botao-novo {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      font-weight: bold;
-      color: white;
-      background-color: #2e7d32;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button.botao-novo:hover {
-      background-color: #1b5e20;
-    }
-
-    /* logout */
-    #logout-btn {
-      position: fixed;
-      top: 10px;
-      right: 20px;
-      padding: 8px 14px;
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 9999;
-    }
-  </style>
-</head>
-<body style='display:flex;'>
-  <button id="logout-btn" onclick="logout()"><div class='sidebar' style='width:250px; position:fixed; left:0; top:0; bottom:0; z-index:2;'>Logout</button>
-  <script>
-    ensureAuthenticated();
-    show<div class='sidebar' style='width:250px; position:fixed; left:0; top:0; bottom:0; z-index:2;'>LogoutIfAuthenticated();
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/login.html";
-    }
-  </script>
-
-  <div class="sidebar">
-    <ul>
-      <li><a href="index.html">Início</a></li>
-      <li><a href="agendamentos.html">Agendamentos</a></li>
-      <li><a href="calendario.html">Calendário</a></li>
-      <li><a href="salas.html">Salas</a></li>
-      <li><a href="admin.html">Administração</a></li>
-    </ul>
-  </div>
-
-  <div class="top-logo">
-    <img src="img/ulsas_logotipo.png" alt="Logotipo ULSAS</div><div class='main-content' style='margin-left:250px; padding:20px; z-index:1;'>" class="logo" />
-  </div>
-
-  <div class="main-content">
-    <h1>Formulário de Agendamento</h1>
-    <form>
-      <fieldset>
-        <legend><strong>Requerente</strong></legend>
-        <label>Número Mecanográfico:<br><input type="text" name="num_mec" required></label><br>
-        <label>Nome:<br><input type="text" name="nome" required></label><br>
-        <label>Serviço:<br><input type="text" name="servico" required></label><br>
-        <div class="inline-inputs">
-          <label>Email:<br><input type="email" name="email" required></label>
-          <label>Telefone/Telemóvel:<br><input type="tel" name="contacto" required></label>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend><strong>Evento</strong></legend>
-        <label>Sala Pretendida:<br>
-          <select name="sala" required>
-            <option value="">-- Selecione --</option>
-            <option>Sala Tejo</option>
-            <option>Sala Almada</option>
-            <option>Sala Formação</option>
-          </select>
-        </label><br><br>
-        <div class="inline-inputs">
-          <label>Nome do Evento:<br><input type="text" name="evento" required></label>
-          <label>N.º de Participantes:<br><input type="number" name="participantes"></label>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend><strong></label>
-      </fieldset>
-
-      <fieldset>
-        <legend><strong>Recursos Necessários</strong></legend>
-        <h4>Serviços de Apoio</h4>
-        <label><input type="checkbox" name="recursos" value="Limpeza"> Limpeza</label>
-        <label><input type="checkbox" name="recursos" value="Catering/Coffee-Break"> Catering / Coffee-Break</label>
-        <label><input type="checkbox" name="recursos" value="Segurança"> Segurança</label>
-        <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
-        <label><input type="checkbox" name="recursos" value="Material Informativo"> Material Informativo</label>
-        <label><input type="checkbox" name="recursos" value="Apoio de Secretariado"> Apoio de Secretariado</label>
-
-        <h4>Equipamento Audiovisual e Informático</h4>
-        <label><input type="checkbox" name="recursos" value="TV"> TV</label>
-        <label><input type="checkbox" name="recursos" value="Colunas"> Colunas</label>
-        <label><input type="checkbox" name="recursos" value="Microfone"> Microfone</label>
-        <label><input type="checkbox" name="recursos" value="Projetor"> Projetor</label>
-        <label><input type="checkbox" name="recursos" value="Ponteiro"> Ponteiro</label>
-        <label><input type="checkbox" name="recursos" value="Computador"> Computador</label>
-      </fieldset>
-
-      <fieldset>
-        <legend><strong>Observações</strong></legend>
-        <textarea name="observacoes" rows="5"></textarea>
-      </fieldset>
-
-      <button type="submit" class="botao-novo">Submeter Agendamento</button>
-    </form>
-</div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
-        if (calendarEl) {
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth'
-            });
-            calendar.render();
+    <meta charset='UTF-8'>
+    <title>Novo Agendamento</title>
+    <style>
+        body { display: flex; margin: 0; font-family: Arial, sans-serif; }
+        .sidebar {
+            width: 250px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 2;
         }
-    });
-  </script>
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            flex-grow: 1;
+            z-index: 1;
+        }
+        #confirmacao {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class='sidebar'>
+        <h3>Menu</h3>
+        <ul>
+            <li><a href='index.html'>Início</a></li>
+            <li><a href='agendamentos.html'>Agendamentos</a></li>
+            <li><a href='calendario.html'>Calendário</a></li>
+            <li><a href='salas.html'>Salas</a></li>
+            <li><a href='admin.html'>Administração</a></li>
+        </ul>
+    </div>
+    <div class='main-content'>
+        <h2>Formulário de Agendamento</h2>
+        <form id='formAgendamento'>
+            <label>Número Mecanográfico:</label><input type='text' id='mecanografico'><br>
+            <label>Nome:</label><input type='text' id='nome'><br>
+            <label>Serviço:</label><input type='text' id='servico'><br>
+            <label>Email:</label><input type='email' id='email'><br>
+            <label>Telefone/Telemóvel:</label><input type='text' id='telefone'><br>
+            <label>Data:</label><input type='date' id='data'><br>
+            <label>Hora de Início:</label><input type='time' id='horaInicio'><br>
+            <label>Hora de Fim:</label><input type='time' id='horaFim'><br>
+            <label>Sala Pretendida:</label>
+            <select id='sala'>
+                <option>-- Selecione --</option>
+                <option>Sala Tejo</option>
+                <option>Sala Almada</option>
+                <option>Sala Formação</option>
+            </select><br>
+            <label>Nome do Evento:</label><input type='text' id='evento'><br>
+            <label>N.º de Participantes:</label><input type='number' id='participantes'><br>
+            <label>Observações:</label><textarea id='observacoes'></textarea><br>
+            <button type='submit' id='btnSubmeter'>Submeter Agendamento</button>
+        </form>
+        <div id='confirmacao'>✅ Olá, o agendamento foi confirmado!</div>
+    </div>
+    <script>
+        document.querySelector("#formAgendamento").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const dados = {
+                nome: document.querySelector("#nome").value,
+                sala: document.querySelector("#sala").value,
+                evento: document.querySelector("#evento").value,
+                horaInicio: document.querySelector("#horaInicio").value,
+                horaFim: document.querySelector("#horaFim").value,
+                data: document.querySelector("#data").value
+            };
+            fetch("/api/agendar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            }).then(res => {
+                if (res.ok) {
+                    document.getElementById("confirmacao").style.display = "block";
+                    setTimeout(() => document.getElementById("confirmacao").style.display = "none", 3000);
+                }
+            });
+        });
+
+        function atualizarSalasDisponiveis() {
+            const data = document.querySelector("#data").value;
+            const inicio = document.querySelector("#horaInicio").value;
+            const fim = document.querySelector("#horaFim").value;
+            fetch(`/api/salas-disponiveis?data=${data}&inicio=${inicio}&fim=${fim}`)
+                .then(res => res.json())
+                .then(salas => {
+                    const select = document.querySelector("#sala");
+                    select.innerHTML = "<option>-- Selecione --</option>";
+                    salas.forEach(sala => {
+                        select.innerHTML += `<option value='${sala.id}'>${sala.nome}</option>`;
+                    });
+                });
+        }
+        document.querySelector("#data").addEventListener("change", atualizarSalasDisponiveis);
+        document.querySelector("#horaInicio").addEventListener("change", atualizarSalasDisponiveis);
+        document.querySelector("#horaFim").addEventListener("change", atualizarSalasDisponiveis);
+    </script>
 </body>
 </html>
-
-</div>
