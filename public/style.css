@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
 }
@@ -6,6 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  background-color: #f4f7f6;
 }
 
 .header {
@@ -32,9 +32,8 @@ body {
   color: white;
   height: 100vh;
   padding: 20px 10px;
-  box-sizing: border-box;
   position: fixed;
-  top: 80px; /* abaixo do header */
+  top: 80px;
   left: 0;
 }
 
@@ -55,26 +54,73 @@ body {
 
 .main-content {
   margin-left: 200px;
-  padding: 100px 20px 20px 20px; /* espaço superior por causa do header */
+  padding: 100px 20px 20px 20px;
 }
 
-.botao-novo {
+button, .botao-novo {
   display: inline-block;
-  padding: 10px 20px;
-  margin: 20px 0;
-  background-color: #1976d2;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
   color: white;
-  text-decoration: none;
-  border-radius: 5px;
+  background-color: #2e7d32;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
 }
 
-.botao-novo:hover {
-  background-color: #1565c0;
+button:hover, .botao-novo:hover {
+  background-color: #1b5e20;
+  transform: translateY(-2px);
 }
 
-#calendar {
-  max-width: 900px;
-  margin: 40px auto;
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #2e7d32;
+  outline: none;
+  box-shadow: 0 0 6px rgba(46, 125, 50, 0.4);
+}
+
+label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+  display: block;
+}
+
+fieldset {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #fff;
+}
+
+legend {
+  font-weight: bold;
+  color: #2e7d32;
+  padding: 0 8px;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.linha label {
+  flex: 1;
+  min-width: 220px;
 }
 
 .modal {
@@ -89,13 +135,12 @@ body {
   background-color: rgba(0,0,0,0.4);
 }
 .modal-content {
-  background-color: #fefefe;
+  background-color: #fff;
   margin: 5% auto;
   padding: 30px;
-  border: 1px solid #888;
   width: 70%;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
 }
 .fechar {
   color: #aaa;
@@ -109,10 +154,25 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
-.linha {
-  display: flex;
-  gap: 30px;
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #2e7d32;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s, transform 0.4s;
+  z-index: 2000;
 }
-.linha label {
-  flex: 1;
+.toast.mostrar {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast.erro {
+  background: #d32f2f;
 }

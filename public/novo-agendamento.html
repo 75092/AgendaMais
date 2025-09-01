@@ -1,147 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <title>Novo Agendamento</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
   <script src="auth.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7f6;
-      margin: 0;
-      padding: 0;
-      display: flex;
-    }
-
-    .main-content {
-      max-width: 800px;
-      margin: 40px auto;
-      background-color: #e8f5e9;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      text-align: center;
-      color: #2e7d32;
-      margin-bottom: 20px;
-    }
-
-    fieldset {
-      border: 1px solid #c8e6c9;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      background: #ffffff;
-    }
-
-    legend {
-      font-weight: bold;
-      color: #2e7d32;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 12px;
-      font-size: 0.95rem;
-      color: #333;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #bdbdbd;
-      border-radius: 6px;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: #2e7d32;
-      outline: none;
-      box-shadow: 0 0 4px #a5d6a7;
-    }
-
-    .inline-inputs label {
-      display: inline-block;
-      width: 48%;
-    }
-
-    button.botao-novo {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      font-weight: bold;
-      color: white;
-      background-color: #2e7d32;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button.botao-novo:hover {
-      background-color: #1b5e20;
-    }
-
-    #logout-btn {
-      position: fixed;
-      top: 10px;
-      right: 20px;
-      padding: 8px 14px;
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 9999;
-    }
-
-    .sidebar {
-      width: 250px;
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      background: #ffffff;
-      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-      padding: 20px;
-      z-index: 2;
-    }
-
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .sidebar ul li {
-      margin: 15px 0;
-    }
-
-    .sidebar ul li a {
-      text-decoration: none;
-      color: #2e7d32;
-      font-weight: bold;
-    }
-
-    .top-logo {
-      margin-left: 250px;
-      padding: 20px;
-    }
-
-    .top-logo img {
-      max-width: 200px;
-    }
-  </style>
 </head>
 <body>
-  <button id="logout-btn" onclick="logout()">Logout</button>
-
   <div class="sidebar">
     <ul>
       <li><a href="index.html">Início</a></li>
@@ -152,95 +17,92 @@
     </ul>
   </div>
 
-    <div class="main-content">
-      <h1>Formulário de Agendamento</h1>
-      <form id="agendamento-form">
-        <fieldset>
-          <legend><strong>Requerente</strong></legend>
-          <label>Número Mecanográfico:<br><input type="text" name="num_mec" required></label>
-          <label>Nome:<br><input type="text" name="nome" required></label>
-          <label>Serviço:<br><input type="text" name="servico" required></label>
-          <div class="inline-inputs">
-            <label>Email:<br><input type="email" name="email" required></label>
-            <label>Telefone/Telemóvel:<br><input type="tel" name="contacto" required></label>
-          </div>
-        </fieldset>
+  <div class="main-content">
+    <h1>Formulário de Agendamento</h1>
+    <form id="agendamento-form">
+      <fieldset>
+        <legend><strong>Requerente</strong></legend>
+        <label>Número Mecanográfico:<input type="text" name="num_mec" required></label>
+        <label>Nome:<input type="text" name="nome" required></label>
+        <label>Serviço:<input type="text" name="servico" required></label>
+        <div class="linha">
+          <label>Email:<input type="email" name="email" required></label>
+          <label>Contacto:<input type="tel" name="contacto" required placeholder="912 345 678"></label>
+        </div>
+      </fieldset>
 
-        <fieldset>
-          <legend><strong>Evento</strong></legend>
-          <label>Sala Pretendida:<br>
-            <select name="sala" required>
-              <option value="">-- Selecione --</option>
+      <fieldset>
+        <legend><strong>Evento</strong></legend>
+        <label>Sala:<select name="sala" required>
+          <option value="">-- Selecione --</option>
+          <optgroup label="HGO">
+            <option>HGO - Sala Almada</option>
+            <option>HGO - Sala Garcia de Orta</option>
+            <option>HGO - Sala Tejo</option>
+            <option>HGO - Sala Almada + Garcia de Orta</option>
+          </optgroup>
+          <optgroup label="CF Sobreda">
+            <option>CF Sobreda - Auditório Dr. Luís Amaro</option>
+            <option>CF Sobreda - Sala Sado</option>
+            <option>CF Sobreda - Sala Tejo</option>
+          </optgroup>
+          <optgroup label="CF Amora">
+            <option>CF Amora - Sala Amora</option>
+          </optgroup>
+        </select></label>
+        <div class="linha">
+          <label>Nome do Evento:<input type="text" name="evento" required></label>
+          <label>N.º de Participantes:<input type="number" name="participantes"></label>
+        </div>
+      </fieldset>
 
-              <optgroup label="HGO">
-                <option>HGO - Sala Almada</option>
-                <option>HGO - Sala Garcia de Orta</option>
-                <option>HGO - Sala Tejo</option>
-                <option>HGO - Sala Almada + Garcia de Orta</option>
-              </optgroup>
+      <fieldset>
+        <legend><strong>Data e Hora</strong></legend>
+        <label>Data:<input type="date" name="data" required></label>
+        <div class="linha">
+          <label>Hora de Início:<input type="time" name="hora_inicio" required></label>
+          <label>Hora de Fim:<input type="time" name="hora_fim" required></label>
+        </div>
+      </fieldset>
 
-              <optgroup label="CF Sobreda">
-                <option>CF Sobreda - Auditório Dr. Luís Amaro</option>
-                <option>CF Sobreda - Sala Sado</option>
-                <option>CF Sobreda - Sala Tejo</option>
-              </optgroup>
+      <fieldset>
+        <legend><strong>Recursos Necessários</strong></legend>
+        <label><input type="checkbox" name="recursos" value="Limpeza"> Limpeza</label>
+        <label><input type="checkbox" name="recursos" value="Catering/Coffee-Break"> Catering / Coffee-Break</label>
+        <label><input type="checkbox" name="recursos" value="Segurança"> Segurança</label>
+        <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
+        <label><input type="checkbox" name="recursos" value="Projetor"> Projetor</label>
+        <label><input type="checkbox" name="recursos" value="Computador"> Computador</label>
+        <label><input type="checkbox" name="recursos" value="Som"> Som</label>
+      </fieldset>
 
-              <optgroup label="CF Amora">
-                <option>CF Amora - Sala Amora</option>
-              </optgroup>
-            </select>
-          </label>
-          <div class="inline-inputs">
-            <label>Nome do Evento:<br><input type="text" name="evento" required></label>
-            <label>N.º de Participantes:<br><input type="number" name="participantes"></label>
-          </div>
-        </fieldset>
+      <fieldset>
+        <legend><strong>Observações</strong></legend>
+        <textarea name="observacoes" rows="5"></textarea>
+      </fieldset>
 
-        <fieldset>
-          <legend><strong>Data e Hora</strong></legend>
-          <label>Data:<br><input type="date" name="data" required></label>
-          <label>Hora de Início:<br><input type="time" name="hora_inicio" required></label>
-          <label>Hora de Fim:<br><input type="time" name="hora_fim" required></label>
-          <label><input type="checkbox" name="multi_dias"> Agendar para mais de um dia</label>
-        </fieldset>
-
-        <fieldset>
-          <legend><strong>Recursos Necessários</strong></legend>
-          <label><input type="checkbox" name="recursos" value="Limpeza"> Limpeza</label>
-          <label><input type="checkbox" name="recursos" value="Catering/Coffee-Break"> Catering / Coffee-Break</label>
-          <label><input type="checkbox" name="recursos" value="Segurança"> Segurança</label>
-          <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
-          <label><input type="checkbox" name="recursos" value="Projetor"> Projetor</label>
-          <label><input type="checkbox" name="recursos" value="Computador"> Computador</label>
-          <label><input type="checkbox" name="recursos" value="Som"> Som</label>
-          <label><input type="checkbox" name="recursos" value="Coffee"> Coffee Break</label>
-        </fieldset>
-
-        <fieldset>
-          <legend><strong>Observações</strong></legend>
-          <textarea name="observacoes" rows="5"></textarea>
-        </fieldset>
-
-        <button type="submit" class="botao-novo">Submeter Agendamento</button>
-      </form>
-    </div>
+      <button type="submit" class="botao-novo">Submeter</button>
+    </form>
   </div>
+
+  <div class="toast" id="toast"></div>
 
   <script>
     ensureAuthenticated();
     showLogoutIfAuthenticated();
 
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/login.html";
+    function mostrarToast(msg, erro=false) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.className = "toast mostrar" + (erro ? " erro" : "");
+      setTimeout(()=> toast.className="toast", 4000);
     }
 
     document.getElementById("agendamento-form").addEventListener("submit", async function(e) {
       e.preventDefault();
-
       const formData = new FormData(this);
       const dados = Object.fromEntries(formData.entries());
-      dados.recursos = formData.getAll("recursos"); // múltiplos checkboxes
+      dados.recursos = formData.getAll("recursos");
 
       try {
         const token = localStorage.getItem("token");
@@ -252,19 +114,18 @@
           },
           body: JSON.stringify(dados)
         });
-
         if (resposta.ok) {
-          alert("Agendamento submetido com sucesso!");
-          window.location.href = "agendamentos.html";
+          mostrarToast("Agendamento submetido com sucesso!");
+          setTimeout(()=> window.location.href = "agendamentos.html", 1500);
         } else {
           const erro = await resposta.json();
-          alert("Erro: " + (erro.message || "Não foi possível gravar o agendamento."));
+          mostrarToast("Erro: " + (erro.message || "Não foi possível gravar."), true);
         }
       } catch (err) {
-        console.error(err);
-        alert("Erro de ligação ao servidor.");
+        mostrarToast("Erro de ligação ao servidor.", true);
       }
     });
   </script>
 </body>
 </html>
+
