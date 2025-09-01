@@ -141,15 +141,41 @@
 
         <fieldset>
           <legend><strong>Recursos</strong></legend>
-          <!-- Catering com dropdown -->
-          <label>
-            <input name="recursos" value="Catering"> Catering
-          </label>
-          <select name="catering_opcao">
-            <option value="">-- Selecione --</option>
-            <option value="coffee-break">Coffee-Break</option>
-            <option value="almoco">Almoço</option>
-          </select>
+
+<!-- Catering com dropdown -->
+<div style="display: flex; align-items: center; gap: 10px;">
+  <label>
+    <input type="checkbox" name="recursos" value="Catering"> <strong>Catering:</strong>
+  </label>
+  <select name="catering_opcao">
+    <option value="">-- Selecione --</option>
+    <option value="coffee-break">Coffee-Break</option>
+    <option value="almoco">Almoço</option>
+  </select>
+</div>
+
+<br><br>
+
+<!-- Outras opções -->
+<div class="checkbox-group">
+  <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
+  <label><input type="checkbox" name="recursos" value="Material Informativo"> Material Informativo</label>
+  <label><input type="checkbox" name="recursos" value="Apoio de Secretariado"> Apoio de Secretariado</label>
+</div>
+
+<br>
+
+<!-- Grupo Equipamento -->
+<strong>Equipamento Audiovisual e Informático</strong>
+<div class="checkbox-group">
+  <label><input type="checkbox" name="recursos" value="LCD"> LCD</label>
+  <label><input type="checkbox" name="recursos" value="Colunas"> Colunas</label>
+  <label><input type="checkbox" name="recursos" value="Microfone"> Microfone</label>
+  <label><input type="checkbox" name="recursos" value="Video Projetor"> Video Projetor</label>
+  <label><input type="checkbox" name="recursos" value="Ponteiro"> Ponteiro</label>
+  <label><input type="checkbox" name="recursos" value="Computador"> Computador</label>
+</div>
+
 
           <br><br>
 
@@ -187,6 +213,7 @@
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
 
 
