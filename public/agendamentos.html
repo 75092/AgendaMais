@@ -131,6 +131,31 @@
   }
 </style>
 
+<style>
+  fieldset {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+    gap: 8px 20px; /* espaço entre itens */
+    margin-top: 5px;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* espaço entre checkbox e texto */
+  }
+
+  select {
+    margin-left: 10px;
+  }
+</style>
+
 <fieldset>
   <legend><strong>Recursos</strong></legend>
 
@@ -166,6 +191,7 @@
   </div>
 </fieldset>
 
+
         <fieldset>
           <legend><strong>Observações</strong></legend>
           <textarea id="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
@@ -181,6 +207,7 @@
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
 
 
