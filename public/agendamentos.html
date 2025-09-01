@@ -5,11 +5,43 @@
   <title>Agendamentos</title>
   <link href="style.css" rel="stylesheet"/>
   <script src="auth.js"></script>
+
+  <style>
+    fieldset {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+      gap: 8px 20px;
+      margin-top: 5px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    select {
+      margin-left: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      resize: vertical;
+    }
+  </style>
 </head>
 <body>
   <div class="header">
     <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
   </div>
+
   <div class="sidebar">
     <ul>
       <li><a href="index.html">Início</a></li>
@@ -65,6 +97,7 @@
       <span class="fechar" onclick="fecharModal()">×</span>
       <h2>Novo Agendamento</h2>
       <form id="form-agendamento">
+
         <fieldset>
           <legend><strong>Requerente</strong></legend>
           <label>Nome:<input id="nomeReq" required type="text"/></label>
@@ -106,91 +139,39 @@
           </div>
         </fieldset>
 
-        <style>
-  fieldset {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 8px;
-  }
+        <fieldset>
+          <legend><strong>Recursos</strong></legend>
+          <!-- Catering com dropdown -->
+          <label>
+            <input type="checkbox" name="recursos" value="Catering"> Catering
+          </label>
+          <select name="catering_opcao">
+            <option value="">-- Selecione --</option>
+            <option value="coffee-break">Coffee-Break</option>
+            <option value="almoco">Almoço</option>
+          </select>
 
-  .checkbox-group {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 colunas */
-    gap: 8px 20px; /* espaço entre itens */
-    margin-top: 5px;
-  }
+          <br><br>
 
-  label {
-    display: flex;
-    align-items: center;
-    gap: 6px; /* espaço entre checkbox e texto */
-  }
+          <!-- Outras opções -->
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
+            <label><input type="checkbox" name="recursos" value="Material Informativo"> Material Informativo</label>
+            <label><input type="checkbox" name="recursos" value="Apoio de Secretariado"> Apoio de Secretariado</label>
+          </div>
 
-  select {
-    margin-left: 10px;
-  }
-</style>
-
-<style>
-  fieldset {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 8px;
-  }
-
-  .checkbox-group {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 colunas */
-    gap: 8px 20px; /* espaço entre itens */
-    margin-top: 5px;
-  }
-
-  label {
-    display: flex;
-    align-items: center;
-    gap: 6px; /* espaço entre checkbox e texto */
-  }
-
-  select {
-    margin-left: 10px;
-  }
-</style>
-
-<fieldset>
-  <legend><strong>Recursos</strong></legend>
-
-  <!-- Catering com dropdown -->
-  <label>
-    <input type="checkbox" name="recursos" value="Catering"> Catering
-  </label>
-  <select name="catering_opcao">
-    <option value="">-- Selecione --</option>
-    <option value="coffee-break">Coffee-Break</option>
-    <option value="almoco">Almoço</option>
-  </select>
-
-  <br><br>
-
-  <!-- Outras opções -->
-  <div class="checkbox-group">
-    <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
-    <label><input type="checkbox" name="recursos" value="Material Informativo"> Material Informativo</label>
-    <label><input type="checkbox" name="recursos" value="Apoio de Secretariado"> Apoio de Secretariado</label>
-  </div>
-
-  <br>
-  <!-- Grupo Equipamento -->
-  <strong>Equipamento Audiovisual e Informático</strong>
-  <div class="checkbox-group">
-    <label><input type="checkbox" name="recursos" value="LCD"> LCD</label>
-    <label><input type="checkbox" name="recursos" value="Colunas"> Colunas</label>
-    <label><input type="checkbox" name="recursos" value="Microfone"> Microfone</label>
-    <label><input type="checkbox" name="recursos" value="Video Projetor"> Video Projetor</label>
-    <label><input type="checkbox" name="recursos" value="Ponteiro"> Ponteiro</label>
-    <label><input type="checkbox" name="recursos" value="Computador"> Computador</label>
-  </div>
-</fieldset>
-
+          <br>
+          <!-- Grupo Equipamento -->
+          <strong>Equipamento Audiovisual e Informático</strong>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="recursos" value="LCD"> LCD</label>
+            <label><input type="checkbox" name="recursos" value="Colunas"> Colunas</label>
+            <label><input type="checkbox" name="recursos" value="Microfone"> Microfone</label>
+            <label><input type="checkbox" name="recursos" value="Video Projetor"> Video Projetor</label>
+            <label><input type="checkbox" name="recursos" value="Ponteiro"> Ponteiro</label>
+            <label><input type="checkbox" name="recursos" value="Computador"> Computador</label>
+          </div>
+        </fieldset>
 
         <fieldset>
           <legend><strong>Observações</strong></legend>
@@ -203,10 +184,11 @@
   </div>
 
   <div class="toast" id="toast"></div>
-
   <script src="scripts.js"></script>
 </body>
 </html>
+
+
 
 
 
