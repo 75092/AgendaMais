@@ -46,27 +46,6 @@
       z-index: 2000;
       display: none;
     }
-
-    /* === NOVO CSS PARA LAYOUT === */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 220px;        /* largura fixa da sidebar */
-      height: 100%;
-      background-color: #f0f0f0;
-      padding-top: 60px;   /* espaço para o header/logo */
-    }
-
-    .main-content {
-      margin-left: 220px;  /* igual à largura da sidebar */
-      padding: 20px;
-    }
-
-    .header {
-      margin-left: 220px;  /* também afastar o header */
-      padding: 10px 20px;
-    }
   </style>
   <script src="auth.js"></script>
   <script>
@@ -116,6 +95,7 @@
 <div class="header">
   <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
 </div>
+
 <div class="sidebar">
   <ul id="menu">
     <li><a href="index.html">Início</a></li>
@@ -133,8 +113,8 @@
   <h2 class="local-titulo"> Hospital Garcia de Orta</h2>
   <div class="salas-container">
     <div class="sala-card">
-      <h3>Sala Almada</h3>
-      <img src="img/hgo-salaalmada.JPG" alt="HGO - Sala Almada - Piso 2">
+      <h3>Sala Almada - Piso 2</h3>
+      <img src="img/hgo-salaalmada.JPG" alt="Sala Almada - Piso 2">
       <p><strong>Tipologia:</strong> Plateia</p>
       <p><strong>Capacidade:</strong> 20 pessoas</p>
       <p><strong>Mobiliário:</strong> Cadeiras com pala individual</p>
@@ -142,8 +122,8 @@
     </div>
 
     <div class="sala-card">
-      <h3>Sala Garcia de Orta</h3>
-      <img src="img/hgo-salagarciadeorta.JPG" alt="HGO - Sala Garcia de Orta - Piso 2">
+      <h3>Sala Garcia de Orta - Piso 2</h3>
+      <img src="img/hgo-salagarciadeorta.JPG" alt="Sala Garcia de Orta - Piso 2">
       <p><strong>Tipologia:</strong> Plateia</p>
       <p><strong>Capacidade:</strong> 50 pessoas</p>
       <p><strong>Mobiliário:</strong> Cadeiras com pala individual</p>
@@ -151,8 +131,8 @@
     </div>
 
     <div class="sala-card">
-      <h3>Sala Tejo</h3>
-      <img src="img/hgo-salatejo.JPG" alt="HGO - Sala Tejo - Piso 2">
+      <h3>Sala Tejo - Piso 2</h3>
+      <img src="img/hgo-salatejo.JPG" alt="Sala Tejo - Piso 2">
       <p><strong>Tipologia:</strong> Sala em U</p>
       <p><strong>Capacidade:</strong> 25 pessoas</p>
       <p><strong>Mobiliário:</strong> Mesas de sala de aula e cadeiras</p>
@@ -160,26 +140,25 @@
     </div>
 
     <div class="sala-card">
-      <h3>Sala Almada + Garcia de Orta</h3>
-      <img src="img/hgo-salaalmada+garciadeorta.JPG" alt="HGO - Sala Almada + Garcia de Orta - Piso 2">
+      <h3>Sala Almada + Garcia de Orta - Piso 2</h3>
+      <img src="img/hgo-salaalmada+garciadeorta.JPG" alt="Sala Almada + Garcia de Orta - Piso 2">
       <p><strong>Tipologia:</strong> Plateia</p>
       <p><strong>Capacidade:</strong> 70 pessoas</p>
       <p><strong>Mobiliário:</strong> Cadeiras com pala individual</p>
       <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção, equipamento de som</p>
     </div>
   </div>
-      <div class="sala-card">
-      <h3>Sala Almada + Garcia de Orta + Tejo - Piso 2</h3>
-      <alt="HGO - Sala Almada + Garcia de Orta + Tejo - Piso 2">
-      <p><strong>Tipologia:</strong> Plateia</p>
-      <p><strong>Capacidade:</strong> 100 pessoas</p>
-      <p><strong>Mobiliário:</strong> Cadeiras com pala individual</p>
-      <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção, equipamento de som</p>
-    </div>
+
+  <div class="sala-card">
+    <h3>Sala Almada + Garcia de Orta + Tejo - Piso 2</h3>
+    <p><strong>Tipologia:</strong> Plateia</p>
+    <p><strong>Capacidade:</strong> 100 pessoas</p>
+    <p><strong>Mobiliário:</strong> Cadeiras com pala individual</p>
+    <p><strong>Equipamentos:</strong> Computador, projetor, tela de projeção, equipamento de som</p>
   </div>
 
   <!-- CF Sobreda -->
-  <h2 class="local-titulo"> Centro de Formação Sobreda</h2>
+  <h2 class="local-titulo"> CF Sobreda</h2>
   <div class="salas-container">
     <div class="sala-card">
       <h3>Auditório Dr. Luís Amaro</h3>
@@ -210,24 +189,16 @@
   </div>
 
   <!-- CF Amora -->
-  <h2 class="local-titulo"> USF Amora Saudável</h2>
+  <h2 class="local-titulo"> USF Amora Saudavel</h2>
   <div class="salas-container">
     <div class="sala-card">
       <h3>Sala Amora</h3>
-      <!-- (não há imagem no teu repositório) -->
       <p><strong>Tipologia:</strong> Sala em U</p>
-      <p><strong>Capacidade:</strong> 24 pessoas - 2 formandos por computador (12 pessoas - 1 Formando por Computador)</p>
+      <p><strong>Capacidade:</strong> 24 pessoas (2 formandos por computador)</p>
       <p><strong>Mobiliário:</strong> Mesas de sala de aula e cadeiras</p>
       <p><strong>Equipamentos:</strong> 13 Computadores, projetor, tela de projeção</p>
     </div>
   </div>
-
 </div>
 </body>
 </html>
-
-
-
-
-
-
