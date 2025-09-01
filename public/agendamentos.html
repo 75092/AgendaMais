@@ -142,22 +142,18 @@
         <fieldset>
           <legend><strong>Recursos</strong></legend>
 
-<!-- Catering com dropdown -->
+
 <div style="display: flex; align-items: center; gap: 10px;">
   <label>
     
-<strong>Catering:</strong>
-  </label>
-  <select name="catering_opcao"
-    <option value="">-- Selecione --</option>
-    <option value="coffee-break">Coffee-Break</option>
-    <option value="almoco">Almoço</option>
-  </select>
-</div>
-
-<br><br>
-
- <fieldset>
+<fieldset>
+          <legend><strong>Catering</strong></legend>
+            <label><input name="recursos" type="checkbox" value="Coffee-Break"> Coffee-Break</label>
+            <label><input name="recursos" type="checkbox" value="Almoço"> Almoço</label>
+          </div>
+        </fieldset>
+       <br>
+       <fieldset>
           <legend><strong>Outras opções</strong></legend>
           <div class="checkbox-group">
             <label><input type="checkbox" name="recursos" value="Material Clínico"> Material Clínico</label>
@@ -192,6 +188,7 @@
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
 
 
