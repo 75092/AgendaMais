@@ -101,7 +101,19 @@
         <fieldset>
           <legend><strong>Requerente</strong></legend>
           <label>Nome:<input id="nomeReq" required type="text"/></label>
-          <label>Número Mecanográfico:<input id="numMec" required type="text"/></label>
+         <label>
+          Número Mecanográfico:
+          <input 
+            id="numMec" 
+            name="numMec"
+            type="text" 
+            inputmode="numeric" 
+            pattern="\d{10}" 
+            maxlength="10" 
+            required 
+            placeholder="##########"
+            />
+          </label>
           <label>Serviço:<input id="servicoReq" required type="text"/></label>
           <div class="linha">
             <label>Email:<input id="emailReq" required type="email"/></label>
@@ -260,6 +272,7 @@
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
 
 
