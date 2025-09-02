@@ -11,6 +11,7 @@
     "jsonwebtoken": "^9.0.2",
     "mssql": "^11.0.1",
     "pg": "^8.16.3"
+    "cors": "^2.8.5"
   },
   "scripts": {
     "start": "node server 2.js"
@@ -28,3 +29,4 @@
   "homepage": "https://github.com/75092/Forma-o#readme",
   "description": ""
 }
+
