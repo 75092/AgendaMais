@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         const token = localStorage.getItem("token");
-        const resposta = await fetch("/api/agendamentos", {
+        const resposta = await fetch("https://teu-servidor.onrender.com/api/agendamentos", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
