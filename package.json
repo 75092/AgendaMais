@@ -2,32 +2,33 @@
   "name": "form.app",
   "version": "1.0.0",
   "type": "module",
-  "main": "server 2.js",
-"dependencies": {
-  "bcrypt": "^6.0.0",
-  "body-parser": "^2.2.0",
-  "dotenv": "^17.2.1",
-  "express": "^5.1.0",
-  "jsonwebtoken": "^9.0.2",
-  "mssql": "^11.0.1",
-  "pg": "^8.16.3",
-  "cors": "^2.8.5"
-}
+  "main": "server.js",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
+    "dotenv": "^17.1.2",
+    "express": "^5.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "mssql": "^11.0.1",
+    "pg": "^8.16.3",
+    "cors": "^2.8.5"
+  },
   "scripts": {
-    "start": "node server 2.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/75092/Forma-o.git"
+    "url": "git+https://github.com/75902/Forma-o.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/75092/Forma-o/issues"
+    "url": "https://github.com/75902/Forma-o/issues"
   },
-  "homepage": "https://github.com/75092/Forma-o#readme",
+  "homepage": "https://github.com/75902/Forma-o#readme",
   "description": ""
 }
+
 
 
