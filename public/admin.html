@@ -331,7 +331,57 @@ document.addEventListener('DOMContentLoaded', function () {
   const pendenteDiv = document.getElementById("pendente");
   const emAprovacaoDiv = document.getElementById("em_aprovacao");
 
-  let agendamentos = JSON.parse(localStorage.getItem("agendamentos") || "[]");
+  async function carregarAgendamentos() {
+  try {
+    const resp = await fetch("https://teu-servidor.onrender.com/agendamentos");
+    const agendamentos = await resp.json();
+
+    aprovacaoDiv.innerHTML = "";
+    pendenteDiv.innerHTML = "";
+
+    agendamentos.forEach((p) => {
+      const card = document.createElement("div");
+      card.className = "agendamento-card";
+      card.innerHTML = `
+        <strong>${p.nome_evento}</strong><br>
+        Requerente: ${p.nome}<br>
+        Data: ${p.data}<br>
+        Hora: ${p.hora_inicio} - ${p.hora_fim}<br>
+        Sala: ${p.sala}<br>
+        Participantes: ${p.participantes || "-"}<br>
+        Observações: ${p.observacoes || "-"}<br>
+        Estado: ${p.estado}
+      `;
+
+      if (p.estado === "Pendente") {
+        card.innerHTML += `
+          <button onclick="atualizar(${p.id}, 'Aprovado')">Aprovar</button>
+          <button onclick="atualizar(${p.id}, 'Rejeitado')">Rejeitar</button>
+        `;
+        pendenteDiv.appendChild(card);
+      } else if (p.estado === "Aprovado") {
+        card.innerHTML += `
+          <button onclick="atualizar(${p.id}, 'Pendente')">Tornar Pendente</button>
+        `;
+        aprovacaoDiv.appendChild(card);
+      }
+    });
+  } catch (err) {
+    console.error("Erro ao carregar agendamentos", err);
+  }
+}
+
+async function atualizar(id, estado) {
+  await fetch(`https://teu-servidor.onrender.com/agendamentos/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ estado })
+  });
+  carregarAgendamentos();
+}
+
+document.addEventListener("DOMContentLoaded", carregarAgendamentos);
+
   let indexAEditar = null;
 
   function criarBotao(texto, callback) {
@@ -699,3 +749,4 @@ setTimeout(() => {
 </body>
 
 </html>
+
