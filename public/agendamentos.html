@@ -143,37 +143,40 @@
           <legend><strong>Recursos</strong></legend>
 
 
-<div style="display: flex; align-items: center; gap: 10px;">
-  <label>
-    
+<style>
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .checkbox-group label {
+    display: flex;
+    justify-content: space-between; /* nome à esquerda | checkbox à direita */
+    align-items: center;
+    cursor: pointer;
+    width: 250px; /* largura fixa para alinhar todos */
+  }
+</style>
+
 <fieldset>
-          <legend><strong>Catering</strong></legend>
-          <div class="checkbox-group">
-            <label><input name="recursos" value="Coffee-Break" type="checkbox"> Coffee-Break</label>
-            <label><input name="recursos" value="Almoço" type="checkbox"> Almoço</label>
-          </div>
-        </fieldset>
-       <br><br>
-       <fieldset>
-          <legend><strong>Outras opções</strong></legend>
-          <div class="checkbox-group">
-            <label><input name="recursos" value="Material Clínico" type="checkbox"> Material Clínico</label>
-            <label><input name="recursos" value="Material Informativo" type="checkbox"> Material Informativo</label>
-            <label><input name="recursos" value="Apoio de Secretariado" type="checkbox"> Apoio de Secretariado</label>
-          </div>
-        </fieldset>
-        <br>
-        <fieldset>
-          <legend><strong>Equipamento Audiovisual e Informático</strong></legend>
-          <div class="checkbox-group">
-            <label><input name="recursos" value="LCD" type="checkbox"> LCD</label>
-            <label><input name="recursos" value="Colunas" type="checkbox"> Colunas</label>
-            <label><input name="recursos" value="Microfone" type="checkbox"> Microfone</label>
-            <label><input name="recursos" value="Video Projetor" type="checkbox"> Vídeo Projetor</label>
-            <label><input name="recursos" value="Ponteiro" type="checkbox"> Ponteiro</label>
-            <label><input name="recursos" value="Computador" type="checkbox"> Computador</label>
-          </div>
-   </fieldset>
+  <legend><strong>Catering</strong></legend>
+  <div class="checkbox-group">
+    <label>Coffee-Break <input name="recursos" value="Coffee-Break" type="checkbox"></label>
+    <label>Almoço <input name="recursos" value="Almoço" type="checkbox"></label>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend><strong>Equipamento Audiovisual e Informático</strong></legend>
+  <div class="checkbox-group">
+    <label>LCD <input name="recursos" value="LCD" type="checkbox"></label>
+    <label>Colunas <input name="recursos" value="Colunas" type="checkbox"></label>
+    <label>Microfone <input name="recursos" value="Microfone" type="checkbox"></label>
+    <label>Vídeo Projetor <input name="recursos" value="Video Projetor" type="checkbox"></label>
+    <label>Ponteiro <input name="recursos" value="Ponteiro" type="checkbox"></label>
+    <label>Computador <input name="recursos" value="Computador" type="checkbox"></label>
+  </div>
+</fieldset>
 
         <fieldset>
           <legend><strong>Observações</strong></legend>
@@ -189,6 +192,7 @@
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
 
 
