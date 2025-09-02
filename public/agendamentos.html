@@ -240,17 +240,49 @@
       const form = document.getElementById("agendamento-form");
       const popup = document.getElementById("successPopup");
 
-      if (form) {
-        form.addEventListener("submit", (e) => {
-          e.preventDefault(); // evitar refresh
-          fecharModal();      // fecha modal
-          popup.style.display = "flex"; // abre popup
-        });
-      }
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const pedido = {
+      nome: document.getElementById("nomeReq").value,
+      numMec: document.getElementById("numMec").value,
+      servico: document.getElementById("servicoReq").value,
+      email: document.getElementById("emailReq").value,
+      contacto: document.getElementById("contactoReq").value,
+      data: document.getElementById("data").value,
+      horaInicio: document.getElementById("horaInicio").value,
+      horaFim: document.getElementById("horaFim").value,
+      sala: document.getElementById("sala").value,
+      tipoEvento: document.getElementById("tipoEvento").value,
+      nomeEvento: document.getElementById("nomeEvento").value,
+      participantes: document.getElementById("participantes").value,
+      observacoes: document.getElementById("observacoes").value
+    };
+
+    try {
+      const resp = await fetch("https://teu-servidor.onrender.com/agendamentos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pedido)
+      });
+
+      if (!resp.ok) throw new Error("Erro ao enviar");
+
+      fecharModal();
+      popup.style.display = "flex";
+      form.reset();
+    } catch (err) {
+      alert("Erro ao submeter agendamento: " + err.message);
+    }
+  });
+}
+
     });
   </script>
 </body>
 </html>
+
 
 
 
