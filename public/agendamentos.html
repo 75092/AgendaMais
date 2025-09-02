@@ -242,18 +242,18 @@
         </div>
       </fieldset>
 
-  <div class="toast" id="toast"></div>
-  <script src="scripts.js"></script>
-
-
-        <fieldset>
-          <legend><strong>Observações</strong></legend>
-          <textarea id="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
-        </fieldset>
-
-        <button class="botao-novo" type="button" onclick="guardarAgendamento()">Submeter</button>
+   <!-- Modal Novo Agendamento -->
+  <div class="modal" id="modalAgendamento">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModal()">×</span>
+      <h2>Novo Agendamento</h2>
+      
+      <form id="agendamento-form">
+        <!-- (formulário igual ao que já unificámos antes) -->
+        <!-- ... -->
+        <button class="botao-novo" type="submit">Submeter</button>
       </form>
-     </div>
+    </div>
   </div>
 
   <!-- Popup central de sucesso -->
@@ -269,6 +269,7 @@
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
 
 
