@@ -139,44 +139,105 @@
           </div>
         </fieldset>
 
-        <fieldset>
-          <legend><strong>Recursos</strong></legend>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulário de Recursos</title>
+  <style>
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .checkbox-group label {
+      display: grid;
+      grid-template-columns: 1fr auto; /* texto ocupa a esquerda | checkbox vai para a direita */
+      align-items: center;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .botao-novo {
+      margin-top: 15px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .botao-novo:hover {
+      background-color: #45a049;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      display: none;
+    }
+    textarea {
+      width: 100%;
+      resize: vertical;
+    }
+    fieldset {
+      margin-bottom: 16px;
+      padding: 12px;
+    }
+  </style>
+</head>
+<body>
 
+  <form>
+    <fieldset>
+      <legend><strong>Recursos</strong></legend>
 
-<style>
-  .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .checkbox-group label {
-    display: flex;
-    justify-content: space-between; /* nome à esquerda | checkbox à direita */
-    align-items: center;
-    cursor: pointer;
-    width: 250px; /* largura fixa para alinhar todos */
-  }
-</style>
+      <fieldset>
+        <legend><strong>Catering</strong></legend>
+        <div class="checkbox-group">
+          <label>Coffee-Break <input name="recursos" value="Coffee-Break" type="checkbox"></label>
+          <label>Almoço <input name="recursos" value="Almoço" type="checkbox"></label>
+        </div>
+      </fieldset>
 
-<fieldset>
-  <legend><strong>Catering</strong></legend>
-  <div class="checkbox-group">
-    <label>Coffee-Break <input name="recursos" value="Coffee-Break" type="checkbox"></label>
-    <label>Almoço <input name="recursos" value="Almoço" type="checkbox"></label>
-  </div>
-</fieldset>
+      <fieldset>
+        <legend><strong>Outras opções</strong></legend>
+        <div class="checkbox-group">
+          <label>Material Clínico <input name="recursos" value="Material Clínico" type="checkbox"></label>
+          <label>Material Informativo <input name="recursos" value="Material Informativo" type="checkbox"></label>
+          <label>Apoio de Secretariado <input name="recursos" value="Apoio de Secretariado" type="checkbox"></label>
+        </div>
+      </fieldset>
 
-<fieldset>
-  <legend><strong>Equipamento Audiovisual e Informático</strong></legend>
-  <div class="checkbox-group">
-    <label>LCD <input name="recursos" value="LCD" type="checkbox"></label>
-    <label>Colunas <input name="recursos" value="Colunas" type="checkbox"></label>
-    <label>Microfone <input name="recursos" value="Microfone" type="checkbox"></label>
-    <label>Vídeo Projetor <input name="recursos" value="Video Projetor" type="checkbox"></label>
-    <label>Ponteiro <input name="recursos" value="Ponteiro" type="checkbox"></label>
-    <label>Computador <input name="recursos" value="Computador" type="checkbox"></label>
-  </div>
-</fieldset>
+      <fieldset>
+        <legend><strong>Equipamento Audiovisual e Informático</strong></legend>
+        <div class="checkbox-group">
+          <label>LCD <input name="recursos" value="LCD" type="checkbox"></label>
+          <label>Colunas <input name="recursos" value="Colunas" type="checkbox"></label>
+          <label>Microfone <input name="recursos" value="Microfone" type="checkbox"></label>
+          <label>Vídeo Projetor <input name="recursos" value="Video Projetor" type="checkbox"></label>
+          <label>Ponteiro <input name="recursos" value="Ponteiro" type="checkbox"></label>
+          <label>Computador <input name="recursos" value="Computador" type="checkbox"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><strong>Observações</strong></legend>
+        <textarea id="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
+      </fieldset>
+
+      <button class="botao-novo" type="button" onclick="guardarAgendamento()">Submeter</button>
+    </fieldset>
+  </form>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts.js"></script>
+</body>
+</html>
 
         <fieldset>
           <legend><strong>Observações</strong></legend>
@@ -192,6 +253,7 @@
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
 
 
