@@ -6,25 +6,30 @@ import pkg from "pg";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-dotenv.config();
+import cors from "cors";
+import agendamentosRouter from "./routes/agendamentos.js";
 
+dotenv.config();
 const { Pool } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Middleware
+app.use(cors({
+  origin: "https://forma-o.onrender.com",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Conexão Postgres (Render fornece DATABASE_URL)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// Inicializar tabela + utilizadores
 async function initDatabase() {
   try {
     await pool.query(`
@@ -36,7 +41,6 @@ async function initDatabase() {
       );
     `);
 
-    // Criar admin
     const adminCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["admin"]);
     if (adminCheck.rows.length === 0) {
       const hashedPassword = await bcrypt.hash("12345", 10);
@@ -47,7 +51,6 @@ async function initDatabase() {
       console.log("✅ Utilizador admin criado (admin/12345)");
     }
 
-    // Criar convidado
     const guestCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["convidado"]);
     if (guestCheck.rows.length === 0) {
       const hashedPassword = await bcrypt.hash("12345", 10);
@@ -57,19 +60,18 @@ async function initDatabase() {
       );
       console.log("✅ Utilizador convidado criado (convidado/12345)");
     }
-
   } catch (err) {
     console.error("❌ Erro ao inicializar BD:", err);
   }
 }
 initDatabase();
 
-// Rotas
+app.use("/api/agendamentos", agendamentosRouter);
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Login
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -91,7 +93,6 @@ app.post("/login", async (req, res) => {
     );
 
     res.json({ message: "✅ Login efetuado com sucesso!", token, role: user.role });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Erro no servidor" });
