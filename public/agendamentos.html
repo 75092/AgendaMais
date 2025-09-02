@@ -16,7 +16,7 @@
 
     .checkbox-group {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, 1fr); /* 2 colunas */
       gap: 8px 20px;
       margin-top: 5px;
     }
@@ -32,98 +32,14 @@
     }
 
     textarea {
-      width: 100%;
+      width: 50%;
       resize: vertical;
-    }
-
-    fieldset.recursos {
-      background-color: #e6f4ea;
-      border: 1px solid #c8e6c9;
-      border-radius: 8px;
-      padding: 12px;
-    }
-
-    .botao-novo {
-      margin-top: 15px;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      background-color: #4CAF50;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .botao-novo:hover {
-      background-color: #45a049;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #333;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    /* Botão de Logoff */
-    .logout-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #d9534f;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      cursor: pointer;
-    }
-    .logout-btn:hover {
-      background: #c9302c;
-    }
-
-    /* Popup central */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    .popup-content {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 10px;
-      text-align: center;
-      max-width: 400px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .popup-content p {
-      margin-bottom: 15px;
-      font-size: 1rem;
-    }
-    .popup-content button {
-      background: #4CAF50;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .popup-content button:hover {
-      background: #45a049;
     }
   </style>
 </head>
 <body>
   <div class="header">
     <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
-    <button id="logoutBtn" class="logout-btn" onclick="logout()">Logoff</button>
   </div>
 
   <div class="sidebar">
@@ -180,13 +96,164 @@
     <div class="modal-content">
       <span class="fechar" onclick="fecharModal()">×</span>
       <h2>Novo Agendamento</h2>
+      <form id="form-agendamento">
+
+        <fieldset>
+          <legend><strong>Requerente</strong></legend>
+          <label>Nome:<input id="nomeReq" required type="text"/></label>
+         <label>
+          Número Mecanográfico:
+          <input 
+            id="numMec" 
+            name="numMec"
+            inputmode="numeric" 
+            pattern="\d{10}" 
+            maxlength="10" 
+            size_"10"
+           
+            />
+          </label>
+          <label>Serviço:<input id="servicoReq" required type="text"/></label>
+          <div class="linha">
+            <label>Email:<input id="emailReq" required type="email"/></label>
+            <label>Telemóvel:<input id="contactoReq" required type="tel"/></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><strong>Data e Hora</strong></legend>
+          <label>Data:<input id="data" required type="date" onchange="atualizarSalasDisponiveis()"/></label>
+          <div class="linha">
+            <label>Hora Início:<input id="horaInicio" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
+            <label>Hora Fim:<input id="horaFim" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><strong>Evento</strong></legend>
+          <label>Sala:<select id="sala" required></select></label>
+          <label>Tipo de Evento:
+            <select id="tipoEvento" required>
+              <option value="">-- Selecione --</option>
+              <option value="Reuniões clínicas">Reuniões Clínicas</option>
+              <option value="Reuniões Entidades Externas">Reuniões Entidades Externas</option>
+              <option value="Concursos e Exames">Concursos e Exames</option>
+              <option value="Formação em Serviço">Formação em Serviço</option>
+              <option value="Auditoria">Auditoria</option>
+              <option value="Reunião de Comissão">Reunião de Comissão</option>
+              <option value="Formação para Utentes">Formação para Utentes</option>
+            </select>
+          </label>
+          <div class="linha">
+            <label>Nome do Evento:<input id="nomeEvento" required type="text"/></label>
+            <label>Participantes:<input id="participantes" type="number"/></label>
+          </div>
+        </fieldset>
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulário de Recursos</title>
+  <style>
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .checkbox-group label {
+      display: grid;
+      grid-template-columns: 1fr auto; /* texto ocupa a esquerda | checkbox vai para a direita */
+      align-items: center;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .botao-novo {
+      margin-top: 15px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .botao-novo:hover {
+      background-color: #45a049;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      display: none;
+    }
+    textarea {
+      width: 100%;
+      resize: vertical;
+    }
+    fieldset {
+      margin-bottom: 16px;
+      padding: 12px;
+    }
+    fieldset.recursos {
+  background-color: #e6f4ea; /* verde suave */
+  border: 1px solid #c8e6c9; /* contorno verde suave */
+  border-radius: 8px;
+  padding: 12px;
+}
+  </style>
+</head>
+<body>
+
+  <form>
+    <fieldset>
+      <legend><strong>Recursos</strong></legend>
+
+      <fieldset>
+        <legend><strong>Catering</strong></legend>
+        <div class="checkbox-group">
+          <label>Coffee-Break <input name="recursos" value="Coffee-Break" type="checkbox"></label>
+          <label>Almoço <input name="recursos" value="Almoço" type="checkbox"></label>
+        </div>
+      </fieldset>
       
-      <form id="agendamento-form">
-        <!-- (formulário igual ao que já unificámos antes) -->
-        <!-- ... -->
-        <button class="botao-novo" type="submit">Submeter</button>
+      <fieldset>
+        <legend><strong>Equipamento Audiovisual e Informático</strong></legend>
+        <div class="checkbox-group">
+          <label>LCD <input name="recursos" value="LCD" type="checkbox"></label>
+          <label>Colunas <input name="recursos" value="Colunas" type="checkbox"></label>
+          <label>Microfone <input name="recursos" value="Microfone" type="checkbox"></label>
+          <label>Vídeo Projetor <input name="recursos" value="Video Projetor" type="checkbox"></label>
+          <label>Ponteiro <input name="recursos" value="Ponteiro" type="checkbox"></label>
+          <label>Computador <input name="recursos" value="Computador" type="checkbox"></label>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend><strong>Outras Opções</strong></legend>
+        <div class="checkbox-group">
+          <label>Material Clínico <input name="recursos" value="Material Clínico" type="checkbox"></label>
+          <label>Material Informativo <input name="recursos" value="Material Informativo" type="checkbox"></label>
+          <label>Apoio de Secretariado <input name="recursos" value="Apoio de Secretariado" type="checkbox"></label>
+        </div>
+      </fieldset>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts.js"></script>
+
+
+        <fieldset>
+          <legend><strong>Observações</strong></legend>
+          <textarea id="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
+        </fieldset>
+
+        <button class="botao-novo" type="button" onclick="guardarAgendamento()">Submeter</button>
       </form>
-    </div>
+     </div>
   </div>
 
   <!-- Popup central de sucesso -->
@@ -202,6 +269,7 @@
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
 
 
