@@ -125,8 +125,8 @@
     <div class="modal-content">
       <span class="fechar" onclick="fecharModal()">×</span>
       <h2>Novo Agendamento</h2>
-      
       <form id="agendamento-form">
+        
         <fieldset>
           <legend><strong>Requerente</strong></legend>
           <label>Nome:<input id="nomeReq" required type="text"/></label>
@@ -140,10 +140,10 @@
 
         <fieldset>
           <legend><strong>Data e Hora</strong></legend>
-          <label>Data:<input id="data" required type="date"/></label>
+          <label>Data:<input id="data" required type="date" onchange="atualizarSalasDisponiveis()"/></label>
           <div class="linha">
-            <label>Hora Início:<input id="horaInicio" required type="time"/></label>
-            <label>Hora Fim:<input id="horaFim" required type="time"/></label>
+            <label>Hora Início:<input id="horaInicio" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
+            <label>Hora Fim:<input id="horaFim" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
           </div>
         </fieldset>
 
@@ -251,6 +251,7 @@
   </script>
 </body>
 </html>
+
 
 
 
