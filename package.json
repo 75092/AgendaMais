@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "type": "module",
   "main": "server 2.js",
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "body-parser": "^2.2.0",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mssql": "^11.0.1",
-    "pg": "^8.16.3"
-    "cors": "^2.8.5"
-  },
+"dependencies": {
+  "bcrypt": "^6.0.0",
+  "body-parser": "^2.2.0",
+  "dotenv": "^17.2.1",
+  "express": "^5.1.0",
+  "jsonwebtoken": "^9.0.2",
+  "mssql": "^11.0.1",
+  "pg": "^8.16.3",
+  "cors": "^2.8.5"
+}
   "scripts": {
     "start": "node server 2.js"
   },
@@ -29,4 +29,5 @@
   "homepage": "https://github.com/75092/Forma-o#readme",
   "description": ""
 }
+
 
