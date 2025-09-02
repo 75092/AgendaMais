@@ -16,7 +16,7 @@
 
     .checkbox-group {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px 20px;
       margin-top: 5px;
     }
@@ -34,6 +34,35 @@
     textarea {
       width: 50%;
       resize: vertical;
+    }
+
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .popup-content button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -96,22 +125,12 @@
     <div class="modal-content">
       <span class="fechar" onclick="fecharModal()">×</span>
       <h2>Novo Agendamento</h2>
-      <form id="form-agendamento">
-
+      
+      <form id="agendamento-form">
         <fieldset>
           <legend><strong>Requerente</strong></legend>
           <label>Nome:<input id="nomeReq" required type="text"/></label>
-         <label>
-          Número Mecanográfico:
-          <input 
-            id="numMec" 
-            name="numMec"
-            inputmode="numeric" 
-            maxlength="10" 
-            size_"10"
-           
-            />
-          </label>
+          <label>Número Mecanográfico:<input id="numMec" maxlength="10" /></label>
           <label>Serviço:<input id="servicoReq" required type="text"/></label>
           <div class="linha">
             <label>Email:<input id="emailReq" required type="email"/></label>
@@ -121,10 +140,10 @@
 
         <fieldset>
           <legend><strong>Data e Hora</strong></legend>
-          <label>Data:<input id="data" required type="date" onchange="atualizarSalasDisponiveis()"/></label>
+          <label>Data:<input id="data" required type="date"/></label>
           <div class="linha">
-            <label>Hora Início:<input id="horaInicio" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
-            <label>Hora Fim:<input id="horaFim" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
+            <label>Hora Início:<input id="horaInicio" required type="time"/></label>
+            <label>Hora Fim:<input id="horaFim" required type="time"/></label>
           </div>
         </fieldset>
 
@@ -149,125 +168,60 @@
           </div>
         </fieldset>
 
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Formulário de Recursos</title>
-  <style>
-    .checkbox-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .checkbox-group label {
-      display: grid;
-      grid-template-columns: 1fr auto; /* texto ocupa a esquerda | checkbox vai para a direita */
-      align-items: center;
-      cursor: pointer;
-      padding: 4px 0;
-    }
-    .botao-novo {
-      margin-top: 15px;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      background-color: #4CAF50;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .botao-novo:hover {
-      background-color: #45a049;
-    }
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #333;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      display: none;
-    }
-    textarea {
-      width: 100%;
-      resize: vertical;
-    }
-    fieldset {
-      margin-bottom: 16px;
-      padding: 12px;
-    }
-    fieldset.recursos {
-  background-color: #e6f4ea; /* verde suave */
-  border: 1px solid #c8e6c9; /* contorno verde suave */
-  border-radius: 8px;
-  padding: 12px;
-}
-  </style>
-</head>
-<body>
+        <fieldset>
+          <legend><strong>Recursos</strong></legend>
+          <div class="checkbox-group">
+            <label>Material Clínico <input type="checkbox" name="recursos" value="Material Clínico"></label>
+            <label>Material Informativo <input type="checkbox" name="recursos" value="Material Informativo"></label>
+            <label>Apoio de Secretariado <input type="checkbox" name="recursos" value="Apoio de Secretariado"></label>
+          </div>
+        </fieldset>
 
-  <form>
-    <fieldset>
-      <legend><strong>Recursos</strong></legend>
-
-      <fieldset>
-        <legend><strong>Catering</strong></legend>
-        <div class="checkbox-group">
-          <label>Coffee-Break <input name="recursos" value="Coffee-Break" type="checkbox"></label>
-          <label>Almoço <input name="recursos" value="Almoço" type="checkbox"></label>
-        </div>
-      </fieldset>
-      
-      <fieldset>
-        <legend><strong>Equipamento Audiovisual e Informático</strong></legend>
-        <div class="checkbox-group">
-          <label>LCD <input name="recursos" value="LCD" type="checkbox"></label>
-          <label>Colunas <input name="recursos" value="Colunas" type="checkbox"></label>
-          <label>Microfone <input name="recursos" value="Microfone" type="checkbox"></label>
-          <label>Vídeo Projetor <input name="recursos" value="Video Projetor" type="checkbox"></label>
-          <label>Ponteiro <input name="recursos" value="Ponteiro" type="checkbox"></label>
-          <label>Computador <input name="recursos" value="Computador" type="checkbox"></label>
-        </div>
-      </fieldset>
-      
-      <fieldset>
-        <legend><strong>Outras Opções</strong></legend>
-        <div class="checkbox-group">
-          <label>Material Clínico <input name="recursos" value="Material Clínico" type="checkbox"></label>
-          <label>Material Informativo <input name="recursos" value="Material Informativo" type="checkbox"></label>
-          <label>Apoio de Secretariado <input name="recursos" value="Apoio de Secretariado" type="checkbox"></label>
-        </div>
-      </fieldset>
-
-   <!-- Modal Novo Agendamento -->
-  <div class="modal" id="modalAgendamento">
-    <div class="modal-content">
-      <span class="fechar" onclick="fecharModal()">×</span>
-      <h2>Novo Agendamento</h2>
-      
-      <form id="agendamento-form">
-        <!-- (formulário igual ao que já unificámos antes) -->
-        <!-- ... -->
         <button class="botao-novo" type="submit">Submeter</button>
       </form>
     </div>
   </div>
 
-  <!-- Popup central de sucesso -->
+  <!-- Popup de sucesso -->
   <div id="successPopup" class="popup">
     <div class="popup-content">
       <p>O seu pedido foi submetido com sucesso<br>
       e será validado por e-mail em breve.</p>
-      <button onclick="fecharPopup()">Submeter</button>
+      <button onclick="fecharPopup()">OK</button>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
-  <script src="scripts.js"></script>
+  <script>
+    // abrir e fechar modal
+    function abrirModal() {
+      document.getElementById("modalAgendamento").style.display = "block";
+    }
+
+    function fecharModal() {
+      document.getElementById("modalAgendamento").style.display = "none";
+    }
+
+    // popup de sucesso
+    function fecharPopup() {
+      document.getElementById("successPopup").style.display = "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("agendamento-form");
+      const popup = document.getElementById("successPopup");
+
+      if (form) {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault(); // evitar refresh
+          fecharModal();      // fecha modal
+          popup.style.display = "flex"; // abre popup
+        });
+      }
+    });
+  </script>
 </body>
 </html>
+
 
 
 
