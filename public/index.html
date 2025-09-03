@@ -4,59 +4,59 @@
 <head>
 <meta charset="utf-8"/>
 <title>ULSAS - Início</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
 <style>
   body {
-    font-family: 'Roboto', Arial, sans-serif;
+    font-family: Arial, sans-serif;
     background: #f4f6fa;
     margin: 0;
     color: #222;
   }
   .header {
-    background: #fff;
-    padding: 30px 0 20px 0;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    background: #2b7cff;
+    padding: 10px 0 10px 0;
+    text-align: left;
+    box-shadow: none;
     margin-bottom: 0;
   }
   .logo {
-    max-width: 180px;
+    max-width: 120px;
     height: auto;
+    margin-left: 30px;
   }
   .sidebar {
     position: fixed;
     left: 0;
     top: 0;
-    width: 220px;
+    width: 180px;
     height: 100vh;
-    background: linear-gradient(180deg, #2b7cff 80%, #1e4fa3 100%);
-    box-shadow: 2px 0 12px rgba(0,0,0,0.07);
-    padding-top: 120px;
+    background: #f9f9f9;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.07);
+    padding-top: 70px;
     z-index: 100;
   }
   #menu {
     list-style: none;
-    padding: 0;
+    padding: 0 0 0 20px;
     margin: 0;
   }
   #menu li {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
   #menu a {
-    display: flex;
-    align-items: center;
-    color: #fff;
+    color: #2b7cff;
     text-decoration: none;
-    font-size: 1.08rem;
-    padding: 10px 24px;
-    border-radius: 6px;
+    font-size: 1rem;
+    padding: 6px 0;
+    border-radius: 4px;
     transition: background 0.2s;
+    display: block;
   }
   #menu a:hover {
-    background: rgba(255,255,255,0.13);
+    background: #e3e7ee;
   }
   .main-content {
-    margin-left: 240px;
+    margin-left: 200px;
     padding: 40px 30px 30px 30px;
     min-height: 100vh;
   }
@@ -140,20 +140,16 @@
   }
   #logout-btn {
     position: fixed;
-    top: 22px;
-    right: 32px;
-    padding: 10px 20px;
+    top: 15px;
+    right: 20px;
+    padding: 8px 14px;
     background-color: #e74c3c;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
     z-index: 2000;
-    font-size: 1rem;
-    font-weight: 700;
-    box-shadow: 0 2px 8px rgba(231,76,60,0.13);
     display: none;
-    transition: background 0.2s;
   }
   #logout-btn:hover {
     background-color: #c0392b;
@@ -169,7 +165,7 @@
       height: auto;
       padding-top: 20px;
       box-shadow: none;
-      background: #2b7cff;
+      background: #f9f9f9;
     }
     .container {
       flex-direction: column;
@@ -290,6 +286,7 @@
   </script>
 </body>
 </html>
+
 
 
 
