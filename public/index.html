@@ -5,6 +5,34 @@
   <title>ULSAS - Início</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    .capa-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    .capa-img {
+      max-width: 490px;
+      width: 70%;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(43,124,255,0.09);
+    }
+    .caixas-horizontal {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 32px;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 1100px) {
+      .caixas-horizontal {
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+    }
     #logout-btn {
       position: fixed;
       top: 15px;
@@ -119,10 +147,10 @@
 
   <!-- Conteúdo principal -->
   <div class="main-content">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 40px;">
-      <div style="width: 100%; display: flex; justify-content: center; margin-bottom: 30px;">
-        <img src="imagem CCII.png" alt="Foto de capa" style="max-width: 700px; width: 100%; border-radius: 16px; box-shadow: 0 4px 16px rgba(43,124,255,0.09);">
-      </div>
+    <div class="capa-container">
+      <img src="foto capa.png" alt="Foto de capa" class="capa-img">
+    </div>
+    <div class="caixas-horizontal">
       <div class="noticia" id="noticias-container">
         <h3>📰 Notícias</h3>
         <p>A carregar notícias...</p>
