@@ -20,7 +20,10 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 app.use(cors({
-  origin: "https://forma-o.onrender.com",
+  origin: [
+    "https://forma-o.onrender.com", 
+    "https://teu-servidor.onrender.com"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
@@ -100,6 +103,7 @@ app.post("/login", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Servidor online na porta ${PORT}`);
 });
+
 
 
 
