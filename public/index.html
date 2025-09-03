@@ -1,227 +1,111 @@
 <!DOCTYPE html>
-
 <html lang="pt">
 <head>
-<meta charset="utf-8"/>
-<title>ULSAS - Início</title>
-<link href="style.css" rel="stylesheet"/>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f6fa;
-    margin: 0;
-    color: #222;
-  }
-  .header {
-    background: none;
-    padding: 0;
-    text-align: left;
-    box-shadow: none;
-    margin-bottom: 0;
-  }
-  .logo {
-    max-width: 120px;
-    height: auto;
-    margin: 20px 0 0 20px;
-  }
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 180px;
-    height: 100vh;
-    background: #fff;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.07);
-    padding-top: 70px;
-    z-index: 100;
-  }
-  #menu {
-    list-style: none;
-    padding: 0 0 0 20px;
-    margin: 0;
-  }
-  #menu li {
-    margin-bottom: 12px;
-  }
-  #menu a {
-    color: #2b7cff;
-    text-decoration: none;
-    font-size: 1rem;
-    padding: 6px 0;
-    border-radius: 4px;
-    transition: background 0.2s;
-    display: block;
-  }
-  #menu a:hover {
-    background: #e3e7ee;
-  }
-  .main-content {
-    margin-left: 200px;
-    padding: 40px 30px 30px 30px;
-    min-height: 100vh;
-  }
-  .container {
-    display: flex;
-    gap: 40px;
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-  .imagem {
-    flex: 1 1 320px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 280px;
-  }
-  .imagem img {
-    max-width: 95%;
-    height: auto;
-    border-radius: 14px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
-  }
-  .conteudo {
-    flex: 2 1 400px;
-    padding: 0;
-    min-width: 320px;
-  }
-  h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 18px;
-    color: #2b7cff;
-  }
-  .noticia, .secao {
-    background: #fff;
-    border: 1px solid #e3e7ee;
-    padding: 22px 20px 18px 20px;
-    border-radius: 12px;
-    margin-bottom: 22px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-    transition: box-shadow 0.2s;
-  }
-  .noticia:hover, .secao:hover {
-    box-shadow: 0 4px 18px rgba(43,124,255,0.09);
-  }
-  .noticia h3, .secao h3 {
-    margin: 0 0 10px;
-    color: #2b7cff;
-    font-size: 1.2rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .noticia small {
-    color: #666;
-    font-size: 0.92rem;
-    margin-bottom: 8px;
-    display: block;
-  }
-  .secao ul {
-    padding-left: 18px;
-    margin: 10px 0 0 0;
-  }
-  .secao li {
-    margin-bottom: 6px;
-  }
-  .secao a {
-    color: #2b7cff;
-    text-decoration: underline;
-    font-weight: 500;
-  }
-  .secao a:hover {
-    color: #1e4fa3;
-  }
-  .secao p {
-    margin: 0 0 8px 0;
-  }
-  #noticias-container {
-    min-height: 200px;
-  }
-  #logout-btn {
-    position: fixed;
-    top: 15px;
-    right: 20px;
-    padding: 8px 14px;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 2000;
-    display: none;
-  }
-  #logout-btn:hover {
-    background-color: #c0392b;
-  }
-  @media (max-width: 900px) {
-    .main-content {
-      margin-left: 0;
-      padding: 20px 8px;
-    }
-    .sidebar {
-      position: static;
-      width: 100%;
-      height: auto;
-      padding-top: 20px;
-      box-shadow: none;
-      background: #f9f9f9;
+  <meta charset="UTF-8" />
+  <title>ULSAS - Início</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #logout-btn {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      padding: 8px 14px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 2000;
+      display: none;
     }
     .container {
-      flex-direction: column;
-      gap: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
     }
-    .imagem, .conteudo {
-      min-width: 0;
-      width: 100%;
+    .imagem {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-  }
-</style>
+    .imagem img {
+      max-width: 95%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .conteudo {
+      flex: 1;
+      padding: 20px;
+    }
+    .noticia {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .noticia h3 {
+      margin: 0 0 10px;
+      color: #2b7cff;
+    }
+    .noticia small {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    .contactos {
+      margin-top: 30px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
-<!-- Botão Logout -->
-<button id="logout-btn" onclick="logout()">Logout</button>
-<!-- Header com logotipo -->
-<div class="header">
-<img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
-</div>
-<!-- Sidebar -->
-<div class="sidebar">
-<ul id="menu">
-<li><a href="index.html">Início</a></li>
-<li><a href="agendamentos.html">Agendamentos</a></li>
-<li><a href="calendario.html">Calendário</a></li>
-<li><a href="salas.html">Salas</a></li>
-<!-- A aba Administração será adicionada via JavaScript apenas se o role for admin -->
-</ul>
-</div>
-<!-- Conteúdo principal -->
-<div class="main-content">
-<div class="container">
-<div class="imagem">
-<img alt="Imagem CCII" src="imagem CCII.png"/>
-</div>
-<div class="conteudo">
-<h2>Notícias</h2>
-<div id="noticias-container">
-<p>A carregar notícias...</p>
-</div>
-<div class="secao">
-<h3>📘 Manuais de Utilização</h3>
-<p>Aqui pode descarregar os manuais das salas e da aplicação:</p>
-<ul>
-<li><a href="manuais/manual_salas.pdf">Manual de Utilização das Salas</a></li>
-</ul>
-</div>
-<div class="secao">
-<h3>📞 Contactos</h3>
-<p>Email: <a href="mailto:formacao@ulsas.min-saude.pt">formacao@ulsas.min-saude.pt</a></p>
-<p>Telefone: 212727360</p>
-</div>
-</div>
-</div>
-</div>
-<script>
+  <!-- Botão Logout -->
+  <button id="logout-btn" onclick="logout()">Logout</button>
+
+  <!-- Header com logotipo -->
+  <div class="header">
+    <img src="/ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <ul id="menu">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="agendamentos.html">Agendamentos</a></li>
+      <li><a href="calendario.html">Calendário</a></li>
+      <li><a href="salas.html">Salas</a></li>
+      <!-- A aba Administração será adicionada via JavaScript apenas se o role for admin -->
+    </ul>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <div class="container">
+      <div class="imagem">
+        <img src="imagem CCII.png" alt="Imagem CCII">
+      </div>
+      <div class="conteudo">
+        <h2>Últimas Notícias</h2>
+        <div id="noticias-container">
+          <p>A carregar notícias...</p>
+        </div>
+
+        <div class="contactos">
+          <h2>Contactos</h2>
+          <p><strong>Email:</strong> formacao@ulsas.min-saude.pt</p>
+          <p><strong>Telefone:</strong> 212727360</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
     const token = localStorage.getItem("token");
     let role = null;
 
@@ -286,8 +170,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
