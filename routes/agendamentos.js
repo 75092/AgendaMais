@@ -1,5 +1,8 @@
+
 import express from "express";
+import cors from "cors";
 const router = express.Router();
+router.use(cors({ origin: '*' }));
 import pkg from "pg";
 const { Pool } = pkg;
 import dotenv from "dotenv";
