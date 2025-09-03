@@ -119,22 +119,27 @@
 
   <!-- Conteúdo principal -->
   <div class="main-content">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 40px;">
-      <div class="noticia" id="noticias-container">
-        <h3>📰 Notícias</h3>
-        <p>A carregar notícias...</p>
+    <div class="container">
+      <div class="imagem">
+        <img src="imagem CCII.png" alt="Imagem CCII">
       </div>
-      <div class="caixa">
-        <h3>📘 Manuais de Utilização</h3>
-        <p>Aqui pode descarregar os manuais das salas e da aplicação:</p>
-        <ul>
-          <li><a href="manuais/manual_salas.pdf">Manual de Utilização das Salas</a></li>
-        </ul>
-      </div>
-      <div class="caixa">
-        <h3>📞 Contactos</h3>
-        <p>Email: <a href="mailto:formacao@ulsas.min-saude.pt">formacao@ulsas.min-saude.pt</a></p>
-        <p>Telefone: 212727360</p>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 0; width: 100%;">
+        <div class="noticia" id="noticias-container">
+          <h3>📰 Notícias</h3>
+          <p>A carregar notícias...</p>
+        </div>
+        <div class="caixa">
+          <h3>📘 Manuais de Utilização</h3>
+          <p>Aqui pode descarregar os manuais das salas e da aplicação:</p>
+          <ul>
+            <li><a href="manuais/manual_salas.pdf">Manual de Utilização das Salas</a></li>
+          </ul>
+        </div>
+        <div class="caixa">
+          <h3>📞 Contactos</h3>
+          <p>Email: <a href="mailto:formacao@ulsas.min-saude.pt">formacao@ulsas.min-saude.pt</a></p>
+          <p>Telefone: 212727360</p>
+        </div>
       </div>
     </div>
   </div>
@@ -181,26 +186,28 @@
         const response = await fetch("noticias.json");
         if (!response.ok) throw new Error("Sem ficheiro");
         const noticias = await response.json();
+        let html = `<h3>📰 Notícias</h3>`;
         if (!noticias.length) {
-          container.innerHTML = "<p>Ainda não existem notícias publicadas.</p>";
+          html += "<p>Ainda não existem notícias publicadas.</p>";
+          container.innerHTML = html;
           return;
         }
-        container.innerHTML = "";
         noticias.slice().reverse().forEach(noticia => {
-          const div = document.createElement("div");
-          div.classList.add("noticia");
-          div.innerHTML = `
-            <h3>${noticia.titulo}</h3>
-            <small>${noticia.data}</small>
-            <p>${noticia.conteudo}</p>
+          html += `
+            <div class='noticia'>
+              <h3>${noticia.titulo}</h3>
+              <small>${noticia.data}</small>
+              <p>${noticia.conteudo}</p>
+            </div>
           `;
-          container.appendChild(div);
         });
+        container.innerHTML = html;
       } catch (e) {
-        container.innerHTML = "<p>Ainda não existem notícias publicadas.</p>";
+        container.innerHTML = `<h3>📰 Notícias</h3><p>Ainda não existem notícias publicadas.</p>`;
       }
     }
     carregarNoticias();
   </script>
 </body>
 </html>
+
