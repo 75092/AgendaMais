@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <title>ULSAS - Início</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
+<meta charset="utf-8"/>
+<title>ULSAS - Início</title>
+<link href="style.css" rel="stylesheet"/>
+<style>
     #logout-btn {
       position: fixed;
       top: 15px;
@@ -62,60 +63,68 @@
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-  </style>
+  
+.secao-noticias,
+.manuais,
+.contactos {
+  width: 100%;
+  padding: 25px;
+  margin-bottom: 30px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+#noticias-container {
+  min-height: 200px;
+}
+</style>
 </head>
 <body>
-  <!-- Botão Logout -->
-  <button id="logout-btn" onclick="logout()">Logout</button>
-
-  <!-- Header com logotipo -->
-  <div class="header">
-    <img src="/ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
-  </div>
-
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <ul id="menu">
-      <li><a href="index.html">Início</a></li>
-      <li><a href="agendamentos.html">Agendamentos</a></li>
-      <li><a href="calendario.html">Calendário</a></li>
-      <li><a href="salas.html">Salas</a></li>
-      <!-- A aba Administração será adicionada via JavaScript apenas se o role for admin -->
-    </ul>
-  </div>
-
-  <!-- Conteúdo principal -->
-  <div class="main-content">
-    <div class="container">
-      <div class="imagem">
-        <img src="imagem CCII.png" alt="Imagem CCII">
-      </div>
-      <div class="conteudo">
-        <h2>Notícias</h2>
-        <div id="noticias-container">
-          <p>A carregar notícias...</p>
-        </div>
-
-
-        <div class="manuais">
-          <h3>📘 Manuais de Utilização</h3>
-          <p>Aqui pode descarregar os manuais das salas e da aplicação:</p>
-          <ul>
-            <li><a href="manuais/manual_salas.pdf">Manual de Utilização das Salas</a></li>
-          </ul>
-        </div>
-
-        <div class="contactos">
-          <h3>📞 Contactos</h3>
-          <p>Email: <a href="mailto:formacao@ulsas.min-saude.pt">formacao@ulsas.min-saude.pt</a></p>
-          <p>Telefone: 212727360</p>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <script>
+<!-- Botão Logout -->
+<button id="logout-btn" onclick="logout()">Logout</button>
+<!-- Header com logotipo -->
+<div class="header">
+<img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
+</div>
+<!-- Sidebar -->
+<div class="sidebar">
+<ul id="menu">
+<li><a href="index.html">Início</a></li>
+<li><a href="agendamentos.html">Agendamentos</a></li>
+<li><a href="calendario.html">Calendário</a></li>
+<li><a href="salas.html">Salas</a></li>
+<!-- A aba Administração será adicionada via JavaScript apenas se o role for admin -->
+</ul>
+</div>
+<!-- Conteúdo principal -->
+<div class="main-content">
+<div class="container">
+<div class="imagem">
+<img alt="Imagem CCII" src="imagem CCII.png"/>
+</div>
+<div class="conteudo">
+<h2>Notícias</h2>
+<div id="noticias-container">
+<p>A carregar notícias...</p>
+</div>
+<div class="secao">
+<h3>📘 Manuais de Utilização</h3>
+<p>Aqui pode descarregar os manuais das salas e da aplicação:</p>
+<ul>
+<li><a href="manuais/manual_salas.pdf">Manual de Utilização das Salas</a></li>
+</ul>
+</div>
+<div class="secao">
+<h3>📞 Contactos</h3>
+<p>Email: <a href="mailto:formacao@ulsas.min-saude.pt">formacao@ulsas.min-saude.pt</a></p>
+<p>Telefone: 212727360</p>
+</div>
+</div>
+</div>
+</div>
+<script>
     const token = localStorage.getItem("token");
     let role = null;
 
@@ -180,5 +189,6 @@
   </script>
 </body>
 </html>
+
 
 
