@@ -1,4 +1,3 @@
-
 import express from "express";
 const router = express.Router();
 import pkg from "pg";
@@ -33,4 +32,16 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Endpoint GET para listar todos os agendamentos
+router.get("/", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM agendamentos ORDER BY data DESC, hora_inicio DESC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Erro ao buscar agendamentos:", err);
+    res.status(500).json({ message: "Erro ao buscar agendamentos." });
+  }
+});
+
 export default router;
+
