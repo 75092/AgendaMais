@@ -134,138 +134,53 @@ if (!token) {
 <button class="tab-button" data-tab="concluido">Concluído</button>
 <button class="tab-button" data-tab="definicoes">Definições</button>
 </div>
-<div class="tab-content active" id="aprovacao"></div>
-<div class="tab-content" id="pendente"></div>
-<div class="tab-content" id="em_aprovacao"></div>
-<div class="tab-content" id="concluido">
-<label><strong>Filtrar por sala:</strong></label>
-<select id="filtro-concluido" onchange="render()">
-<option value="todas">Todas as salas</option>
-<option value="hgo">Salas HGO</option>
-<option value="sobreda">Salas Sobreda</option>
-</select>
-<div id="lista-concluido"></div>
-</div>
-<div class="tab-content" id="definicoes">
-<h2>Taxa de Ocupação de Espaços ULSAS</h2>
-<label>Sala:</label>
-<select id="ocupacao-sala">
-<option value="todas">Todas</option>
-<option value="hgo">Todas as salas HGO</option>
-<option value="sobreda">Todas as salas Sobreda</option>
-<option value="Sala Almada">Sala Almada</option>
-<option value="Sala Tejo (HGO)">Sala Tejo (HGO)</option>
-<option value="Sala Tejo (Sobreda)">Sala Tejo (Sobreda)</option>
-<option value="Sala Garcia de Orta">Sala Garcia de Orta</option>
-<option value="Sala Sado">Sala Sado</option>
-<option value="Sala Auditório">Sala Auditório</option>
-<option value=""></option>
-</select>
-<label>Ano:</label>
-<select id="ocupacao-ano">
-<option value="">--</option>
+<h1>Administração</h1>
+<h2>Lista de Agendamentos</h2>
+<table id="tabela-admin" style="width:100%;margin-bottom:30px;border-collapse:collapse;">
 <script>
-    const anos = new Set();
-    const ags = JSON.parse(localStorage.getItem("agendamentos") || "[]");
-    ags.forEach(ev => {
-      const d = new Date(ev.start);
-      anos.add(d.getFullYear());
+async function carregarAgendamentosAdmin() {
+  try {
+    const resp = await fetch('/agendamentos');
+    if (!resp.ok) throw new Error('Erro ao buscar agendamentos');
+    const agendamentos = await resp.json();
+    const tbody = document.querySelector('#tabela-admin tbody');
+    tbody.innerHTML = '';
+    agendamentos.forEach(ag => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${ag.evento || ''}</td>
+        <td>${ag.data || ''}</td>
+        <td>${ag.hora_inicio || ''}</td>
+        <td>${ag.hora_fim || ''}</td>
+        <td>${ag.sala || ''}</td>
+        <td>${ag.requerente || ''}</td>
+        <td>${ag.email || ''}</td>
+        <td>${ag.participantes || ''}</td>
+        <td>${ag.observacoes || ''}</td>
+      `;
+      tbody.appendChild(tr);
     });
-    [...anos].sort().forEach(y => {
-      document.write(`<option value="${y}">${y}</option>`);
-    });
-  </script>
-</select>
-
-
-
-<label>Mês Início:</label>
-<select id="mes-inicio">
-  <option value="">--</option>
-  <option value="0">Janeiro</option>
-  <option value="1">Fevereiro</option>
-  <option value="2">Março</option>
-  <option value="3">Abril</option>
-  <option value="4">Maio</option>
-  <option value="5">Junho</option>
-  <option value="6">Julho</option>
-  <option value="7">Agosto</option>
-  <option value="8">Setembro</option>
-  <option value="9">Outubro</option>
-  <option value="10">Novembro</option>
-  <option value="11">Dezembro</option>
-</select>
-
-<label>Mês Fim:</label>
-<select id="mes-fim">
-  <option value="">--</option>
-  <option value="0">Janeiro</option>
-  <option value="1">Fevereiro</option>
-  <option value="2">Março</option>
-  <option value="3">Abril</option>
-  <option value="4">Maio</option>
-  <option value="5">Junho</option>
-  <option value="6">Julho</option>
-  <option value="7">Agosto</option>
-  <option value="8">Setembro</option>
-  <option value="9">Outubro</option>
-  <option value="10">Novembro</option>
-  <option value="11">Dezembro</option>
-</select>
-
-
-
-<label>Dia:</label>
-<select id="ocupacao-dia">
-<option value="">--</option>
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7</option>
-<option value="8">8</option>
-<option value="9">9</option>
-<option value="10">10</option>
-<option value="11">11</option>
-<option value="12">12</option>
-<option value="13">13</option>
-<option value="14">14</option>
-<option value="15">15</option>
-<option value="16">16</option>
-<option value="17">17</option>
-<option value="18">18</option>
-<option value="19">19</option>
-<option value="20">20</option>
-<option value="21">21</option>
-<option value="22">22</option>
-<option value="23">23</option>
-<option value="24">24</option>
-<option value="25">25</option>
-<option value="26">26</option>
-<option value="27">27</option>
-<option value="28">28</option>
-<option value="29">29</option>
-<option value="30">30</option>
-<option value="31">31</option>
-</select>
-<button onclick="calcularTaxaOcupacao()">Calcular</button>
-<button onclick="exportarParaExcel()">Exportar para Excel</button>
-<div id="resultado-ocupacao" style="margin-top: 1em;"></div>
-</div>
-</div>
-<!-- Modal de edição -->
-<div class="modal-evento" id="modal-editar" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:9999;">
-<div class="modal-evento-content" style="background:#fff; margin:10% auto; padding:20px; width:300px; border-radius:8px;">
-<span class="fechar-modal" onclick="document.getElementById('modal-editar').style.display='none'" style="float:right; cursor:pointer;">×</span>
-<h3>Editar Reserva</h3>
-<label>Data:<br/>
-<input id="editar-data" required="" type="date"/>
-</label><br/><br/>
-<label>Hora Início:<br/>
-<input id="editar-inicio" required="" type="time"/>
-</label><br/><br/>
+  } catch (e) {
+    alert('Erro ao carregar agendamentos: ' + e.message);
+  }
+}
+window.addEventListener('DOMContentLoaded', carregarAgendamentosAdmin);
+</script>
+  <thead>
+    <tr>
+      <th>Evento</th>
+      <th>Data</th>
+      <th>Hora Início</th>
+      <th>Hora Fim</th>
+      <th>Sala</th>
+      <th>Requerente</th>
+      <th>Email</th>
+      <th>Participantes</th>
+      <th>Observações</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 <label>Hora Fim:<br/>
 <input id="editar-fim" required="" type="time"/>
 </label><br/><br/>
@@ -333,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function carregarAgendamentos() {
   try {
-    const resp = await fetch("https://teu-servidor.onrender.com/agendamentos");
+    const resp = await fetch("/agendamentos");
     const agendamentos = await resp.json();
 
     aprovacaoDiv.innerHTML = "";
@@ -343,14 +258,14 @@ document.addEventListener('DOMContentLoaded', function () {
       const card = document.createElement("div");
       card.className = "agendamento-card";
       card.innerHTML = `
-        <strong>${p.nome_evento}</strong><br>
-        Requerente: ${p.nome}<br>
-        Data: ${p.data}<br>
-        Hora: ${p.hora_inicio} - ${p.hora_fim}<br>
-        Sala: ${p.sala}<br>
+        <strong>${p.evento || p.nome_evento || ''}</strong><br>
+        Requerente: ${p.requerente || p.nome || ''}<br>
+        Data: ${p.data || ''}<br>
+        Hora: ${p.hora_inicio || ''} - ${p.hora_fim || ''}<br>
+        Sala: ${p.sala || ''}<br>
         Participantes: ${p.participantes || "-"}<br>
         Observações: ${p.observacoes || "-"}<br>
-        Estado: ${p.estado}
+        Estado: ${p.estado || ''}
       `;
 
       if (p.estado === "Pendente") {
@@ -749,4 +664,5 @@ setTimeout(() => {
 </body>
 
 </html>
+
 
