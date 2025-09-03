@@ -4,90 +4,182 @@
 <head>
 <meta charset="utf-8"/>
 <title>ULSAS - Início</title>
-<link href="style.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
-    #logout-btn {
-      position: fixed;
-      top: 15px;
-      right: 20px;
-      padding: 8px 14px;
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 2000;
-      display: none;
+  body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #f4f6fa;
+    margin: 0;
+    color: #222;
+  }
+  .header {
+    background: #fff;
+    padding: 30px 0 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 0;
+  }
+  .logo {
+    max-width: 180px;
+    height: auto;
+  }
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 220px;
+    height: 100vh;
+    background: linear-gradient(180deg, #2b7cff 80%, #1e4fa3 100%);
+    box-shadow: 2px 0 12px rgba(0,0,0,0.07);
+    padding-top: 120px;
+    z-index: 100;
+  }
+  #menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  #menu li {
+    margin-bottom: 18px;
+  }
+  #menu a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.08rem;
+    padding: 10px 24px;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  #menu a:hover {
+    background: rgba(255,255,255,0.13);
+  }
+  .main-content {
+    margin-left: 240px;
+    padding: 40px 30px 30px 30px;
+    min-height: 100vh;
+  }
+  .container {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .imagem {
+    flex: 1 1 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 280px;
+  }
+  .imagem img {
+    max-width: 95%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+  }
+  .conteudo {
+    flex: 2 1 400px;
+    padding: 0;
+    min-width: 320px;
+  }
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: #2b7cff;
+  }
+  .noticia, .secao {
+    background: #fff;
+    border: 1px solid #e3e7ee;
+    padding: 22px 20px 18px 20px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    transition: box-shadow 0.2s;
+  }
+  .noticia:hover, .secao:hover {
+    box-shadow: 0 4px 18px rgba(43,124,255,0.09);
+  }
+  .noticia h3, .secao h3 {
+    margin: 0 0 10px;
+    color: #2b7cff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .noticia small {
+    color: #666;
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .secao ul {
+    padding-left: 18px;
+    margin: 10px 0 0 0;
+  }
+  .secao li {
+    margin-bottom: 6px;
+  }
+  .secao a {
+    color: #2b7cff;
+    text-decoration: underline;
+    font-weight: 500;
+  }
+  .secao a:hover {
+    color: #1e4fa3;
+  }
+  .secao p {
+    margin: 0 0 8px 0;
+  }
+  #noticias-container {
+    min-height: 200px;
+  }
+  #logout-btn {
+    position: fixed;
+    top: 22px;
+    right: 32px;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 2000;
+    font-size: 1rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(231,76,60,0.13);
+    display: none;
+    transition: background 0.2s;
+  }
+  #logout-btn:hover {
+    background-color: #c0392b;
+  }
+  @media (max-width: 900px) {
+    .main-content {
+      margin-left: 0;
+      padding: 20px 8px;
+    }
+    .sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      padding-top: 20px;
+      box-shadow: none;
+      background: #2b7cff;
     }
     .container {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px;
+      flex-direction: column;
+      gap: 0;
     }
-    .imagem {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .imagem, .conteudo {
+      min-width: 0;
+      width: 100%;
     }
-    .imagem img {
-      max-width: 95%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    .conteudo {
-      flex: 1;
-      padding: 20px;
-    }
-    .noticia {
-      background: white;
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .noticia h3 {
-      margin: 0 0 10px;
-      color: #2b7cff;
-    }
-    .noticia small {
-      color: #666;
-      font-size: 0.85rem;
-    }
-    .contactos {
-      margin-top: 30px;
-      padding: 15px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-  
-.secao-noticias,
-.manuais,
-.contactos {
-  width: 100%;
-  padding: 25px;
-  margin-bottom: 30px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  box-sizing: border-box;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-#noticias-container {
-  min-height: 200px;
-}
-</style>
-    .secao {
-      background: white;
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
+  }
 </style>
 </head>
 <body>
@@ -198,6 +290,7 @@
   </script>
 </body>
 </html>
+
 
 
 
