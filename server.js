@@ -16,8 +16,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  connectionString: process.env.DATABASE_URL
+  // Não inclua a opção ssl se o servidor não suporta
 });
 app.use(cors({
   origin: "https://forma-o.onrender.com",
@@ -105,6 +105,7 @@ app.post("/login", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Servidor online na porta ${PORT}`);
 });
+
 
 
 
