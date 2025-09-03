@@ -15,15 +15,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
+
+// Conexão com Postgres (Render exige SSL)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
+
+// CORS – só permite chamadas do frontend
 app.use(cors({
-  origin: [
-    "https://forma-o.onrender.com", 
-    "https://teu-servidor.onrender.com"
-  ],
+  origin: "https://forma-o.onrender.com",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
@@ -31,6 +32,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Inicialização da base de dados
 async function initDatabase() {
   try {
     await pool.query(`
@@ -42,6 +44,7 @@ async function initDatabase() {
       );
     `);
 
+    // Criar admin se não existir
     const adminCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["admin"]);
     if (adminCheck.rows.length === 0) {
       const hashedPassword = await bcrypt.hash("12345", 10);
@@ -52,6 +55,7 @@ async function initDatabase() {
       console.log("✅ Utilizador admin criado (admin/12345)");
     }
 
+    // Criar convidado se não existir
     const guestCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["convidado"]);
     if (guestCheck.rows.length === 0) {
       const hashedPassword = await bcrypt.hash("12345", 10);
@@ -67,6 +71,7 @@ async function initDatabase() {
 }
 initDatabase();
 
+// Rotas
 app.use("/api/agendamentos", agendamentosRouter);
 
 app.get("/", (req, res) => {
@@ -100,9 +105,11 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// Start do servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor online na porta ${PORT}`);
 });
+
 
 
 
