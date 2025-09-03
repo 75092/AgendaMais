@@ -28,11 +28,6 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
-
 async function initDatabase() {
   try {
     await pool.query(`
@@ -105,5 +100,6 @@ app.post("/login", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Servidor online na porta ${PORT}`);
 });
+
 
 
