@@ -39,28 +39,61 @@
       flex: 1;
       padding: 20px;
     }
+    .caixa {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(43,124,255,0.09);
+      padding: 22px 28px 18px 28px;
+      margin-bottom: 28px;
+      border: none;
+      max-width: 600px;
+    }
+    .caixa h3 {
+      margin: 0 0 10px;
+      color: #2176d3;
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .caixa p {
+      margin: 0 0 8px 0;
+    }
+    .caixa ul {
+      margin: 10px 0 0 18px;
+    }
+    .caixa li {
+      margin-bottom: 6px;
+    }
+    .caixa a {
+      color: #2176d3;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+    .caixa a:hover {
+      color: #1e4fa3;
+    }
     .noticia {
-      background: white;
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(43,124,255,0.09);
+      padding: 22px 28px 18px 28px;
+      margin-bottom: 28px;
+      border: none;
+      max-width: 600px;
     }
     .noticia h3 {
       margin: 0 0 10px;
-      color: #2b7cff;
+      color: #2176d3;
+      font-size: 1.15rem;
+      font-weight: 700;
     }
     .noticia small {
       color: #666;
-      font-size: 0.85rem;
-    }
-    .contactos {
-      margin-top: 30px;
-      padding: 15px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+      display: block;
     }
   </style>
 </head>
@@ -86,21 +119,22 @@
 
   <!-- Conteúdo principal -->
   <div class="main-content">
-    <div class="container">
-      <div class="imagem">
-        <img src="imagem CCII.png" alt="Imagem CCII">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 40px;">
+      <div class="noticia" id="noticias-container">
+        <h3>📰 Notícias</h3>
+        <p>A carregar notícias...</p>
       </div>
-      <div class="conteudo">
-        <h2>Últimas Notícias</h2>
-        <div id="noticias-container">
-          <p>A carregar notícias...</p>
-        </div>
-
-        <div class="contactos">
-          <h2>Contactos</h2>
-          <p><strong>Email:</strong> formacao@ulsas.min-saude.pt</p>
-          <p><strong>Telefone:</strong> 212727360</p>
-        </div>
+      <div class="caixa">
+        <h3>📘 Manuais de Utilização</h3>
+        <p>Aqui pode descarregar os manuais das salas e da aplicação:</p>
+        <ul>
+          <li><a href="manuais/manual_salas.pdf">Manual de Utilização das Salas</a></li>
+        </ul>
+      </div>
+      <div class="caixa">
+        <h3>📞 Contactos</h3>
+        <p>Email: <a href="mailto:formacao@ulsas.min-saude.pt">formacao@ulsas.min-saude.pt</a></p>
+        <p>Telefone: 212727360</p>
       </div>
     </div>
   </div>
