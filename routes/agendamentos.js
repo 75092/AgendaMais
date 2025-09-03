@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
     const valores = [
       dados.nomeEvento, dados.data, dados.horaInicio, dados.horaFim, dados.sala,
-      dados.numMec, dados.nomeReq, dados.servicoReq, dados.emailReq, dados.contactoReq,
+      dados.numMec, dados.nome, dados.servico, dados.email, dados.contacto,
       dados.participantes, dados.observacoes, dados.tipoEvento, JSON.stringify(dados.recursos)
     ];
 
@@ -47,4 +47,3 @@ router.get("/", async (req, res) => {
 });
 
 export default router;
-
