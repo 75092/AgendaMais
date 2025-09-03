@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="pt">
@@ -123,115 +122,103 @@ if (!token) {
 <div class="main-content">
 <h1>Administração</h1>
 <div style="margin-bottom: 1em;">
-<label for="filtro-data"><strong>Filtrar por data:</strong></label>
-<input id="filtro-data" onchange="render()" type="date"/>
-<button onclick="document.getElementById('filtro-data').value=''; render();">Limpar filtro</button>
+  <label for="filtro-data"><strong>Filtrar por data:</strong></label>
+  <input id="filtro-data" type="date"/>
+  <button onclick="document.getElementById('filtro-data').value=''; renderAgendamentos();">Limpar filtro</button>
 </div>
 <div class="tabs">
-<button class="tab-button active" data-tab="aprovacao">Aprovado</button>
-<button class="tab-button" data-tab="pendente">Pendente</button>
-<button class="tab-button" data-tab="em_aprovacao">Reservas</button>
-<button class="tab-button" data-tab="concluido">Concluído</button>
-<button class="tab-button" data-tab="definicoes">Definições</button>
+  <button class="tab-button active" data-tab="aprovacao">Aprovado</button>
+  <button class="tab-button" data-tab="pendente">Pendente</button>
+  <button class="tab-button" data-tab="em_aprovacao">Reservas</button>
+  <button class="tab-button" data-tab="concluido">Concluído</button>
+  <button class="tab-button" data-tab="definicoes">Definições</button>
 </div>
-<h1>Administração</h1>
-<h2>Lista de Agendamentos</h2>
-<table id="tabela-admin" style="width:100%;margin-bottom:30px;border-collapse:collapse;">
+<div class="tab-content active" id="aprovacao"></div>
+<div class="tab-content" id="pendente"></div>
+<div class="tab-content" id="em_aprovacao"></div>
+<div class="tab-content" id="concluido"></div>
+<div class="tab-content" id="definicoes"></div>
+</div>
+</div>
 <script>
-async function carregarAgendamentosAdmin() {
+
+// Função para renderizar agendamentos nas tabs
+async function renderAgendamentos() {
+  const aprovacaoDiv = document.getElementById("aprovacao");
+  const pendenteDiv = document.getElementById("pendente");
+  const emAprovacaoDiv = document.getElementById("em_aprovacao");
+  const concluidoDiv = document.getElementById("concluido");
+
+  aprovacaoDiv.innerHTML = "";
+  pendenteDiv.innerHTML = "";
+  emAprovacaoDiv.innerHTML = "";
+  concluidoDiv.innerHTML = "";
+
+  let filtroData = document.getElementById("filtro-data")?.value;
+  filtroData = filtroData ? new Date(filtroData) : null;
+
   try {
-    const resp = await fetch('/agendamentos');
-    if (!resp.ok) throw new Error('Erro ao buscar agendamentos');
+    const resp = await fetch("/agendamentos");
     const agendamentos = await resp.json();
-    const tbody = document.querySelector('#tabela-admin tbody');
-    tbody.innerHTML = '';
-    agendamentos.forEach(ag => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${ag.evento || ''}</td>
-        <td>${ag.data || ''}</td>
-        <td>${ag.hora_inicio || ''}</td>
-        <td>${ag.hora_fim || ''}</td>
-        <td>${ag.sala || ''}</td>
-        <td>${ag.requerente || ''}</td>
-        <td>${ag.email || ''}</td>
-        <td>${ag.participantes || ''}</td>
-        <td>${ag.observacoes || ''}</td>
+    agendamentos.forEach((ag) => {
+      // Filtro por data
+      if (filtroData) {
+        const dataAg = new Date(ag.data);
+        if (
+          dataAg.getFullYear() !== filtroData.getFullYear() ||
+          dataAg.getMonth() !== filtroData.getMonth() ||
+          dataAg.getDate() !== filtroData.getDate()
+        ) return;
+      }
+      const card = document.createElement("div");
+      card.className = "agendamento-card";
+      card.innerHTML = `
+        <strong>${ag.evento || ag.nome_evento || ''}</strong><br>
+        Requerente: ${ag.requerente || ag.nome || ''}<br>
+        Data: ${ag.data || ''}<br>
+        Hora: ${ag.hora_inicio || ''} - ${ag.hora_fim || ''}<br>
+        Sala: ${ag.sala || ''}<br>
+        Participantes: ${ag.participantes || "-"}<br>
+        Observações: ${ag.observacoes || "-"}<br>
+        Estado: ${ag.estado || ''}
       `;
-      tbody.appendChild(tr);
+      if (ag.estado === "Pendente") {
+        card.innerHTML += `
+          <button onclick="atualizarAgendamento(${ag.id}, 'Aprovado')">Aprovar</button>
+          <button onclick="atualizarAgendamento(${ag.id}, 'Rejeitado')">Rejeitar</button>
+        `;
+        pendenteDiv.appendChild(card);
+      } else if (ag.estado === "Aprovado") {
+        card.innerHTML += `
+          <button onclick="atualizarAgendamento(${ag.id}, 'Pendente')">Tornar Pendente</button>
+        `;
+        aprovacaoDiv.appendChild(card);
+      } else if (ag.estado === "Reservas" || ag.estado === "Em Aprovação") {
+        emAprovacaoDiv.appendChild(card);
+      } else if (ag.estado === "Concluído") {
+        concluidoDiv.appendChild(card);
+      }
     });
-  } catch (e) {
-    alert('Erro ao carregar agendamentos: ' + e.message);
+  } catch (err) {
+    console.error("Erro ao carregar agendamentos", err);
   }
 }
-window.addEventListener('DOMContentLoaded', carregarAgendamentosAdmin);
-</script>
-  <thead>
-    <tr>
-      <th>Evento</th>
-      <th>Data</th>
-      <th>Hora Início</th>
-      <th>Hora Fim</th>
-      <th>Sala</th>
-      <th>Requerente</th>
-      <th>Email</th>
-      <th>Participantes</th>
-      <th>Observações</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-<label>Hora Fim:<br/>
-<input id="editar-fim" required="" type="time"/>
-</label><br/><br/>
-<label>Sala:<br/>
-<select id="editar-sala">
-<option value="Sala Almada">Sala Almada</option>
-<option value="Sala Tejo (HGO)">Sala Tejo (HGO)</option>
-<option value="Sala Tejo (Sobreda)">Sala Tejo (Sobreda)</option>
-<option value="Sala Garcia de Orta">Sala Garcia de Orta</option>
-<option value="Sala Sado">Sala Sado</option>
-<option value="Sala Auditório">Sala Auditório</option>
-<option value=""></option>
-</select>
-</label><br/><br/>
-<button onclick="guardarAlteracoes()">Guardar Alterações</button>
-</div>
-</div>
-<script>
-let render;
-let guardarAlteracoes;
+
+// Atualizar estado do agendamento
+async function atualizarAgendamento(id, estado) {
+  await fetch(`/agendamentos/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ estado })
+  });
+  renderAgendamentos();
+}
+
+// Tabs
 document.addEventListener('DOMContentLoaded', function () {
-  let indexPresencas = null;
-
-  function abrirModalPresencas(index) {
-    const ev = agendamentos[index];
-    document.getElementById("horasEfetivas").value = ev.extendedProps?.horasEfetivas || "";
-    document.getElementById("participantesEfetivos").value = ev.extendedProps?.participantesEfetivos || "";
-    indexPresencas = index;
-    document.getElementById("modal-presencas").style.display = "block";
-  }
-  window.abrirModalPresencas = abrirModalPresencas;
-
-  function guardarPresencas() {
-    const horas = document.getElementById("horasEfetivas").value;
-    const participantes = document.getElementById("participantesEfetivos").value;
-
-    agendamentos[indexPresencas].extendedProps = {
-      ...agendamentos[indexPresencas].extendedProps,
-      horasEfetivas: horas,
-      participantesEfetivos: participantes
-    };
-
-    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-    document.getElementById("modal-presencas").style.display = "none";
-    render();
-  }
-  window.guardarPresencas = guardarPresencas;
-
+  renderAgendamentos();
   const tabButtons = document.querySelectorAll('.tab-button');
   const tabContents = document.querySelectorAll('.tab-content');
-
   tabButtons.forEach(button => {
     button.addEventListener('click', () => {
       const tab = button.getAttribute('data-tab');
@@ -241,225 +228,6 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById(tab).classList.add('active');
     });
   });
-
-  const aprovacaoDiv = document.getElementById("aprovacao");
-  const pendenteDiv = document.getElementById("pendente");
-  const emAprovacaoDiv = document.getElementById("em_aprovacao");
-
-  async function carregarAgendamentos() {
-  try {
-    const resp = await fetch("/agendamentos");
-    const agendamentos = await resp.json();
-
-    aprovacaoDiv.innerHTML = "";
-    pendenteDiv.innerHTML = "";
-
-    agendamentos.forEach((p) => {
-      const card = document.createElement("div");
-      card.className = "agendamento-card";
-      card.innerHTML = `
-        <strong>${p.evento || p.nome_evento || ''}</strong><br>
-        Requerente: ${p.requerente || p.nome || ''}<br>
-        Data: ${p.data || ''}<br>
-        Hora: ${p.hora_inicio || ''} - ${p.hora_fim || ''}<br>
-        Sala: ${p.sala || ''}<br>
-        Participantes: ${p.participantes || "-"}<br>
-        Observações: ${p.observacoes || "-"}<br>
-        Estado: ${p.estado || ''}
-      `;
-
-      if (p.estado === "Pendente") {
-        card.innerHTML += `
-          <button onclick="atualizar(${p.id}, 'Aprovado')">Aprovar</button>
-          <button onclick="atualizar(${p.id}, 'Rejeitado')">Rejeitar</button>
-        `;
-        pendenteDiv.appendChild(card);
-      } else if (p.estado === "Aprovado") {
-        card.innerHTML += `
-          <button onclick="atualizar(${p.id}, 'Pendente')">Tornar Pendente</button>
-        `;
-        aprovacaoDiv.appendChild(card);
-      }
-    });
-  } catch (err) {
-    console.error("Erro ao carregar agendamentos", err);
-  }
-}
-
-async function atualizar(id, estado) {
-  await fetch(`https://teu-servidor.onrender.com/agendamentos/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ estado })
-  });
-  carregarAgendamentos();
-}
-
-document.addEventListener("DOMContentLoaded", carregarAgendamentos);
-
-  let indexAEditar = null;
-
-  function criarBotao(texto, callback) {
-    const btn = document.createElement("button");
-    btn.textContent = texto;
-    btn.onclick = callback;
-    return btn;
-  }
-
-  function abrirModalEdicao(index) {
-    const ev = agendamentos[index];
-    const data = new Date(ev.start);
-    document.getElementById("editar-data").value = data.toISOString().substring(0, 10);
-    document.getElementById("editar-inicio").value = data.toISOString().substring(11, 16);
-    document.getElementById("editar-fim").value = new Date(ev.end).toISOString().substring(11, 16);
-    document.getElementById("editar-sala").value = ev.extendedProps?.sala || "";
-    indexAEditar = index;
-    
-
-    document.getElementById("modal-editar").style.display = "block";
-  }
-
-  guardarAlteracoes = function() {
-    const data = document.getElementById("editar-data").value;
-    const inicio = document.getElementById("editar-inicio").value;
-    const fim = document.getElementById("editar-fim").value;
-    const sala = document.getElementById("editar-sala").value;
-
-    if (!data || !inicio || !fim || !sala || fim <= inicio) {
-      alert("Preencha corretamente todos os campos.");
-      return;
-    }
-
-    agendamentos[indexAEditar].start = `${data}T${inicio}`;
-    agendamentos[indexAEditar].end = `${data}T${fim}`;
-    agendamentos[indexAEditar].extendedProps = {
-  ...agendamentos[indexAEditar].extendedProps,
-  sala
-};
-    agendamentos[indexAEditar].title = agendamentos[indexAEditar].title.split(" - ")[0] + " - " + sala;
-
-    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-    document.getElementById("modal-editar").style.display = "none";
-    render();
-  }
-
-  
-render = function() {
-
-  const agora = new Date();
-  agendamentos.forEach(ev => {
-    if (ev.extendedProps?.status === "aprovado" && new Date(ev.end) < agora) {
-      ev.extendedProps.status = "concluido";
-    }
-  });
-
-  aprovacaoDiv.innerHTML = "";
-  pendenteDiv.innerHTML = "";
-  emAprovacaoDiv.innerHTML = "";
-
-  const filtroDataStr = document.getElementById("filtro-data")?.value;
-  const concluidoDiv = document.getElementById("lista-concluido");
-  const filtroConcluido = document.getElementById("filtro-concluido")?.value || "todas";
-  concluidoDiv.innerHTML = "";
-
-
-  const filtroData = filtroDataStr ? new Date(filtroDataStr) : null;
-
-    pendenteDiv.innerHTML = "";
-    emAprovacaoDiv.innerHTML = "";
-
-    agendamentos.forEach((ev, index) => {
-  const inicio = new Date(ev.start);
-  const fim = new Date(ev.end);
-
-    
-
-    if (filtroData) {
-      const mesmoDia =
-        inicio.getFullYear() === filtroData.getFullYear() &&
-        inicio.getMonth() === filtroData.getMonth() &&
-        inicio.getDate() === filtroData.getDate();
-      if (!mesmoDia) return;
-    }
-      const props = ev.extendedProps || {};
-      const card = document.createElement("div");
-      card.className = "agendamento-card";
-
-      card.innerHTML = `
-        <strong>${ev.title}</strong><br>
-        Requerente: ${props.nomeReq || "-" }<br>
-        Serviço: ${props.servicoReq || "-" }<br>
-        Data: ${inicio.toLocaleDateString()}<br>
-        Hora: ${inicio.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})} - ${fim.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}<br>
-        Nº de participantes: ${props.participantes || "-" }<br>
-        Recursos: ${(props.recursos || []).join(", ") || "-" }<br>
-        Observações: ${props.observacoes || "-" }<br>${props.horasEfetivas ? "Horas Efetivas: " + props.horasEfetivas + "<br>" : ""}${props.participantesEfetivos ? "Participantes Efetivos: " + props.participantesEfetivos + "<br>" : ""}
-      `;
-      `;
-      `;
-
-      
-
-      if (props.status === "reservas" || props.status === "em_aprovacao") {
-        card.appendChild(criarBotao("Aprovar", () => {
-          agendamentos[index].extendedProps = { ...agendamentos[index].extendedProps, status: "aprovado" };
-          enviarEmailConfirmacao(agendamentos[index]);
-          localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-          render();
-        }));
-        card.appendChild(criarBotao("Pendente", () => {
-          agendamentos[index].extendedProps = { ...agendamentos[index].extendedProps, status: "pendente" };
-          enviarEmailConfirmacao(agendamentos[index]);
-          localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-          render();
-        }));
-        card.appendChild(criarBotao("Cancelar", () => {
-          agendamentos.splice(index, 1);
-          localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-          render();
-        }));
-        emAprovacaoDiv.appendChild(card);
-      } else if (props.status === "pendente") {
-        card.appendChild(criarBotao("Aprovar", () => {
-          agendamentos[index].extendedProps = { ...agendamentos[index].extendedProps, status: "aprovado" };
-          enviarEmailConfirmacao(agendamentos[index]);
-          localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-          render();
-        }));
-        card.appendChild(criarBotao("Cancelar", () => {
-          agendamentos.splice(index, 1);
-          localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-          render();
-        }));
-        pendenteDiv.appendChild(card);
-      
-      } else if (props.status === "concluido") {
-        let incluir = true;
-        if (filtroConcluido === "hgo" && !props.sala?.toLowerCase().includes("hgo")) incluir = false;
-        if (filtroConcluido === "sobreda" && !props.sala?.toLowerCase().includes("sobreda")) incluir = false;
-
-        if (incluir) {
-          card.appendChild(criarBotao("Presenças", () => abrirModalPresencas(index)));
-concluidoDiv.appendChild(card);
-        }
-
-      } else if (props.status === "aprovado") {
-        card.appendChild(criarBotao("Pendente", () => {
-          agendamentos[index].extendedProps = { ...agendamentos[index].extendedProps, status: "pendente" };
-          localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-          render();
-        }));
-        card.appendChild(criarBotao("Cancelar", () => {
-          agendamentos.splice(index, 1);
-          localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-          render();
-        }));
-        aprovacaoDiv.appendChild(card);
-      }
-    });
-  }
-
-  render();
 });
 
 function calcularTaxaOcupacao() {
