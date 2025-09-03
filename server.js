@@ -1,161 +1,110 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="utf-8"/>
-  <title>Agendamentos</title>
-  <link href="style.css" rel="stylesheet"/>
-  <script src="auth.js"></script>
-  <style>
-    /* estilos iguais aos teus (mantidos) */
-  </style>
-</head>
-<body>
-  <div class="header">
-    <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
-  </div>
+import express from "express";
+import bodyParser from "body-parser";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import pkg from "pg";
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import cors from "cors";
+import agendamentosRouter from "./routes/agendamentos.js";
 
-  <div class="sidebar">
-    <ul>
-      <li><a href="index.html">Início</a></li>
-      <li><a href="agendamentos.html">Agendamentos</a></li>
-      <li><a href="calendario.html">Calendário</a></li>
-      <li><a href="salas.html">Salas</a></li>
-      <li><a href="admin.html">Administração</a></li>
-    </ul>
-  </div>
+dotenv.config();
+const { Pool } = pkg;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const app = express();
+const PORT = process.env.PORT || 10000;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+app.use(cors({
+  origin: "https://forma-o.onrender.com",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
-  <div class="main-content">
-    <h1>Agendamentos</h1>
-    <a class="botao-novo" href="#" onclick="abrirModal()">+ Novo Agendamento</a>
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-    <h2>Agendamentos da Semana</h2>
-    <label for="filtroSala"><strong>Filtrar por Sala:</strong></label>
-    <select id="filtroSala" onchange="mostrarAgendamentosSemana()">
-      <option value="todas">Ver Todas</option>
-      <!-- opções iguais às tuas -->
-    </select>
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+  // Não inclua a opção ssl se o servidor não suporta
+});
 
-    <table id="tabela-semanal">
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Hora Início</th>
-          <th>Hora Fim</th>
-          <th>Sala</th>
-          <th>Evento</th>
-          <th>Participantes</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+async function initDatabase() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password VARCHAR(100) NOT NULL,
+        role VARCHAR(20) NOT NULL
+      );
+    `);
 
-  <!-- Modal Novo Agendamento -->
-  <div class="modal" id="modalAgendamento">
-    <div class="modal-content">
-      <span class="fechar" onclick="fecharModal()">×</span>
-      <h2>Novo Agendamento</h2>
-      <form id="agendamento-form">
-        <!-- todos os fieldsets iguais aos teus -->
-        <fieldset>
-          <legend><strong>Observações</strong></legend>
-          <textarea id="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
-        </fieldset>
-
-        <button class="botao-novo" type="submit">Submeter</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Popup de sucesso -->
-  <div id="successPopup" class="popup">
-    <div class="popup-content">
-      <p>O seu pedido foi submetido com sucesso<br>
-      e será validado por e-mail em breve.</p>
-      <button onclick="fecharPopup()">OK</button>
-    </div>
-  </div>
-
-  <script>
-    function mostrarAgendamentosSemana(agendamentos = []) {
-      const tabela = document.getElementById("tabela-semanal").querySelector("tbody");
-      tabela.innerHTML = "";
-      agendamentos.forEach(ag => {
-        const linha = document.createElement("tr");
-        linha.innerHTML = `
-          <td>${ag.data}</td>
-          <td>${ag.horaInicio}</td>
-          <td>${ag.horaFim}</td>
-          <td>${ag.sala}</td>
-          <td>${ag.evento || ag.nomeEvento || ""}</td>
-          <td>${ag.participantes}</td>
-        `;
-        tabela.appendChild(linha);
-      });
+    const adminCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["admin"]);
+    if (adminCheck.rows.length === 0) {
+      const hashedPassword = await bcrypt.hash("12345", 10);
+      await pool.query(
+        "INSERT INTO users (username, password, role) VALUES ($1, $2, $3)",
+        ["admin", hashedPassword, "admin"]
+      );
+      console.log("✅ Utilizador admin criado (admin/12345)");
     }
 
-    function abrirModal() {
-      document.getElementById("modalAgendamento").style.display = "block";
+    const guestCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["convidado"]);
+    if (guestCheck.rows.length === 0) {
+      const hashedPassword = await bcrypt.hash("12345", 10);
+      await pool.query(
+        "INSERT INTO users (username, password, role) VALUES ($1, $2, $3)",
+        ["convidado", hashedPassword, "user"]
+      );
+      console.log("✅ Utilizador convidado criado (convidado/12345)");
+    }
+  } catch (err) {
+    console.error("❌ Erro ao inicializar BD:", err);
+  }
+}
+initDatabase();
+
+app.use("/api/agendamentos", agendamentosRouter);
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Utilizador não encontrado" });
     }
 
-    function fecharModal() {
-      document.getElementById("modalAgendamento").style.display = "none";
+    const user = result.rows[0];
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(401).json({ error: "Password incorreta" });
     }
 
-    function fecharPopup() {
-      document.getElementById("successPopup").style.display = "none";
-    }
+    const token = jwt.sign(
+      { id: user.id, username: user.username, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("agendamento-form");
-      const popup = document.getElementById("successPopup");
+    res.json({ message: "✅ Login efetuado com sucesso!", token, role: user.role });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro no servidor" });
+  }
+});
 
-      if (form) {
-        form.addEventListener("submit", async (e) => {
-          e.preventDefault();
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor online na porta ${PORT}`);
+});
 
-          // recolher checkboxes selecionados
-          const recursosSelecionados = Array.from(
-            document.querySelectorAll('input[name="recursos"]:checked')
-          ).map(el => el.value);
-
-          const pedido = {
-            nome: document.getElementById("nomeReq").value,
-            numMec: document.getElementById("numMec").value,
-            servico: document.getElementById("servicoReq").value,
-            email: document.getElementById("emailReq").value,
-            contacto: document.getElementById("contactoReq").value,
-            data: document.getElementById("data").value,
-            horaInicio: document.getElementById("horaInicio").value,
-            horaFim: document.getElementById("horaFim").value,
-            sala: document.getElementById("sala").value,
-            tipoEvento: document.getElementById("tipoEvento").value,
-            nomeEvento: document.getElementById("nomeEvento").value,
-            participantes: document.getElementById("participantes").value,
-            observacoes: document.getElementById("observacoes").value,
-            recursos: recursosSelecionados
-          };
-
-          try {
-            const resp = await fetch("https://teu-servidor.onrender.com/api/agendamentos", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(pedido)
-            });
-
-            if (!resp.ok) throw new Error("Erro ao enviar");
-
-            fecharModal();
-            popup.style.display = "flex";
-            form.reset();
-          } catch (err) {
-            alert("Erro ao submeter agendamento: " + err.message);
-          }
-        });
-      }
-    });
-  </script>
-</body>
-</html>
 
 
