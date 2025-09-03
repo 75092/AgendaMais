@@ -62,60 +62,6 @@
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    /* CSS */
-    .info-section {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      padding: 2rem;
-      background-color: #f9f9f9;
-      justify-content: center;
-    }
-    
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      max-width: 400px;
-      flex: 1;
-    }
-    
-    .card h2 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      color: #333;
-    }
-    
-    .card p {
-      font-size: 1rem;
-      margin: 0.5rem 0;
-      color: #555;
-    }
-    
-    .btn {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.6rem 1rem;
-      background-color: #0078D4;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: background 0.3s ease;
-    }
-        
-    .secao-noticias, .secao-manuais, .secao-contactos {
-      margin-bottom: 20px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-    }
-
-    .btn:hover {
-      background-color: #005a9e;
-    }
-
   </style>
 </head>
 <body>
@@ -144,26 +90,25 @@
       <div class="imagem">
         <img src="imagem CCII.png" alt="Imagem CCII">
       </div>
-      
-      <div class="secao-noticias">
-        <h2>📰 Notícias</h2>
+      <div class="conteudo">
+        <h2>Notícias</h2>
         <div id="noticias-container">
           <p>A carregar notícias...</p>
         </div>
-      </div>
-      
-      <!-- HTML -->
-      <section class="info-section">
-        <div class="card">
-          <h2>📘 Manuais de Utilização</h2>
-          <p>Descarregue os manuais das salas e da aplicação:</p>
-          <a href="manuais/manual_salas.pdf" class="btn">📄 Manual das Salas</a>
+
+
+        <div class="manuais">
+          <h3>📘 Manuais de Utilização</h3>
+          <p>Aqui pode descarregar os manuais das salas e da aplicação:</p>
+          <ul>
+            <li><a href="manuais/manual_salas.pdf">Manual de Utilização das Salas</a></li>
+          </ul>
         </div>
-      
-        <div class="card">
-          <h2>📞 Contactos</h2>
-          <p><strong>Email:</strong> <a href="mailto:formacao@ulsas.min-saude.pt">formacao@ulsas.min-saude.pt</a></p>
-          <p><strong>Telefone:</strong> <a href="tel:+351212727360">212 727 360</a></p>
+
+        <div class="contactos">
+          <h3>📞 Contactos</h3>
+          <p>Email: <a href="mailto:formacao@ulsas.min-saude.pt">formacao@ulsas.min-saude.pt</a></p>
+          <p>Telefone: 212727360</p>
         </div>
 
       </div>
@@ -235,4 +180,5 @@
   </script>
 </body>
 </html>
+
 
