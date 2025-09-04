@@ -266,7 +266,7 @@ if (form) {
     };
 
     try {
-      const resp = await fetch("https://forma-o.onrender.com/agendamentos", {
+      const resp = await fetch("https://teu-servidor.onrender.com/api/agendamentos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pedido)
