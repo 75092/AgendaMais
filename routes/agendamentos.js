@@ -1,8 +1,6 @@
 
 import express from "express";
-import cors from "cors";
 const router = express.Router();
-router.use(cors({ origin: '*' }));
 import pkg from "pg";
 const { Pool } = pkg;
 import dotenv from "dotenv";
@@ -21,28 +19,28 @@ router.post("/", async (req, res) => {
       servico_req, email_req, contacto_req, participantes, observacoes, tipo_evento, recursos
     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`;
 
-    const valores = [
-      dados.nomeEvento, dados.data, dados.horaInicio, dados.horaFim, dados.sala,
-      dados.numMec, dados.nome, dados.servico, dados.email, dados.contacto,
-      dados.participantes, dados.observacoes, dados.tipoEvento, JSON.stringify(dados.recursos)
-    ];
+    const pedido = {
+      nomeReq: document.getElementById("nomeReq").value,
+      numMec: document.getElementById("numMec").value,
+      servicoReq: document.getElementById("servicoReq").value,
+      emailReq: document.getElementById("emailReq").value,
+      contactoReq: document.getElementById("contactoReq").value,
+      data: document.getElementById("data").value,
+      horaInicio: document.getElementById("horaInicio").value,
+      horaFim: document.getElementById("horaFim").value,
+      sala: document.getElementById("sala").value,
+      tipoEvento: document.getElementById("tipoEvento").value,
+      nomeEvento: document.getElementById("nomeEvento").value,
+      participantes: document.getElementById("participantes").value,
+      observacoes: document.getElementById("observacoes").value,
+      recursos: Array.from(document.querySelectorAll("input[name='recursos']:checked")).map(el => el.value)
+    };
 
     await pool.query(query, valores);
     res.status(200).json({ message: "✅ Agendamento guardado com sucesso!" });
   } catch (err) {
     console.error("❌ Erro ao guardar agendamento:", err);
     res.status(500).json({ message: "Erro ao guardar agendamento." });
-  }
-});
-
-// Endpoint GET para listar todos os agendamentos
-router.get("/", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM agendamentos ORDER BY data DESC, hora_inicio DESC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Erro ao buscar agendamentos:", err);
-    res.status(500).json({ message: "Erro ao buscar agendamentos." });
   }
 });
 
