@@ -257,7 +257,12 @@ if (form) {
       tipoEvento: document.getElementById("tipoEvento").value,
       nomeEvento: document.getElementById("nomeEvento").value,
       participantes: document.getElementById("participantes").value,
-      observacoes: document.getElementById("observacoes").value
+      observacoes: document.getElementById("observacoes").value,
+
+      // novo: recolhe todos os checkboxes selecionados
+      recursos: Array.from(
+        document.querySelectorAll("input[name='recursos']:checked")
+      ).map(el => el.value)
     };
 
     try {
