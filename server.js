@@ -16,23 +16,45 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Conexão com Postgres (Render exige SSL)
+// importa as dependências
+const express = require("express");
+const cors = require("cors");
+
+// cria a app express
+const app = express();
+
+// middlewares
+app.use(express.json()); // para interpretar JSON no body
+app.use(cors({
+  origin: "https://forma-o.onrender.com" // permite chamadas do teu frontend
+}));
+
+// rota de teste
+app.get("/", (req, res) => {
+  res.send("Servidor a funcionar 🚀");
+});
+
+// rota da API
+app.post("/api/agendamentos", (req, res) => {
+  console.log(req.body);
+  res.json({ message: "Agendamento recebido com sucesso!" });
+});
+
+// define a porta (Render usa process.env.PORT automaticamente)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor a correr na porta ${PORT}`);
+});
+
+
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public")));
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// CORS – só permite chamadas do frontend
-app.use(cors({
-  origin: "https://forma-o.onrender.com",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
-
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public")));
-
-// Inicialização da base de dados
 async function initDatabase() {
   try {
     await pool.query(`
@@ -44,7 +66,6 @@ async function initDatabase() {
       );
     `);
 
-    // Criar admin se não existir
     const adminCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["admin"]);
     if (adminCheck.rows.length === 0) {
       const hashedPassword = await bcrypt.hash("12345", 10);
@@ -55,7 +76,6 @@ async function initDatabase() {
       console.log("✅ Utilizador admin criado (admin/12345)");
     }
 
-    // Criar convidado se não existir
     const guestCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["convidado"]);
     if (guestCheck.rows.length === 0) {
       const hashedPassword = await bcrypt.hash("12345", 10);
@@ -71,7 +91,6 @@ async function initDatabase() {
 }
 initDatabase();
 
-// Rotas
 app.use("/api/agendamentos", agendamentosRouter);
 
 app.get("/", (req, res) => {
@@ -105,12 +124,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Start do servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor online na porta ${PORT}`);
 });
-
-
-
-
-
