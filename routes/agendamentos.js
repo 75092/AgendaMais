@@ -13,7 +13,7 @@ const pool = new Pool({
 });
 
 // ➡️ Criar agendamento (recebe dados do frontend via fetch)
-router.post("/", async (req, res) => {
+router.post("/", (req, res) => {
   try {
     const {
       nomeEvento,
