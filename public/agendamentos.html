@@ -222,26 +222,6 @@
   </div>
 
   <script>
-    // Função para mostrar agendamentos na tabela
-    function mostrarAgendamentosSemana(agendamentos = []) {
-      const tabela = document.getElementById("tabela-semanal").querySelector("tbody");
-      tabela.innerHTML = "";
-      agendamentos.forEach(ag => {
-        const linha = document.createElement("tr");
-        linha.innerHTML = `
-          <td>${ag.data}</td>
-          <td>${ag.horaInicio}</td>
-          <td>${ag.horaFim}</td>
-          <td>${ag.sala}</td>
-          <td>${ag.evento || ag.nomeEvento || ""}</td>
-          <td>${ag.participantes}</td>
-        `;
-        tabela.appendChild(linha);
-      });
-    }
-
-    // Exemplo de chamada após obter agendamentos:
-    // mostrarAgendamentosSemana(listaDeAgendamentos);
     // abrir e fechar modal
     function abrirModal() {
       document.getElementById("modalAgendamento").style.display = "block";
@@ -281,7 +261,7 @@ if (form) {
     };
 
     try {
-      const resp = await fetch("/api/agendamentos", {
+      const resp = await fetch("https://forma-o.onrender.com/agendamentos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pedido)
@@ -302,7 +282,6 @@ if (form) {
   </script>
 </body>
 </html>
-
 
 
 
