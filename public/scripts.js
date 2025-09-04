@@ -1,3 +1,7 @@
+
+  // troque pelo domínio real do serviço backend no Render
+  const API_BASE = "https://teu-servidor.onrender.com";
+
 // =========================
 //  Autenticação
 // =========================
@@ -212,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         const token = localStorage.getItem("token");
-        const resposta = await fetch("https://teu-servidor.onrender.com/api/agendamentos", {
+        const resposta = await fetch(`${API_BASE}/api/agendamentos`,{
           method: "POST",
           headers: {
             "Content-Type": "application/json",
