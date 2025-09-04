@@ -1,5 +1,4 @@
 import express from "express";
-import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import pkg from "pg";
@@ -18,7 +17,6 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // Middlewares
-app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors({
   origin: "https://forma-o.onrender.com" // permite chamadas do teu frontend
