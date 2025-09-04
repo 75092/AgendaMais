@@ -9,30 +9,26 @@
       margin-top: 80px;
       text-align: center;
     }
-
     .cover-wrapper img {
       max-width: 100%;
       height: auto;
     }
-
     .start-button {
       position: absolute;
       top: 90px;
       right: 30px;
       padding: 10px 20px;
       font-size: 14px;
-      background-color: #2e7d32; /* verde ULSAS */
+      background-color: #2e7d32;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       z-index: 1002;
     }
-
     .start-button:hover {
       background-color: #256628;
     }
-
     .modal {
       display: none;
       position: fixed;
@@ -43,7 +39,6 @@
       height: 100%;
       background-color: rgba(0,0,0,0.5);
     }
-
     .modal-content {
       background-color: white;
       margin: 10% auto;
@@ -54,7 +49,6 @@
       position: relative;
       animation: fadeIn 0.3s ease-in-out;
     }
-
     .close {
       position: absolute;
       top: 10px;
@@ -64,37 +58,31 @@
       font-weight: bold;
       cursor: pointer;
     }
-
     .close:hover {
       color: black;
     }
-
     .modal-content input {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
       box-sizing: border-box;
     }
-
     .modal-content button {
       padding: 10px 20px;
       width: 100%;
-      background-color: #2e7d32; /* verde ULSAS */
+      background-color: #2e7d32;
       color: white;
       border: none;
       cursor: pointer;
       border-radius: 5px;
     }
-
     .modal-content button:hover {
       background-color: #256628;
     }
-
     #error {
       color: red;
       margin-top: 10px;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -104,20 +92,16 @@
 </head>
 <body>
 
-  <!-- Cabeçalho fixo com logotipo -->
   <div class="header">
     <img src="ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo" />
   </div>
 
-  <!-- Botão no canto superior direito -->
   <button class="start-button" onclick="abrirModal()">Iniciar Sessão</button>
 
-  <!-- Imagem de capa atualizada -->
   <div class="cover-wrapper">
     <img src="foto capa.png" alt="Imagem de Capa" />
   </div>
 
-  <!-- Modal Login -->
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="fecharModal()">&times;</span>
@@ -135,53 +119,52 @@
   ensureAuthenticated();
   showLogoutIfAuthenticated();
 
-    function abrirModal() {
-      document.getElementById("loginModal").style.display = "block";
-    }
+  function abrirModal() {
+    document.getElementById("loginModal").style.display = "block";
+  }
 
-    function fecharModal() {
-      document.getElementById("loginModal").style.display = "none";
-    }
+  function fecharModal() {
+    document.getElementById("loginModal").style.display = "none";
+  }
 
-    window.onclick = function(event) {
-      const modal = document.getElementById("loginModal");
-      if (event.target == modal) {
-        modal.style.display = "none";
+  window.onclick = function(event) {
+    const modal = document.getElementById("loginModal");
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const response = await fetch("https://forma-o.onrender.com/login", { // Endpoint remoto
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+        localStorage.setItem("role", payload.role);
+
+        window.location.href = "/index.html";
+
+      } else {
+        document.getElementById("error").innerText = data.error || "Erro ao fazer login.";
       }
+
+    } catch (err) {
+      document.getElementById("error").innerText = "Erro de rede ou servidor.";
     }
-
-    document.getElementById("loginForm").addEventListener("submit", async function(event) {
-      event.preventDefault();
-
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        const response = await fetch("/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          localStorage.setItem("token", data.token);
-
-          const payload = JSON.parse(atob(data.token.split('.')[1]));
-          localStorage.setItem("role", payload.role); // Guarda a role se precisares mais tarde
-
-          // 🚀 Todos os utilizadores vão sempre para o index.html
-          window.location.href = "/index.html";
-
-        } else {
-          document.getElementById("error").innerText = data.error || "Erro ao fazer login.";
-        }
-
-      } catch (err) {
-        document.getElementById("error").innerText = "Erro de rede ou servidor.";
-      }
-    });
+  });
   </script>
 
 </body>
