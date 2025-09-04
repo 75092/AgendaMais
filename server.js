@@ -13,43 +13,19 @@ dotenv.config();
 const { Pool } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// importa as dependências
-const express = require("express");
-const cors = require("cors");
-
-// cria a app express
-const app = express();
-
-// middlewares
-app.use(express.json()); // para interpretar JSON no body
+// Middlewares
+app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors({
   origin: "https://forma-o.onrender.com" // permite chamadas do teu frontend
 }));
-
-// rota de teste
-app.get("/", (req, res) => {
-  res.send("Servidor a funcionar 🚀");
-});
-
-// rota da API
-app.post("/api/agendamentos", (req, res) => {
-  console.log(req.body);
-  res.json({ message: "Agendamento recebido com sucesso!" });
-});
-
-// define a porta (Render usa process.env.PORT automaticamente)
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor a correr na porta ${PORT}`);
-});
-
-
-app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Base de dados
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
@@ -91,6 +67,7 @@ async function initDatabase() {
 }
 initDatabase();
 
+// Rotas
 app.use("/api/agendamentos", agendamentosRouter);
 
 app.get("/", (req, res) => {
@@ -124,6 +101,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Servidor online na porta ${PORT}`);
 });
