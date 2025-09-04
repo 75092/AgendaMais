@@ -40,6 +40,26 @@ async function initDatabase() {
       );
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS agendamentos (
+        id SERIAL PRIMARY KEY,
+        nome_evento VARCHAR(255),
+        data DATE,
+        hora_inicio TIME,
+        hora_fim TIME,
+        sala VARCHAR(100),
+        num_mec VARCHAR(50),
+        nome_req VARCHAR(100),
+        servico_req VARCHAR(100),
+        email_req VARCHAR(100),
+        contacto_req VARCHAR(50),
+        participantes INTEGER,
+        observacoes TEXT,
+        tipo_evento VARCHAR(100),
+        recursos JSON
+      );
+    `);
+
     const adminCheck = await pool.query("SELECT * FROM users WHERE username = $1", ["admin"]);
     if (adminCheck.rows.length === 0) {
       const hashedPassword = await bcrypt.hash("12345", 10);
