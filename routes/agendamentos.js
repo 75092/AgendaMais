@@ -13,7 +13,7 @@ const pool = new Pool({
 });
 
 // ➡️ Criar agendamento (recebe dados do frontend via fetch)
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const {
       nomeEvento,
@@ -58,11 +58,13 @@ router.post("/", (req, res) => {
 
     await pool.query(query, valores);
     res.status(200).json({ message: "✅ Agendamento guardado com sucesso!" });
+
   } catch (err) {
     console.error("❌ Erro ao guardar agendamento:", err);
     res.status(500).json({ message: "Erro ao guardar agendamento." });
   }
 });
+
 
 // ➡️ Listar todos os agendamentos
 router.get("/", async (req, res) => {
