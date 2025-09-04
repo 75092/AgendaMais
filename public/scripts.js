@@ -1,6 +1,6 @@
 
   // troque pelo domínio real do serviço backend no Render
-  const API_BASE = "https://teu-servidor.onrender.com";
+  const API_BASE = "https://forma-o.onrender.com";
 
 // =========================
 //  Autenticação
@@ -238,4 +238,53 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function calcularTaxaOcupacao() {
+    const agendamentos = JSON.parse(localStorage.getItem("agendamentos") || "[]");
+    let participantesPrevistos = 0;
+    let participantesEfetivos = 0;
+    let horasPrevistas = 0;
+    let horasEfetivas = 0;
 
+    agendamentos.forEach(ev => {
+        const inicio = new Date(ev.start);
+        const fim = new Date(ev.end);
+        const duracaoHoras = (fim - inicio) / (1000 * 60 * 60);
+        const participantes = parseInt(ev.extendedProps?.participantes || "0");
+
+        if (ev.extendedProps?.status === "aprovado") {
+            participantesPrevistos += participantes;
+            horasPrevistas += duracaoHoras;
+        }
+        if (ev.extendedProps?.status === "concluido") {
+            participantesEfetivos += participantes;
+            horasEfetivas += duracaoHoras;
+        }
+    });
+
+    const totalHoras = horasPrevistas + horasEfetivas;
+    const totalParticipantes = participantesPrevistos + participantesEfetivos;
+    const salas = new Set(agendamentos.map(ev => ev.extendedProps?.sala));
+    const totalSalas = salas.size || 1;
+    const taxaHoras = ((totalHoras / (12 * totalSalas)) * 100).toFixed(2);
+    const taxaParticipantes = totalParticipantes;
+
+    const resultado = `Participantes previstos: ${participantesPrevistos}
+Participantes efetivos: ${participantesEfetivos}
+Horas previstas: ${horasPrevistas.toFixed(2)}
+Horas efetivas: ${horasEfetivas.toFixed(2)}
+
+Taxa Ocupação (Horas): ${taxaHoras}%
+Taxa Ocupação (Participantes): ${taxaParticipantes}`;
+    document.getElementById("resultado-ocupacao").innerText = resultado;
+}
+
+function exportarParaExcel() {
+    const texto = document.getElementById("resultado-ocupacao").innerText;
+    const blob = new Blob([texto], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "taxa_ocupacao.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
