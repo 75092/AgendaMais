@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
   <meta charset="utf-8"/>
   <title>Agendamentos</title>
@@ -266,7 +266,7 @@ if (form) {
     };
 
     try {
-      const resp = await fetch("https://forma-o.onrender.com", {
+      const resp = await fetch("https://forma-o.onrender.com/api/agendamentos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pedido)
