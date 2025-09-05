@@ -86,7 +86,7 @@ function guardarAgendamento() {
   localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
 
   mostrarToast("Agendamento submetido com sucesso!");
-  document.getElementById("form-agendamento").reset();
+  document.getElementById("agendamento-form").reset();
   fecharModal();
   mostrarAgendamentosSemana();
 }
@@ -302,4 +302,11 @@ function exportarParaExcel() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+function abrirModal() {
+  document.getElementById("modalAgendamento").style.display = "block";
+}
+
+function fecharModal() {
+  document.getElementById("modalAgendamento").style.display = "none";
 }
