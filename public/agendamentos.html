@@ -13,28 +13,19 @@
       border-radius: 8px;
       margin-bottom: 15px;
     }
-
     .checkbox-group {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px 20px;
       margin-top: 5px;
     }
-
     label {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-
-    select {
-      margin-left: 10px;
-    }
-
-    textarea {
-      width: 50%;
-      resize: vertical;
-    }
+    select { margin-left: 10px; }
+    textarea { width: 50%; resize: vertical; }
 
     /* Popup */
     .popup {
@@ -46,7 +37,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .popup-content {
       background: #fff;
       padding: 20px;
@@ -54,7 +44,6 @@
       text-align: center;
       max-width: 400px;
     }
-
     .popup-content button {
       margin-top: 15px;
       padding: 10px 20px;
@@ -69,6 +58,7 @@
 <body>
   <div class="header">
     <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
+    <button id="logoutBtn" onclick="logout()">Logout</button>
   </div>
 
   <div class="sidebar">
@@ -129,29 +119,29 @@
         
         <fieldset>
           <legend><strong>Requerente</strong></legend>
-          <label>Nome:<input id="nomeReq" required type="text"/></label>
-          <label>Número Mecanográfico:<input id="numMec" maxlength="10" /></label>
-          <label>Serviço:<input id="servicoReq" required type="text"/></label>
+          <label>Nome:<input id="nomeReq" name="nomeReq" required type="text"/></label>
+          <label>Número Mecanográfico:<input id="numMec" name="numMec" maxlength="10" required/></label>
+          <label>Serviço:<input id="servicoReq" name="servicoReq" required type="text"/></label>
           <div class="linha">
-            <label>Email:<input id="emailReq" required type="email"/></label>
-            <label>Telemóvel:<input id="contactoReq" required type="tel"/></label>
+            <label>Email:<input id="emailReq" name="emailReq" required type="email"/></label>
+            <label>Telemóvel:<input id="contactoReq" name="contactoReq" required type="tel"/></label>
           </div>
         </fieldset>
 
         <fieldset>
           <legend><strong>Data e Hora</strong></legend>
-          <label>Data:<input id="data" required type="date" onchange="atualizarSalasDisponiveis()"/></label>
+          <label>Data:<input id="data" name="data" required type="date" onchange="atualizarSalasDisponiveis()"/></label>
           <div class="linha">
-            <label>Hora Início:<input id="horaInicio" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
-            <label>Hora Fim:<input id="horaFim" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
+            <label>Hora Início:<input id="horaInicio" name="horaInicio" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
+            <label>Hora Fim:<input id="horaFim" name="horaFim" required type="time" onchange="atualizarSalasDisponiveis()"/></label>
           </div>
         </fieldset>
 
         <fieldset>
           <legend><strong>Evento</strong></legend>
-          <label>Sala:<select id="sala" required></select></label>
+          <label>Sala:<select id="sala" name="sala" required></select></label>
           <label>Tipo de Evento:
-            <select id="tipoEvento" required>
+            <select id="tipoEvento" name="tipoEvento" required>
               <option value="">-- Selecione --</option>
               <option value="Reuniões clínicas">Reuniões Clínicas</option>
               <option value="Reuniões Entidades Externas">Reuniões Entidades Externas</option>
@@ -163,8 +153,8 @@
             </select>
           </label>
           <div class="linha">
-            <label>Nome do Evento:<input id="nomeEvento" required type="text"/></label>
-            <label>Participantes:<input id="participantes" type="number"/></label>
+            <label>Nome do Evento:<input id="nomeEvento" name="nomeEvento" required type="text"/></label>
+            <label>Participantes:<input id="participantes" name="participantes" type="number"/></label>
           </div>
         </fieldset>
 
@@ -174,12 +164,6 @@
             <label>Material Clínico <input type="checkbox" name="recursos" value="Material Clínico"></label>
             <label>Material Informativo <input type="checkbox" name="recursos" value="Material Informativo"></label>
             <label>Apoio de Secretariado <input type="checkbox" name="recursos" value="Apoio de Secretariado"></label>
-          </div>
-        </fieldset>
-        
-        <fieldset>
-          <legend><strong>Equipamento Audiovisual e Informático</strong></legend>
-          <div class="checkbox-group">
             <label>LCD <input name="recursos" value="LCD" type="checkbox"></label>
             <label>Colunas <input name="recursos" value="Colunas" type="checkbox"></label>
             <label>Microfone <input name="recursos" value="Microfone" type="checkbox"></label>
@@ -188,19 +172,10 @@
             <label>Computador <input name="recursos" value="Computador" type="checkbox"></label>
           </div>
         </fieldset>
-      
-        <fieldset>
-          <legend><strong>Outras Opções</strong></legend>
-          <div class="checkbox-group">
-            <label>Material Clínico <input name="recursos" value="Material Clínico" type="checkbox"></label>
-            <label>Material Informativo <input name="recursos" value="Material Informativo" type="checkbox"></label>
-            <label>Apoio de Secretariado <input name="recursos" value="Apoio de Secretariado" type="checkbox"></label>
-          </div>
-        </fieldset>
 
         <fieldset>
           <legend><strong>Observações</strong></legend>
-          <textarea id="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
+          <textarea id="observacoes" name="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
         </fieldset>
 
         <button class="botao-novo" type="submit">Submeter</button>
@@ -217,10 +192,12 @@
     </div>
   </div>
 
-<div class="toast" id="toast"></div>
-<script src="scripts.js"></script>
+  <div class="toast" id="toast"></div>
+  <script src="scripts.js"></script>
 </body>
 </html>
+
+
 
 
 
