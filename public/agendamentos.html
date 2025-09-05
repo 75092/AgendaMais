@@ -221,70 +221,8 @@
     </div>
   </div>
 
-  <script>
-    // abrir e fechar modal
-    function abrirModal() {
-      document.getElementById("modalAgendamento").style.display = "block";
-    }
-
-    function fecharModal() {
-      document.getElementById("modalAgendamento").style.display = "none";
-    }
-
-    // popup de sucesso
-    function fecharPopup() {
-      document.getElementById("successPopup").style.display = "none";
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("agendamento-form");
-      const popup = document.getElementById("successPopup");
-
-if (form) {
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const pedido = {
-      nome: document.getElementById("nomeReq").value,
-      numMec: document.getElementById("numMec").value,
-      servico: document.getElementById("servicoReq").value,
-      email: document.getElementById("emailReq").value,
-      contacto: document.getElementById("contactoReq").value,
-      data: document.getElementById("data").value,
-      horaInicio: document.getElementById("horaInicio").value,
-      horaFim: document.getElementById("horaFim").value,
-      sala: document.getElementById("sala").value,
-      tipoEvento: document.getElementById("tipoEvento").value,
-      nomeEvento: document.getElementById("nomeEvento").value,
-      participantes: document.getElementById("participantes").value,
-      observacoes: document.getElementById("observacoes").value,
-
-      // novo: recolhe todos os checkboxes selecionados
-      recursos: Array.from(
-        document.querySelectorAll("input[name='recursos']:checked")
-      ).map(el => el.value)
-    };
-
-    try {
-      const resp = await fetch("https://forma-o.onrender.com/api/agendamentos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pedido)
-      });
-
-      if (!resp.ok) throw new Error("Erro ao enviar");
-
-      fecharModal();
-      popup.style.display = "flex";
-      form.reset();
-    } catch (err) {
-      alert("Erro ao submeter agendamento: " + err.message);
-    }
-  });
-}
-
-    });
-  </script>
+<div class="toast" id="toast"></div>
+<script src="scripts.js"></script>
 </body>
 </html>
 
