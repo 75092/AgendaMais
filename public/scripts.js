@@ -24,22 +24,10 @@ function mostrarToast(msg, erro = false) {
 }
 
 // =========================
-//  Modal (agendamentos.html)
-// =========================
-function abrirModal() {
-  const modal = document.getElementById('modalAgendamento');
-  if (modal) modal.style.display = 'block';
-}
-function fecharModal() {
-  const modal = document.getElementById('modalAgendamento');
-  if (modal) modal.style.display = 'none';
-}
-
-// =========================
 //  Guardar Agendamento (localStorage)
 // =========================
 function guardarAgendamento() {
-  if (!document.getElementById("form-agendamento")) return; // só corre no agendamentos.html
+  if (!document.getElementById("agendamento-form")) return; // só corre no agendamentos.html
 
   const nomeEvento = document.getElementById("nomeEvento").value;
   const data = document.getElementById("data").value;
@@ -102,89 +90,116 @@ function guardarAgendamento() {
   fecharModal();
   mostrarAgendamentosSemana();
 }
-
 // =========================
-//  Atualizar Salas (localStorage)
+//  Atualizar Sala 
 // =========================
-function atualizarSalasDisponiveis() {
-  if (!document.getElementById("sala")) return;
+async function atualizarSalasDisponiveis() {
+  const select = document.getElementById("sala");
+  if (!select) return;
 
   const data = document.getElementById("data").value;
   const inicio = document.getElementById("horaInicio").value;
   const fim = document.getElementById("horaFim").value;
   if (!data || !inicio || !fim) return;
 
-  const agendamentos = JSON.parse(localStorage.getItem("agendamentos") || "[]");
-  const salas = [
-    "HGO - Sala Almada",
-    "HGO - Sala Garcia de Orta",
-    "HGO - Sala Tejo",
-    "HGO - Sala Almada + Garcia de Orta",
-    "CF Sobreda - Auditório Dr. Luís Amaro",
-    "CF Sobreda - Sala Sado",
-    "CF Sobreda - Sala Tejo",
-    "CF Amora - Sala Amora"
-  ];
-  const ocupadas = new Set();
+  try {
+    const token = localStorage.getItem("token");
+    const resp = await fetch(`${API_BASE}/api/agendamentos`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+    if (!resp.ok) throw new Error("Erro ao carregar agendamentos");
 
-  const inicioSel = new Date(`${data}T${inicio}`);
-  const fimSel = new Date(`${data}T${fim}`);
+    const agendamentos = await resp.json();
 
-  agendamentos.forEach(ev => {
-    const inicioEv = new Date(ev.start);
-    const fimEv = new Date(ev.end);
-    if (ev.start.startsWith(data) && fimSel > inicioEv && inicioSel < fimEv) {
-      ocupadas.add(ev.extendedProps?.sala);
-    }
-  });
+    const inicioSel = new Date(`${data}T${inicio}`);
+    const fimSel = new Date(`${data}T${fim}`);
+    const ocupadas = new Set();
 
-  const select = document.getElementById("sala");
-  select.innerHTML = '<option value="">-- Selecione --</option>';
-  salas.forEach(s => {
-    if (!ocupadas.has(s)) {
-      select.innerHTML += `<option>${s}</option>`;
-    }
-  });
+    agendamentos.forEach(ev => {
+      const inicioEv = new Date(ev.start);
+      const fimEv = new Date(ev.end);
+      if (ev.start.startsWith(data) && fimSel > inicioEv && inicioSel < fimEv) {
+        ocupadas.add(ev.sala || ev.extendedProps?.sala);
+      }
+    });
+
+    // Lista de salas possíveis
+    const salas = [
+      "HGO - Sala Almada",
+      "HGO - Sala Garcia de Orta",
+      "HGO - Sala Tejo",
+      "HGO - Sala Almada + Garcia de Orta",
+      "CF Sobreda - Auditório Dr. Luís Amaro",
+      "CF Sobreda - Sala Sado",
+      "CF Sobreda - Sala Tejo",
+      "CF Amora - Sala Amora"
+    ];
+
+    // Render no <select>
+    select.innerHTML = '<option value="">-- Selecione --</option>';
+    salas.forEach(s => {
+      if (!ocupadas.has(s)) {
+        select.innerHTML += `<option>${s}</option>`;
+      }
+    });
+  } catch (err) {
+    console.error("Erro ao atualizar salas:", err);
+  }
 }
 
 // =========================
-//  Mostrar agendamentos semanais (localStorage)
+//  Mostrar agendamentos semanais 
 // =========================
-function mostrarAgendamentosSemana() {
+async function mostrarAgendamentosSemana() {
   const tabela = document.querySelector("#tabela-semanal tbody");
-  if (!tabela) return; // só existe em agendamentos.html
+  if (!tabela) return;
 
-  const agendamentos = JSON.parse(localStorage.getItem("agendamentos") || "[]");
+  try {
+    const token = localStorage.getItem("token");
+    const resp = await fetch(`${API_BASE}/api/agendamentos`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+    if (!resp.ok) throw new Error("Erro ao carregar agendamentos");
 
-  const hoje = new Date();
-  const inicioSemana = new Date(hoje);
-  inicioSemana.setDate(hoje.getDate() - (hoje.getDay() === 0 ? 6 : hoje.getDay() - 1));
-  inicioSemana.setHours(0, 0, 0, 0);
-  const fimSemana = new Date(inicioSemana);
-  fimSemana.setDate(inicioSemana.getDate() + 6);
-  fimSemana.setHours(23, 59, 59, 999);
+    const agendamentos = await resp.json();
 
-  const salaSelecionada = document.getElementById("filtroSala")?.value || "todas";
-  const eventos = agendamentos.filter(ev => {
-    const inicio = new Date(ev.start);
-    return inicio >= inicioSemana && inicio <= fimSemana &&
-           (salaSelecionada === "todas" || ev.extendedProps?.sala === salaSelecionada);
-  });
+    const hoje = new Date();
+    const inicioSemana = new Date(hoje);
+    inicioSemana.setDate(hoje.getDate() - (hoje.getDay() === 0 ? 6 : hoje.getDay() - 1));
+    inicioSemana.setHours(0, 0, 0, 0);
 
-  tabela.innerHTML = "";
-  eventos.forEach(ev => {
-    const inicio = new Date(ev.start);
-    const fim = new Date(ev.end);
-    tabela.innerHTML += `
-      <tr>
-        <td>${inicio.toLocaleDateString()}</td>
-        <td>${inicio.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
-        <td>${fim.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
-        <td>${ev.extendedProps?.sala || ""}</td>
-        <td>${ev.title.split(" - ")[0]}</td>
-        <td>${ev.extendedProps?.participantes || ""}</td>
-      </tr>`;
-  });
+    const fimSemana = new Date(inicioSemana);
+    fimSemana.setDate(inicioSemana.getDate() + 6);
+    fimSemana.setHours(23, 59, 59, 999);
+
+    const salaSelecionada = document.getElementById("filtroSala")?.value || "todas";
+
+    const eventos = agendamentos.filter(ev => {
+      const inicio = new Date(ev.start);
+      return (
+        inicio >= inicioSemana &&
+        inicio <= fimSemana &&
+        (salaSelecionada === "todas" || ev.sala === salaSelecionada || ev.extendedProps?.sala === salaSelecionada)
+      );
+    });
+
+    tabela.innerHTML = "";
+    eventos.forEach(ev => {
+      const inicio = new Date(ev.start);
+      const fim = new Date(ev.end);
+      tabela.innerHTML += `
+        <tr>
+          <td>${inicio.toLocaleDateString("pt-PT")}</td>
+          <td>${inicio.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+          <td>${fim.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+          <td>${ev.sala || ev.extendedProps?.sala || ""}</td>
+          <td>${ev.tipoEvento || ev.title?.split(" - ")[0] || ""}</td>
+          <td>${ev.participantes || ev.extendedProps?.participantes || ""}</td>
+        </tr>`;
+    });
+  } catch (err) {
+    console.error("Erro ao mostrar agendamentos semanais:", err);
+  }
 }
 
 // =========================
