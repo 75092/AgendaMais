@@ -118,7 +118,7 @@ async function atualizarSalasDisponiveis() {
     agendamentos.forEach(ev => {
       const inicioEv = new Date(ev.start);
       const fimEv = new Date(ev.end);
-      if (ev.start.startsWith(data) && fimSel > inicioEv && inicioSel < fimEv) {
+      if (ev.start && ev.start.startsWith(data) && fimSel > inicioEv && inicioSel < fimEv) {
         ocupadas.add(ev.sala || ev.extendedProps?.sala);
       }
     });
@@ -142,6 +142,7 @@ async function atualizarSalasDisponiveis() {
         select.innerHTML += `<option>${s}</option>`;
       }
     });
+
   } catch (err) {
     console.error("Erro ao atualizar salas:", err);
   }
