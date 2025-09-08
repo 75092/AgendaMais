@@ -1,234 +1,244 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Administração</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="auth.js"></script>
-  <style>
-    .agendamento-card {
-      background: white;
-      border-radius: 8px;
-      padding: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      margin-bottom: 15px;
-      transition: box-shadow 0.3s ease;
-    }
-    .agendamento-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-    .agendamento-card button {
-      margin-top: 10px;
-      margin-right: 8px;
-      padding: 6px 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #2b7cff;
-      color: white;
-      cursor: pointer;
-    }
-    .agendamento-card button:hover { background-color: #195ecb; }
-    .tabs { margin-bottom: 1em; }
-    .tab-button {
-      padding: 10px 15px;
-      margin-right: 5px;
-      border: none;
-      background-color: #eee;
-      cursor: pointer;
-    }
-    .tab-button.active { background-color: #ccc; }
-    .tab-content {
-      display: none;
-      padding: 1em;
-      border: 1px solid #ddd;
-      background: #fafafa;
-    }
-    .tab-content.active { display: block; }
-    .extras { display: none !important; }
-
-    .popup-confirmacao {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #4CAF50;
-      color: white;
-      padding: 30px 40px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      font-size: 1.2rem;
-      z-index: 9999;
-      text-align: center;
-      animation: fadeOut 30s forwards;
-    }
-    @keyframes fadeOut {
-      0% {opacity: 1;}
-      80% {opacity: 1;}
-      100% {opacity: 0; display: none;}
-    }
-
-    #logoutBtn {
-      position: fixed;
-      top: 15px;
-      right: 20px;
-      padding: 8px 14px;
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 2000;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Administração</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
-    <img src="ulsas_logotipo.png" alt="Logotipo" class="logo">
-    <button id="logoutBtn" onclick="logout()">Logout</button>
-  </header>
+    <style>
+        .agendamento-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            transition: box-shadow 0.3s ease;
+        }
+        .agendamento-card:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .agendamento-card button {
+            margin-top: 10px;
+            margin-right: 8px;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2b7cff;
+            color: white;
+            cursor: pointer;
+        }
+        .agendamento-card button:hover {
+            background-color: #195ecb;
+        }
+        .tabs {
+            margin-bottom: 1em;
+        }
+        .tab-button {
+            padding: 10px 15px;
+            margin-right: 5px;
+            border: none;
+            background-color: #eee;
+            cursor: pointer;
+        }
+        .tab-button.active {
+            background-color: #ccc;
+        }
+        .tab-content {
+            display: none;
+            padding: 1em;
+            border: 1px solid #ddd;
+            background: #fafafa;
+        }
+        .tab-content.active {
+            display: block;
+        }
 
-  <div class="sidebar">
-    <ul>
-      <li><a href="index.html">Início</a></li>
-      <li><a href="agendamentos.html">Agendamentos</a></li>
-      <li><a href="calendario.html">Calendário</a></li>
-      <li><a href="salas.html">Salas</a></li>
-      <li><a href="admin.html">Administração</a></li>
-    </ul>
-  </div>
+        .extras { display: none !important; }
+    </style>
 
-  <div class="main-content">
-    <h1>Administração</h1>
-    <label for="filtro-data"><strong>Filtrar por data:</strong></label>
-    <input id="filtro-data" onchange="render()" type="date"/>
-    <button onclick="document.getElementById('filtro-data').value=''; render();">Limpar filtro</button>
-  </div>
+    <style>
+        .popup-confirmacao {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            font-size: 1.2rem;
+            z-index: 9999;
+            text-align: center;
+            animation: fadeOut 30s forwards;
+        }
+        @keyframes fadeOut {
+            0% {opacity: 1;}
+            80% {opacity: 1;}
+            100% {opacity: 0; display: none;}
+        }
+    </style>
 
-  <div class="tabs">
-    <button class="tab-button active" data-tab="aprovacao">Aprovado</button>
-    <button class="tab-button" data-tab="pendente">Pendente</button>
-    <button class="tab-button" data-tab="em_aprovacao">Reservas</button>
-    <button class="tab-button" data-tab="concluido">Concluído</button>
-    <button class="tab-button" data-tab="definicoes">Definições</button>
-  </div>
+    <div class="header">
+        <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
+        <button id="logoutBtn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="sidebar">
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="agendamentos.html">Agendamentos</a></li>
+            <li><a href="calendario.html">Calendário</a></li>
+            <li><a href="salas.html">Salas</a></li>
+            <li><a href="admin.html">Administração</a></li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <h1>Administração</h1>
+        <label for="filtro-data"><strong>Filtrar por data:</strong></label>
+        <input id="filtro-data" type="date"/>
+        <button id="limparFiltroBtn">Limpar filtro</button>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="aprovacao">Aprovado</button>
+            <button class="tab-button" data-tab="pendente">Pendente</button>
+            <button class="tab-button" data-tab="em_aprovacao">Reservas</button>
+            <button class="tab-button" data-tab="concluido">Concluído</button>
+            <button class="tab-button" data-tab="definicoes">Definições</button>
+        </div>
+        
+        <div class="tab-content active" id="aprovacao"></div>
+        <div class="tab-content" id="pendente"></div>
+        <div class="tab-content" id="em_aprovacao"></div>
+        <div class="tab-content" id="concluido">
+            <label><strong>Filtrar por sala:</strong></label>
+            <select id="filtro-concluido">
+                <option value="todas">Todas as salas</option>
+                <option value="hgo">Salas HGO</option>
+                <option value="sobreda">Salas Sobreda</option>
+            </select>
+            <div id="lista-concluido"></div>
+        </div>
+        
+        <div class="tab-content" id="definicoes">
+            <h2>Taxa de Ocupação de Espaços ULSAS</h2>
+            <label>Sala:</label>
+            <select id="ocupacao-sala">
+                <option value="todas">Todas</option>
+                <option value="hgo">Todas as salas HGO</option>
+                <option value="sobreda">Todas as salas Sobreda</option>
+                <option value="HGO - Sala Almada">Sala Almada</option>
+                <option value="HGO - Sala Tejo">Sala Tejo (HGO)</option>
+                <option value="CF Sobreda - Sala Tejo">Sala Tejo (Sobreda)</option>
+                <option value="HGO - Sala Garcia de Orta">Sala Garcia de Orta</option>
+                <option value="CF Sobreda - Sala Sado">Sala Sado</option>
+                <option value="CF Sobreda - Auditório Dr. Luís Amaro">Sala Auditório</option>
+            </select>
+            <label>Ano:</label>
+            <select id="ocupacao-ano">
+                <option value="">--</option>
+            </select>
+            <label>Mês Início:</label>
+            <select id="mes-inicio">
+                <option value="">--</option>
+                <option value="0">Janeiro</option>
+                <option value="1">Fevereiro</option>
+                <option value="2">Março</option>
+                <option value="3">Abril</option>
+                <option value="4">Maio</option>
+                <option value="5">Junho</option>
+                <option value="6">Julho</option>
+                <option value="7">Agosto</option>
+                <option value="8">Setembro</option>
+                <option value="9">Outubro</option>
+                <option value="10">Novembro</option>
+                <option value="11">Dezembro</option>
+            </select>
+            <label>Mês Fim:</label>
+            <select id="mes-fim">
+                <option value="">--</option>
+                <option value="0">Janeiro</option>
+                <option value="1">Fevereiro</option>
+                <option value="2">Março</option>
+                <option value="3">Abril</option>
+                <option value="4">Maio</option>
+                <option value="5">Junho</option>
+                <option value="6">Julho</option>
+                <option value="7">Agosto</option>
+                <option value="8">Setembro</option>
+                <option value="9">Outubro</option>
+                <option value="10">Novembro</option>
+                <option value="11">Dezembro</option>
+            </select>
+            <label>Dia:</label>
+            <select id="ocupacao-dia">
+                <option value="">--</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+            </select>
+            
+            <section>
+                <h3>Taxa de Ocupação de Espaços ULSAS</h3>
+                <button id="calcularOcupacaoBtn">Calcular</button>
+                <button id="exportarExcelBtn">Exportar para Excel</button>
+                <div id="resultado-ocupacao" style="margin-top: 1em;"></div>
+            </section>
+        </div>
+    </div>
+    
+    <div id="modal-presencas" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModalPresencas()">&times;</span>
+            <fieldset>
+                <legend>Registar Presenças</legend>
+                <label for="horasEfetivas">Horas Efetivas:</label>
+                <input type="text" id="horasEfetivas" name="horasEfetivas">
+                <label for="participantesEfetivos">Participantes Efetivos:</label>
+                <input type="number" id="participantesEfetivos" name="participantesEfetivos">
+                <button id="guardarPresencasBtn">Guardar</button>
+            </fieldset>
+        </div>
+    </div>
+    
+    <div class="popup-confirmacao" id="popupEmailConfirmado">
+        <p>Email enviado com sucesso!</p>
+    </div>
 
-  <div class="tab-content active" id="aprovacao"></div>
-  <div class="tab-content" id="pendente"></div>
-  <div class="tab-content" id="em_aprovacao"></div>
+    <script src="auth.js"></script>
+    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  <div class="tab-content" id="concluido">
-    <label><strong>Filtrar por sala:</strong></label>
-    <select id="filtro-concluido" onchange="render()">
-      <option value="todas">Todas as salas</option>
-      <option value="hgo">Salas HGO</option>
-      <option value="sobreda">Salas Sobreda</option>
-    </select>
-    <div id="lista-concluido"></div>
-  </div>
-
-  <div class="tab-content" id="definicoes">
-    <h2>Taxa de Ocupação de Espaços ULSAS</h2>
-    <label>Sala:</label>
-    <select id="ocupacao-sala">
-      <option value="todas">Todas</option>
-      <option value="hgo">Todas as salas HGO</option>
-      <option value="sobreda">Todas as salas Sobreda</option>
-      <option value="Sala Almada">Sala Almada</option>
-      <option value="Sala Tejo (HGO)">Sala Tejo (HGO)</option>
-      <option value="Sala Tejo (Sobreda)">Sala Tejo (Sobreda)</option>
-      <option value="Sala Garcia de Orta">Sala Garcia de Orta</option>
-      <option value="Sala Sado">Sala Sado</option>
-      <option value="Sala Auditório">Sala Auditório</option>
-    </select>
-    <label>Ano:</label>
-    <select id="ocupacao-ano"><option value="">--</option></select>
-
-    <label>Mês Início:</label>
-    <select id="mes-inicio">
-      <option value="">--</option>
-      <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
-      <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
-      <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
-      <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
-    </select>
-
-    <label>Mês Fim:</label>
-    <select id="mes-fim">
-      <option value="">--</option>
-      <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
-      <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
-      <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
-      <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
-    </select>
-
-    <label>Dia:</label>
-    <select id="ocupacao-dia">
-      <option value="">--</option>
-      <option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7</option>
-<option value="8">8</option>
-<option value="9">9</option>
-<option value="10">10</option>
-<option value="11">11</option>
-<option value="12">12</option>
-<option value="13">13</option>
-<option value="14">14</option>
-<option value="15">15</option>
-<option value="16">16</option>
-<option value="17">17</option>
-<option value="18">18</option>
-<option value="19">19</option>
-<option value="20">20</option>
-<option value="21">21</option>
-<option value="22">22</option>
-<option value="23">23</option>
-<option value="24">24</option>
-<option value="25">25</option>
-<option value="26">26</option>
-<option value="27">27</option>
-<option value="28">28</option>
-<option value="29">29</option>
-<option value="30">30</option>
-<option value="31">31</option>
-    </select>
-
-    <section>
-      <h3>Taxa de Ocupação de Espaços ULSAS</h3>
-      <button onclick="calcularTaxaOcupacao()">Calcular</button>
-      <button onclick="exportarParaExcel()">Exportar para Excel</button>
-      <div id="resultado-ocupacao" style="margin-top: 1em;"></div>
-    </section>
-  </div>
-
-  <div class="popup-confirmacao" id="popupEmailConfirmado">
-    <p>Email enviado com sucesso!</p>
-  </div>
-
-  <script src="scripts.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      ensureAuthenticated();
-      showLogoutIfAuthenticated();
-
-      // preencher anos
-      const anos = new Set();
-      const ags = JSON.parse(localStorage.getItem("agendamentos") || "[]");
-      ags.forEach(ev => anos.add(new Date(ev.start).getFullYear()));
-      const selectAno = document.getElementById("ocupacao-ano");
-      [...anos].sort().forEach(y => {
-        const opt = document.createElement("option");
-        opt.value = y;
-        opt.textContent = y;
-        selectAno.appendChild(opt);
-      });
-    });
-
-    (function(){ emailjs.init({ publicKey:"8jlE16f213Mla1ihS" }); })();
-  </script>
 </body>
 </html>
