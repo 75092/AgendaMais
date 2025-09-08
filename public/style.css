@@ -176,3 +176,15 @@ legend {
 .toast.erro {
   background: #d32f2f;
 }
+
+/* Opcional: centralizar e limitar a largura do conteúdo principal */
+.main-content .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Opcional: link ativo na sidebar */
+.sidebar a.active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
