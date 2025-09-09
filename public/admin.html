@@ -13,7 +13,7 @@
         <button id="logoutBtn" onclick="logout()">Logout</button>
     </div>
   </div>
-  
+
   <div class="sidebar">
       <ul>
           <li><a href="index.html">Início</a></li>
@@ -39,8 +39,8 @@
       <h2>Agendamentos Aprovados</h2>
       <div id="agendamentos-aprovados-list">
         <div class="agendamento-card">
-          <h3>Agendamento Aprovado</h3>
-          <p>Detalhes do agendamento aprovado.</p>
+          <h3>Exemplo de Agendamento Aprovado</h3>
+          <p>Este card é um placeholder. A lista será preenchida dinamicamente.</p>
         </div>
       </div>
     </div>
@@ -49,19 +49,21 @@
       <h2>Agendamentos Pendentes</h2>
       <div id="agendamentos-pendentes-list">
         <div class="agendamento-card">
-          <h3>Agendamento Pendente</h3>
-          <p>Detalhes do agendamento pendente.</p>
+          <h3>Exemplo de Agendamento Pendente</h3>
+          <p>Este card é um placeholder. A lista será preenchida dinamicamente.</p>
+          <button>Aprovar</button>
+          <button>Rejeitar</button>
         </div>
       </div>
     </div>
-    
+
     <div id="tab-reservas" class="tab-content">
       <h2>Reservas</h2>
       <p>Aqui você pode ver as reservas e criar novas.</p>
       <div id="reservas-content">
         <div class="agendamento-card">
-          <h3>Sala de Reuniões 1</h3>
-          <p>Reservada por Dr. João Silva</p>
+          <h3>Exemplo de Reserva</h3>
+          <p>Este card é um placeholder. A lista será preenchida dinamicamente.</p>
         </div>
       </div>
     </div>
@@ -71,15 +73,14 @@
       <p>Configurações gerais do sistema de agendamentos.</p>
       <div id="definicoes-content">
         <div class="agendamento-card">
-          <h3>Configurações de E-mail</h3>
-          <p>Gerir templates e notificações.</p>
+          <h3>Exemplo de Definição</h3>
+          <p>Este card é um placeholder. A lista será preenchida dinamicamente.</p>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // JavaScript para gerir as abas
     document.addEventListener("DOMContentLoaded", () => {
         const tabs = document.querySelectorAll(".tab-button");
         const contents = document.querySelectorAll(".tab-content");
@@ -101,4 +102,5 @@
   </script>
 </body>
 </html>
+
 
