@@ -1,144 +1,177 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="utf-8"/>
-  <title>Agendamentos</title>
-  <link href="style.css" rel="stylesheet"/>
-  <script src="auth.js"></script>
+    <meta charset="utf-8"/>
+    <title>Agendamentos</title>
+    <link href="style.css" rel="stylesheet"/>
+    <style>
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 20px;
+            margin-top: 5px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        select {
+            margin-left: 10px;
+        }
+
+        textarea {
+            width: 50%;
+            resize: vertical;
+        }
+    </style>
 </head>
 <body>
-  <div class="header">
-    <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
-    <div class="header-content">
+
+    <div class="header">
+        <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
         <button id="logoutBtn" onclick="logout()">Logout</button>
     </div>
-  </div>
-  
-  <div class="sidebar">
-      <ul>
-          <li><a href="index.html">Início</a></li>
-          <li><a href="agendamentos.html">Agendamentos</a></li>
-          <li><a href="calendario.html">Calendário</a></li>
-          <li><a href="salas.html">Salas</a></li>
-          <li><a href="admin.html">Administração</a></li>
-      </ul>
-  </div>
 
-  <div class="main-content">
-    <div class="page-header">
+    <div class="sidebar">
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="agendamentos.html">Agendamentos</a></li>
+            <li><a href="calendario.html">Calendário</a></li>
+            <li><a href="salas.html">Salas</a></li>
+            <li><a href="admin.html">Administração</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
         <h1>Meus Agendamentos</h1>
-        <button class="botao-topo" onclick="abrirModal()">
-            + Novo Agendamento
-        </button>
+        <button class="botao-novo" onclick="abrirModal()">+ Novo Agendamento</button>
+
+        <h2>Agendamentos da Semana</h2>
+        <label for="filtroSala"><strong>Filtrar por Sala:</strong></label>
+        <select id="filtroSala" onchange="mostrarAgendamentosSemana()">
+            <option value="todas">Ver Todas</option>
+            <optgroup label="HGO">
+                <option>HGO - Sala Almada</option>
+                <option>HGO - Sala Garcia de Orta</option>
+                <option>HGO - Sala Tejo</option>
+                <option>HGO - Sala Almada + Garcia de Orta</option>
+            </optgroup>
+            <optgroup label="CF Sobreda">
+                <option>CF Sobreda - Auditório Dr. Luís Amaro</option>
+                <option>CF Sobreda - Sala Sado</option>
+                <option>CF Sobreda - Sala Tejo</option>
+            </optgroup>
+            <optgroup label="CF Amora">
+                <option>CF Amora - Sala Amora</option>
+            </optgroup>
+        </select>
+
+        <table id="tabela-semanal">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Hora Início</th>
+                    <th>Hora Fim</th>
+                    <th>Sala</th>
+                    <th>Evento</th>
+                    <th>Participantes</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-    <p>Aqui você pode ver o estado dos seus agendamentos e fazer novos pedidos.</p>
-    
-  </div>
 
-  <div id="agendamento-modal" class="modal">
-    <div class="modal-content">
-        <span class="fechar" onclick="fecharModal()">&times;</span>
-        <h1>Pedido de Agendamento</h1>
-        <p>Preencha o formulário abaixo para submeter o seu pedido de agendamento.</p>
-        
-        <form id="agendamento-form" method="post" onsubmit="enviarEmailConfirmacao(event)">
-            <div class="linha">
-              <label>Nome Completo: <input id="nomeCompleto" required type="text"></label>
-              <label>Número Mecanográfico: <input id="numMec" required type="number"></label>
-            </div>
+    <div class="modal" id="modalAgendamento">
+        <div class="modal-content">
+            <span class="fechar" onclick="fecharModal()">×</span>
+            <h2>Novo Agendamento</h2>
+            <form id="agendamento-form">
 
-            <div class="linha">
-              <label>Serviço/Departamento: <input id="servico" required type="text"></label>
-              <label>Email: <input id="email" required type="email"></label>
-            </div>
+                <fieldset>
+                    <legend><strong>Requerente</strong></legend>
+                    <label>Nome:<input id="nomeReq" required type="text" name="nome_requerente"/></label>
+                    <label>Número Mecanográfico:<input id="numMec" maxlength="10" name="num_mecanografico"/></label>
+                    <label>Serviço:<input id="servicoReq" required type="text" name="servico"/></label>
+                    <div class="linha">
+                        <label>Email:<input id="emailReq" required type="email" name="email"/></label>
+                        <label>Telemóvel:<input id="contactoReq" required type="tel" name="contacto"/></label>
+                    </div>
+                </fieldset>
 
-            <div class="linha">
-              <label>Contacto Telefónico: <input id="contacto" type="tel"></label>
-            </div>
+                <fieldset>
+                    <legend><strong>Data e Hora</strong></legend>
+                    <label>Data:<input id="data" required type="date" name="data" onchange="atualizarSalasDisponiveis()"/></label>
+                    <div class="linha">
+                        <label>Hora Início:<input id="horaInicio" required type="time" name="hora_inicio" onchange="atualizarSalasDisponiveis()"/></label>
+                        <label>Hora Fim:<input id="horaFim" required type="time" name="hora_fim" onchange="atualizarSalasDisponiveis()"/></label>
+                    </div>
+                </fieldset>
 
-            <fieldset>
-              <legend><strong>Detalhes do Evento</strong></legend>
-              <div class="linha">
-                <label>Nome do Evento: <input id="nomeEvento" required type="text"></label>
-                <label>N.º de Participantes: <input id="numParticipantes" min="1" required type="number"></label>
-              </div>
+                <fieldset>
+                    <legend><strong>Evento</strong></legend>
+                    <label>Sala:<select id="sala" required name="sala"></select></label>
+                    <label>Tipo de Evento:
+                        <select id="tipoEvento" required name="tipo_evento">
+                            <option value="">-- Selecione --</option>
+                            <option value="Reuniões clínicas">Reuniões Clínicas</option>
+                            <option value="Reuniões Entidades Externas">Reuniões Entidades Externas</option>
+                            <option value="Concursos e Exames">Concursos e Exames</option>
+                            <option value="Formação em Serviço">Formação em Serviço</option>
+                            <option value="Auditoria">Auditoria</option>
+                            <option value="Reunião de Comissão">Reunião de Comissão</option>
+                            <option value="Formação para Utentes">Formação para Utentes</option>
+                        </select>
+                    </label>
+                    <div class="linha">
+                        <label>Nome do Evento:<input id="nomeEvento" required type="text" name="nome_evento"/></label>
+                        <label>Participantes:<input id="participantes" type="number" name="participantes"/></label>
+                    </div>
+                </fieldset>
 
-              <div class="linha">
-                <label>Sala:
-                  <select id="sala" required>
-                    <optgroup label="HGO">
-                      <option value="HGO - Sala Almada">HGO - Sala Almada</option>
-                      <option value="HGO - Sala Garcia de Orta">HGO - Sala Garcia de Orta</option>
-                      <option value="HGO - Sala Tejo">HGO - Sala Tejo</option>
-                      <option value="HGO - Sala Almada + Garcia de Orta">HGO - Sala Almada + Garcia de Orta</option>
-                    </optgroup>
-                    <optgroup label="CF Sobreda">
-                      <option value="CF Sobreda - Auditório Dr. Luís Amaro">CF Sobreda - Auditório Dr. Luís Amaro</option>
-                      <option value="CF Sobreda - Sala Sado">CF Sobreda - Sala Sado</option>
-                      <option value="CF Sobreda - Sala Tejo">CF Sobreda - Sala Tejo</option>
-                    </optgroup>
-                    <optgroup label="CF Amora">
-                      <option value="CF Amora - Sala Amora">CF Amora - Sala Amora</option>
-                    </optgroup>
-                  </select>
-                </label>
-              </div>
+                <fieldset>
+                    <legend><strong>Recursos</strong></legend>
+                    <div class="checkbox-group">
+                        <label>Material Clínico <input type="checkbox" name="recursos" value="Material Clínico"></label>
+                        <label>Material Informativo <input type="checkbox" name="recursos" value="Material Informativo"></label>
+                        <label>Apoio de Secretariado <input type="checkbox" name="recursos" value="Apoio de Secretariado"></label>
+                    </div>
+                </fieldset>
+                
+                <fieldset>
+                    <legend><strong>Equipamento Audiovisual e Informático</strong></legend>
+                    <div class="checkbox-group">
+                        <label>LCD <input name="recursos" value="LCD" type="checkbox"></label>
+                        <label>Colunas <input name="recursos" value="Colunas" type="checkbox"></label>
+                        <label>Microfone <input name="recursos" value="Microfone" type="checkbox"></label>
+                        <label>Vídeo Projetor <input name="recursos" value="Video Projetor" type="checkbox"></label>
+                        <label>Ponteiro <input name="recursos" value="Ponteiro" type="checkbox"></label>
+                        <label>Computador <input name="recursos" value="Computador" type="checkbox"></label>
+                    </div>
+                </fieldset>
 
-              <div class="linha">
-                <label>Data: <input id="data" required type="date"></label>
-                <label>Hora de Início: <input id="horaInicio" required type="time"></label>
-                <label>Hora de Fim: <input id="horaFim" required type="time"></label>
-              </div>
-            </fieldset>
+                <fieldset>
+                    <legend><strong>Observações</strong></legend>
+                    <textarea id="observacoes" placeholder="Escreva aqui.." rows="4" name="observacoes"></textarea>
+                </fieldset>
 
-            <fieldset>
-              <legend><strong>Recursos Necessários</strong></legend>
-              <div class="checkbox-group">
-                <label>Projetor <input name="recursos" value="Projetor" type="checkbox"></label>
-                <label>Placard <input name="recursos" value="Placard" type="checkbox"></label>
-                <label>Quadro Branco <input name="recursos" value="Quadro Branco" type="checkbox"></label>
-                <label>Flipchart <input name="recursos" value="Flipchart" type="checkbox"></label>
-                <label>Ponteiro <input name="recursos" value="Ponteiro" type="checkbox"></label>
-                <label>Computador <input name="recursos" value="Computador" type="checkbox"></label>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend><strong>Outras Opções</strong></legend>
-              <div class="checkbox-group">
-                <label>Material Clínico <input name="recursos" value="Material Clínico" type="checkbox"></label>
-                <label>Material Informativo <input name="recursos" value="Material Informativo" type="checkbox"></label>
-                <label>Apoio de Secretariado <input name="recursos" value="Apoio de Secretariado" type="checkbox"></label>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend><strong>Observações</strong></legend>
-              <textarea id="observacoes" placeholder="Escreva aqui.." rows="4"></textarea>
-            </fieldset>
-
-            <button class="botao-novo" type="submit">Submeter</button>
-        </form>
+                <button class="botao-novo" type="submit">Submeter</button>
+            </form>
+        </div>
     </div>
-  </div>
-    
-  <div id="successPopup" class="popup">
-    <div class="popup-content">
-      <p>O seu pedido foi submetido com sucesso<br>
-      e será validado por e-mail em breve.</p>
-      <button onclick="fecharPopup()">OK</button>
-    </div>
-  </div>
-  
-  <script>
-      function abrirModal() {
-        document.getElementById('agendamento-modal').style.display = 'flex';
-      }
-      function fecharModal() {
-        document.getElementById('agendamento-modal').style.display = 'none';
-      }
-  </script>
-  <script src="scripts.js"></script>
+    <div class="toast" id="toast"></div>
+
+    <script src="auth.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
 
