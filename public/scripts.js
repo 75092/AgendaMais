@@ -1,23 +1,207 @@
 // scripts.js
 const API_BASE = "https://forma-o.onrender.com";
 
-// Variável para armazenar os agendamentos carregados da API
 let agendamentos = [];
 
-// Funções de Autenticação e Configuração
-document.addEventListener("DOMContentLoaded", () => {
-    ensureAuthenticated();
-    showLogoutIfAuthenticated();
-    if (ensureRole("admin")) {
-        loadAndRender();
-        setupEventListeners();
-    } else {
-        alert("Acesso restrito a administradores.");
-        window.location.href = "/index.html";
-    }
-});
+// =========================
+//  Lógica Comum
+// =========================
 
-// Funções do Modal de Presenças
+function mostrarToast(msg, erro = false) {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.className = "toast mostrar" + (erro ? " erro" : "");
+    setTimeout(() => toast.className = "toast", 4000);
+}
+
+function abrirModal() {
+    const modal = document.getElementById("modalAgendamento");
+    if (modal) modal.style.display = "block";
+}
+
+function fecharModal() {
+    const modal = document.getElementById("modalAgendamento");
+    if (modal) modal.style.display = "none";
+}
+
+// ===================================
+//  Lógica Específica da Página de Agendamentos
+// ===================================
+function setupAgendamentosPage() {
+    const form = document.getElementById("agendamento-form");
+    if (form) {
+        form.addEventListener("submit", submeterAgendamento);
+    }
+    const salaFiltro = document.getElementById("filtroSala");
+    if (salaFiltro) {
+        salaFiltro.addEventListener("change", mostrarAgendamentosSemana);
+    }
+    const dataInput = document.getElementById("data");
+    const horaInicioInput = document.getElementById("horaInicio");
+    const horaFimInput = document.getElementById("horaFim");
+    if (dataInput && horaInicioInput && horaFimInput) {
+        dataInput.addEventListener("change", atualizarSalasDisponiveis);
+        horaInicioInput.addEventListener("change", atualizarSalasDisponiveis);
+        horaFimInput.addEventListener("change", atualizarSalasDisponiveis);
+    }
+
+    mostrarAgendamentosSemana();
+}
+
+async function atualizarSalasDisponiveis() {
+    const select = document.getElementById("sala");
+    if (!select) return;
+
+    const data = document.getElementById("data")?.value;
+    const inicio = document.getElementById("horaInicio")?.value;
+    const fim = document.getElementById("horaFim")?.value;
+    if (!data || !inicio || !fim) return;
+
+    try {
+        const token = localStorage.getItem("token");
+        const resp = await fetch(`${API_BASE}/api/agendamentos`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        if (!resp.ok) throw new Error("Erro ao carregar agendamentos");
+
+        const agendamentosExistentes = await resp.json();
+
+        const inicioSel = new Date(`${data}T${inicio}`);
+        const fimSel = new Date(`${data}T${fim}`);
+        const ocupadas = new Set();
+
+        agendamentosExistentes.forEach(ev => {
+            const inicioEv = new Date(ev.data_hora_inicio);
+            const fimEv = new Date(ev.data_hora_fim);
+            if (ev.data_hora_inicio && ev.data_hora_inicio.startsWith(data) && fimSel > inicioEv && inicioSel < fimEv) {
+                ocupadas.add(ev.sala);
+            }
+        });
+
+        const salas = [
+            "HGO - Sala Almada", "HGO - Sala Garcia de Orta", "HGO - Sala Tejo",
+            "HGO - Sala Almada + Garcia de Orta", "CF Sobreda - Auditório Dr. Luís Amaro",
+            "CF Sobreda - Sala Sado", "CF Sobreda - Sala Tejo", "CF Amora - Sala Amora"
+        ];
+
+        select.innerHTML = '<option value="">-- Selecione --</option>';
+        salas.forEach(s => {
+            if (!ocupadas.has(s)) {
+                const option = document.createElement("option");
+                option.value = s;
+                option.textContent = s;
+                select.appendChild(option);
+            }
+        });
+
+    } catch (err) {
+        console.error("Erro ao atualizar salas:", err);
+    }
+}
+
+async function mostrarAgendamentosSemana() {
+    const tabela = document.querySelector("#tabela-semanal tbody");
+    if (!tabela) return;
+
+    try {
+        const token = localStorage.getItem("token");
+        const resp = await fetch(`${API_BASE}/api/agendamentos`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        if (!resp.ok) throw new Error("Erro ao carregar agendamentos");
+
+        const agendamentos = await resp.json();
+        const hoje = new Date();
+        const inicioSemana = new Date(hoje);
+        inicioSemana.setDate(hoje.getDate() - (hoje.getDay() === 0 ? 6 : hoje.getDay() - 1));
+        inicioSemana.setHours(0, 0, 0, 0);
+
+        const fimSemana = new Date(inicioSemana);
+        fimSemana.setDate(inicioSemana.getDate() + 6);
+        fimSemana.setHours(23, 59, 59, 999);
+
+        const salaSelecionada = document.getElementById("filtroSala")?.value || "todas";
+
+        const eventos = agendamentos.filter(ev => {
+            const inicio = new Date(ev.data_hora_inicio);
+            return (
+                inicio >= inicioSemana &&
+                inicio <= fimSemana &&
+                (salaSelecionada === "todas" || ev.sala === salaSelecionada)
+            );
+        });
+
+        tabela.innerHTML = "";
+        eventos.forEach(ev => {
+            const inicio = new Date(ev.data_hora_inicio);
+            const fim = new Date(ev.data_hora_fim);
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${inicio.toLocaleDateString("pt-PT")}</td>
+                <td>${inicio.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+                <td>${fim.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+                <td>${ev.sala}</td>
+                <td>${ev.nome_evento}</td>
+                <td>${ev.participantes}</td>
+            `;
+            tabela.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Erro ao mostrar agendamentos semanais:", err);
+    }
+}
+
+async function submeterAgendamento(e) {
+    e.preventDefault();
+    const form = document.getElementById("agendamento-form");
+    const formData = new FormData(form);
+    const dados = {
+        nome_requerente: formData.get("nome_requerente"),
+        num_mecanografico: formData.get("num_mecanografico"),
+        servico: formData.get("servico"),
+        email: formData.get("email"),
+        contacto: formData.get("contacto"),
+        data: formData.get("data"),
+        hora_inicio: formData.get("hora_inicio"),
+        hora_fim: formData.get("hora_fim"),
+        sala: formData.get("sala"),
+        tipo_evento: formData.get("tipo_evento"),
+        nome_evento: formData.get("nome_evento"),
+        participantes: formData.get("participantes"),
+        observacoes: formData.get("observacoes"),
+        recursos: formData.getAll("recursos")
+    };
+
+    try {
+        const token = localStorage.getItem("token");
+        const resposta = await fetch(`${API_BASE}/api/agendamentos`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(dados)
+        });
+
+        if (resposta.ok) {
+            mostrarToast("Agendamento submetido com sucesso!");
+            form.reset();
+            fecharModal();
+            mostrarAgendamentosSemana();
+        } else {
+            const erro = await resposta.json();
+            mostrarToast("Erro: " + (erro.message || "Não foi possível gravar."), true);
+        }
+    } catch (err) {
+        console.error("Erro ao submeter agendamento:", err);
+        mostrarToast("Erro ao submeter agendamento. Verifique a ligação ao servidor.", true);
+    }
+}
+
+// ===================================
+//  Lógica Específica da Página de Admin
+// ===================================
 let agendamentoIndexParaPresencas = null;
 
 function abrirModalPresencas(index) {
@@ -58,14 +242,13 @@ async function guardarPresencas() {
 
         alert("Presenças guardadas com sucesso!");
         fecharModalPresencas();
-        loadAndRender(); // Recarrega os dados após a atualização
+        loadAndRender();
     } catch (error) {
         console.error("Erro ao guardar presenças:", error);
         alert("Erro ao guardar presenças.");
     }
 }
 
-// Funções de Renderização e Event Listeners
 async function loadAndRender() {
     try {
         const token = localStorage.getItem("token");
@@ -92,7 +275,7 @@ async function loadAndRender() {
 }
 
 function renderAgendamentos() {
-    const filtroDataStr = document.getElementById("filtro-data").value;
+    const filtroDataStr = document.getElementById("filtro-data")?.value;
     const filtroData = filtroDataStr ? new Date(filtroDataStr + "T00:00:00") : null;
     const filtroConcluido = document.getElementById("filtro-concluido")?.value || "todas";
 
@@ -100,6 +283,8 @@ function renderAgendamentos() {
     const pendenteDiv = document.getElementById("pendente");
     const emAprovacaoDiv = document.getElementById("em_aprovacao");
     const concluidoDiv = document.getElementById("lista-concluido");
+
+    if (!aprovacaoDiv || !pendenteDiv || !emAprovacaoDiv || !concluidoDiv) return;
 
     [aprovacaoDiv, pendenteDiv, emAprovacaoDiv, concluidoDiv].forEach(div => div.innerHTML = "");
 
@@ -141,7 +326,7 @@ function renderAgendamentos() {
                 <button onclick="atualizarEstado(${p.id}, 'Rejeitado')">Cancelar</button>
             `;
             aprovacaoDiv.appendChild(card);
-        } else if (p.estado === "Reservado") { // Tratamento para estado "Reservado"
+        } else if (p.estado === "Reservado") {
              card.innerHTML += `
                 <button onclick="atualizarEstado(${p.id}, 'Aprovado', '${p.email}', '${p.nome_evento}')">Aprovar</button>
                 <button onclick="atualizarEstado(${p.id}, 'Pendente')">Tornar Pendente</button>
@@ -176,12 +361,11 @@ async function atualizarEstado(id, estado, email, nomeEvento) {
             throw new Error("Erro ao atualizar o estado do agendamento");
         }
         
-        // Enviar email se o estado for 'Aprovado'
         if (estado === "Aprovado" && email && nomeEvento) {
             await enviarEmailConfirmacao(email, nomeEvento);
         }
 
-        await loadAndRender(); // Recarrega os dados após a atualização
+        await loadAndRender();
         alert(`Agendamento atualizado para "${estado}" com sucesso!`);
     } catch (error) {
         console.error("Erro ao atualizar o agendamento:", error);
@@ -197,8 +381,10 @@ async function enviarEmailConfirmacao(email, nomeEvento) {
             evento: nomeEvento
         });
         const popup = document.getElementById("popupEmailConfirmado");
-        popup.style.display = "block";
-        setTimeout(() => popup.style.display = "none", 5000);
+        if (popup) {
+            popup.style.display = "block";
+            setTimeout(() => popup.style.display = "none", 5000);
+        }
     } catch (error) {
         console.error("Erro ao enviar email:", error);
         alert("Erro ao enviar email de confirmação.");
@@ -207,6 +393,7 @@ async function enviarEmailConfirmacao(email, nomeEvento) {
 
 function preencherSelectAnos() {
     const selectAno = document.getElementById("ocupacao-ano");
+    if (!selectAno) return;
     const anos = new Set();
     agendamentos.forEach(ag => anos.add(new Date(ag.data_hora_inicio).getFullYear()));
     selectAno.innerHTML = '<option value="">--</option>';
@@ -219,19 +406,18 @@ function preencherSelectAnos() {
 }
 
 function calcularTaxaOcupacao() {
-    const salaFiltro = document.getElementById("ocupacao-sala").value;
-    const anoFiltro = parseInt(document.getElementById("ocupacao-ano").value);
-    const mesInicioFiltro = document.getElementById("mes-inicio").value !== "" ? parseInt(document.getElementById("mes-inicio").value) : null;
-    const mesFimFiltro = document.getElementById("mes-fim").value !== "" ? parseInt(document.getElementById("mes-fim").value) : null;
-    const diaFiltro = document.getElementById("ocupacao-dia").value !== "" ? parseInt(document.getElementById("ocupacao-dia").value) : null;
+    const salaFiltro = document.getElementById("ocupacao-sala")?.value;
+    const anoFiltro = parseInt(document.getElementById("ocupacao-ano")?.value);
+    const mesInicioFiltro = document.getElementById("mes-inicio")?.value !== "" ? parseInt(document.getElementById("mes-inicio").value) : null;
+    const mesFimFiltro = document.getElementById("mes-fim")?.value !== "" ? parseInt(document.getElementById("mes-fim").value) : null;
+    const diaFiltro = document.getElementById("ocupacao-dia")?.value !== "" ? parseInt(document.getElementById("ocupacao-dia").value) : null;
     const resultadoDiv = document.getElementById("resultado-ocupacao");
-    resultadoDiv.innerHTML = "";
-
-    if (!anoFiltro) {
-        resultadoDiv.innerHTML = "<p style='color:red;'>Por favor, selecione um ano.</p>";
+    if (!resultadoDiv || !salaFiltro || !anoFiltro) {
+        if (resultadoDiv) resultadoDiv.innerHTML = "<p style='color:red;'>Por favor, selecione um ano e sala.</p>";
         return;
     }
 
+    resultadoDiv.innerHTML = "";
     let horasPrevistas = 0;
     let participantesPrevistos = 0;
     let horasEfetivas = 0;
@@ -241,7 +427,6 @@ function calcularTaxaOcupacao() {
         const inicio = new Date(ag.data_hora_inicio);
         const fim = new Date(ag.data_hora_fim);
 
-        // Aplicar filtros de data
         const dataValida =
             inicio.getFullYear() === anoFiltro &&
             (mesInicioFiltro === null || inicio.getMonth() >= mesInicioFiltro) &&
@@ -250,7 +435,6 @@ function calcularTaxaOcupacao() {
         
         if (!dataValida) return;
 
-        // Aplicar filtro de sala
         const salaLower = (ag.sala || "").toLowerCase();
         const salaValida = 
             salaFiltro === "todas" ||
@@ -282,7 +466,6 @@ function calcularTaxaOcupacao() {
                (salaFiltro === "sobreda" && salaLower.includes("sobreda"));
     });
     
-    // Contar salas únicas para o cálculo
     const salasUnicas = new Set(salasFiltradas.map(ag => ag.sala));
     numSalasSelecionadas = salasUnicas.size > 0 ? salasUnicas.size : 1;
 
@@ -301,7 +484,9 @@ function calcularTaxaOcupacao() {
 }
 
 function exportarParaExcel() {
-    const texto = document.getElementById("resultado-ocupacao").innerText;
+    const resultadoDiv = document.getElementById("resultado-ocupacao");
+    if (!resultadoDiv) return;
+    const texto = resultadoDiv.innerText;
     const blob = new Blob([texto], { type: "text/plain;charset=utf-8" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -311,17 +496,42 @@ function exportarParaExcel() {
     document.body.removeChild(link);
 }
 
-// Configurar event listeners
-function setupEventListeners() {
-    document.getElementById("filtro-data").addEventListener("change", renderAgendamentos);
-    document.getElementById("limparFiltroBtn").addEventListener("click", () => {
+// ===================================
+//  Configuração de Listeners
+// ===================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    ensureAuthenticated();
+    showLogoutIfAuthenticated();
+    
+    const isAgendamentosPage = !!document.getElementById("tabela-semanal");
+    const isAdminPage = !!document.getElementById("aprovacao");
+
+    if (isAgendamentosPage) {
+        setupAgendamentosPage();
+    }
+    
+    if (isAdminPage) {
+        if (ensureRole("admin", false)) {
+            loadAndRender();
+            setupAdminEventListeners();
+        } else {
+            alert("Acesso restrito a administradores.");
+            window.location.href = "/index.html";
+        }
+    }
+});
+
+function setupAdminEventListeners() {
+    document.getElementById("filtro-data")?.addEventListener("change", renderAgendamentos);
+    document.getElementById("limparFiltroBtn")?.addEventListener("click", () => {
         document.getElementById('filtro-data').value = '';
         renderAgendamentos();
     });
-    document.getElementById("filtro-concluido").addEventListener("change", renderAgendamentos);
-    document.getElementById("calcularOcupacaoBtn").addEventListener("click", calcularTaxaOcupacao);
-    document.getElementById("exportarExcelBtn").addEventListener("click", exportarParaExcel);
-    document.getElementById("guardarPresencasBtn").addEventListener("click", guardarPresencas);
+    document.getElementById("filtro-concluido")?.addEventListener("change", renderAgendamentos);
+    document.getElementById("calcularOcupacaoBtn")?.addEventListener("click", calcularTaxaOcupacao);
+    document.getElementById("exportarExcelBtn")?.addEventListener("click", exportarParaExcel);
+    document.getElementById("guardarPresencasBtn")?.addEventListener("click", guardarPresencas);
 
     document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', () => {
@@ -330,7 +540,7 @@ function setupEventListeners() {
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             button.classList.add('active');
             document.getElementById(tab).classList.add('active');
-            renderAgendamentos(); // Renderiza os agendamentos sempre que uma nova tab é selecionada
+            renderAgendamentos();
         });
     });
 }
