@@ -250,6 +250,68 @@ function exportarParaExcel() {
     link.click();
     document.body.removeChild(link);
 }
+// =========================
+// Lógica de Agendamento (para agendamentos.html)
+// =========================
+
+function mostrarPopup() {
+    const popup = document.getElementById("successPopup");
+    if (popup) {
+        popup.style.display = "flex";
+    }
+}
+
+function fecharPopup() {
+    const popup = document.getElementById("successPopup");
+    if (popup) {
+        popup.style.display = "none";
+    }
+}
+
+async function guardarAgendamento() {
+    const form = document.getElementById("agendamento-form");
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const agendamentoData = {
+        nome_evento: document.getElementById("nomeEvento").value,
+        data_inicio: document.getElementById("data").value + 'T' + document.getElementById("horaInicio").value + ':00Z',
+        data_fim: document.getElementById("data").value + 'T' + document.getElementById("horaFim").value + ':00Z',
+        sala: document.getElementById("sala").value,
+        num_mecanografico: document.getElementById("numMec").value,
+        nome_requerente: document.getElementById("nomeReq").value,
+        servico_requerente: document.getElementById("servicoReq").value,
+        email_requerente: document.getElementById("emailReq").value,
+        contacto_requerente: document.getElementById("contactoReq").value,
+        participantes_previstos: parseInt(document.getElementById("participantesPrevistos").value),
+        recursos: Array.from(document.querySelectorAll('input[name="recursos"]:checked')).map(cb => cb.value),
+        observacoes: document.getElementById("observacoes").value,
+        status: "pendente" // Estado inicial é sempre pendente
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}/api/agendamentos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(agendamentoData)
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao submeter agendamento.");
+        }
+
+        // Limpa o formulário e mostra o popup
+        form.reset();
+        mostrarPopup();
+    } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao submeter agendamento. Tente novamente.");
+    }
+}
 
 async function atualizarSalasDisponiveis() {
     const select = document.getElementById("sala");

@@ -4,6 +4,9 @@
     <meta charset="utf-8"/>
     <title>Agendamentos</title>
     <link href="style.css" rel="stylesheet"/>
+    <script src="auth.js"></script>
+    <script src="scripts.js"></script>
+
     <style>
         fieldset {
             border: 1px solid #ccc;
@@ -33,7 +36,24 @@
             width: 50%;
             resize: vertical;
         }
-    </style>
+            /* Popup */
+        .popup {
+          display: none;
+          position: fixed;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: rgba(0,0,0,0.5);
+          justify-content: center;
+          align-items: center;
+        }
+
+        .popup-content {
+          background: white;
+          padding: 20px;
+          border-radius: 10px;
+          text-align: center;
+        }
+        </style>
 </head>
 <body>
 
@@ -53,7 +73,9 @@
     </div>
 
     <div class="main-content">
-        <h1>Meus Agendamentos</h1>
+        <h1>Agendamentos</h1>
+        <p>Preencha o formulário para fazer um novo agendamento.</p>
+
         <button class="botao-novo" onclick="abrirModal()">+ Novo Agendamento</button>
 
         <h2>Agendamentos da Semana</h2>
@@ -72,7 +94,7 @@
                 <option>CF Sobreda - Sala Tejo</option>
             </optgroup>
             <optgroup label="CF Amora">
-                <option>CF Amora - Sala Amora</option>
+                <option>USF Amora Saudavel - Sala Amora</option>
             </optgroup>
         </select>
 
@@ -159,19 +181,19 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
-                    <legend><strong>Observações</strong></legend>
-                    <textarea id="observacoes" placeholder="Escreva aqui.." rows="4" name="observacoes"></textarea>
-                </fieldset>
-
-                <button class="botao-novo" type="submit">Submeter</button>
+              <button class="botao-novo" type="button" onclick="guardarAgendamento()">Submeter</button>
             </form>
+          </div>
+        </div>
+
+        <div id="successPopup" class="popup">
+          <div class="popup-content">
+            <p>O seu pedido foi submetido com sucesso<br>
+            e será validado por e-mail em breve.</p>
+            <button onclick="fecharPopup()">OK</button>
         </div>
     </div>
     <div class="toast" id="toast"></div>
-
-    <script src="auth.js"></script>
-    <script src="scripts.js"></script>
 </body>
 </html>
 
