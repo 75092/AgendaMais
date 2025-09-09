@@ -9,21 +9,20 @@ body {
 }
 
 .header {
-  width: 100%;
-  height: 80px;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa; /* Cor de fundo do cabeçalho */
+    border-bottom: 1px solid #e7e7e7;
 }
 
-.header img.logo {
-  height: 50px;
+.logo {
+    height: 50px; /* Ajuste o tamanho do seu logo se precisar */
+}
+
+.header-content {
+    margin-left: auto; /* Empurra o botão para a direita */
 }
 
 .sidebar {
@@ -187,4 +186,10 @@ legend {
 .sidebar a.active {
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+.filter-date {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaço entre o campo de data e o botão */
+    margin-bottom: 20px;
 }

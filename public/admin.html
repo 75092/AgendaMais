@@ -82,8 +82,10 @@
     </style>
 
     <div class="header">
-        <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
-        <button id="logoutBtn" onclick="logout()">Logout</button>
+        <img src="/ulsas_logotipo.png" alt="Logotipo ULSAS" class="logo">
+        <div class="header-content">
+            <button id="logoutBtn" onclick="logout()">Logout</button>
+        </div>
     </div>
     
     <div class="sidebar">
@@ -96,11 +98,14 @@
         </ul>
     </div>
     
-    <div class="main-content">
-        <h1>Administração</h1>
-        <label for="filtro-data"><strong>Filtrar por data:</strong></label>
-        <input id="filtro-data" type="date"/>
+    <div class="tab-buttons">
+        </div>
+    
+    <div class="filter-date">
+        <label for="filtro-data">Filtrar por data:</label>
+        <input type="date" id="filtro-data" placeholder="dd/mm/aaaa">
         <button id="limparFiltroBtn">Limpar filtro</button>
+    </div>
         
         <div class="tabs">
             <button class="tab-button active" data-tab="aprovacao">Aprovado</button>
