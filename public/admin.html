@@ -1,68 +1,85 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <title>Administração</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js"></script>
-    <script>
-        (function() {
-            emailjs.init("YOUR_USER_ID"); // Substitua pelo seu User ID real do EmailJS
-        })();
-    </script>
 </head>
 <body>
     <div class="header">
         <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
-        <div class="header-right">
+        <div class="header-content">
             <button id="logoutBtn" onclick="logout()">Logout</button>
         </div>
     </div>
-
-    <div class="container-flex">
-        <div class="sidebar">
-            <ul>
-                <li><a href="index.html">Início</a></li>
-                <li><a href="agendamentos.html">Agendamentos</a></li>
-                <li><a href="calendario.html">Calendário</a></li>
-                <li><a href="salas.html">Salas</a></li>
-                <li><a href="admin.html">Administração</a></li>
-            </ul>
+    
+    <div class="sidebar">
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="agendamentos.html">Agendamentos</a></li>
+            <li><a href="calendario.html">Calendário</a></li>
+            <li><a href="salas.html">Salas</a></li>
+            <li><a href="admin.html">Administração</a></li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <h1>Administração</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="em_aprovacao">Reservas</button>
+            <button class="tab-button" data-tab="concluido">Concluído</button>
+            <button class="tab-button" data-tab="definicoes">Definições</button>
         </div>
-
-        <div class="main-content">
-            <h1>Administração</h1>
-
-            <div class="controls-container">
-                <div class="filter-date">
-                    <label for="filtro-data"><strong>Filtrar por data:</strong></label>
-                    <input id="filtro-data" type="date" placeholder="dd/mm/aaaa"/>
-                    <button id="limparFiltroBtn">Limpar filtro</button>
-                </div>
-            </div>
-
-            <div class="tab-buttons">
-                <button class="tab-button active" data-tab="em_aprovacao">Reservas</button>
-                <button class="tab-button" data-tab="concluido">Concluído</button>
-                <button class="tab-button" data-tab="definicoes">Definições</button>
-            </div>
-
-            <div class="tab-content active" id="em_aprovacao"></div>
-            <div class="tab-content" id="concluido">
-                <label><strong>Filtrar por sala:</strong></label>
-                <select id="filtro-concluido">
-                    <option value="todas">Todas as salas</option>
-                    <option value="hgo">Salas HGO</option>
-                    <option value="sobreda">Salas Sobreda</option>
+        
+        <div id="em_aprovacao" class="tab-content active"></div>
+        <div id="concluido" class="tab-content">
+            <label><strong>Filtrar por sala:</strong></label>
+            <select id="filtro-concluido">
+                <option value="todas">Todas as salas</option>
+                <option value="hgo">Salas HGO</option>
+                <option value="sobreda">Salas Sobreda</option>
+            </select>
+            <div id="lista-concluido"></div>
+        </div>
+        
+        <div id="definicoes" class="tab-content">
+            <h2>Taxa de Ocupação por Sala</h2>
+            <p>Selecione os parâmetros para calcular a taxa de ocupação:</p>
+            <div class="ocupacao-filters">
+                <label for="ocupacao-sala">Sala:</label>
+                <select id="ocupacao-sala">
+                    <option value="todas">Todas as Salas</option>
+                    <optgroup label="HGO">
+                        <option value="HGO - Sala Almada">HGO - Sala Almada</option>
+                        <option value="HGO - Sala Garcia de Orta">HGO - Sala Garcia de Orta</option>
+                        <option value="HGO - Sala Tejo">HGO - Sala Tejo</option>
+                        <option value="HGO - Sala Almada + Garcia de Orta">HGO - Sala Almada + Garcia de Orta</option>
+                    </optgroup>
+                    <optgroup label="CF Sobreda">
+                        <option value="CF Sobreda - Auditório Dr. Luís Amaro">CF Sobreda - Auditório Dr. Luís Amaro</option>
+                        <option value="CF Sobreda - Sala Sado">CF Sobreda - Sala Sado</option>
+                        <option value="CF Sobreda - Sala Tejo">CF Sobreda - Sala Tejo</option>
+                    </optgroup>
+                    <optgroup label="CF Amora">
+                        <option value="CF Amora - Sala Amora">CF Amora - Sala Amora</option>
+                    </optgroup>
                 </select>
-                <div id="lista-concluido"></div>
+                <label for="ocupacao-ano">Ano:</label>
+                <select id="ocupacao-ano"></select>
+                <label for="mes-inicio">Mês Início:</label>
+                <input type="number" id="mes-inicio" min="1" max="12" placeholder="Ex: 1">
+                <label for="mes-fim">Mês Fim:</label>
+                <input type="number" id="mes-fim" min="1" max="12" placeholder="Ex: 12">
+                <label for="ocupacao-dia">Dia:</label>
+                <input type="number" id="ocupacao-dia" min="1" max="31" placeholder="Ex: 15">
+                <button id="calcularOcupacaoBtn">Calcular Ocupação</button>
+                <button id="exportarExcelBtn">Exportar para Excel</button>
             </div>
-
-            <div class="tab-content" id="definicoes">
-                </div>
+            <div id="resultado-ocupacao"></div>
         </div>
     </div>
-
+    
     <div class="modal" id="modal-presencas">
         <div class="modal-content">
             <span class="fechar" onclick="fecharModalPresencas()">×</span>
@@ -74,16 +91,16 @@
             <button id="guardarPresencasBtn">Guardar</button>
         </div>
     </div>
-
+    
     <div id="popupEmailConfirmado" class="popup">
         <div class="popup-content">
             <p>Email de confirmação enviado com sucesso!</p>
             <button onclick="this.parentNode.parentNode.style.display='none'">OK</button>
         </div>
     </div>
-
+    
     <div class="toast" id="toast"></div>
-
+    
     <script src="auth.js"></script>
     <script src="scripts.js"></script>
 </body>
