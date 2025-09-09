@@ -32,7 +32,7 @@
         <button class="tab-button" data-tab="tab-aprovado">Aprovado</button>
         <button class="tab-button" data-tab="tab-pendente">Pendente</button>
         <button class="tab-button active" data-tab="tab-reservas">Reservas</button>
-        <button class="tab-button" data-tab="tab-definicoes">Definições</button>
+        <button class="tab-button" data-tab="tab-ocupacao">Taxa de Ocupação</button>
     </div>
 
     <div id="tab-aprovado" class="tab-content">
@@ -48,11 +48,7 @@
     <div id="tab-pendente" class="tab-content">
       <h2>Agendamentos Pendentes</h2>
       <div id="agendamentos-pendentes-list">
-        <div class="agendamento-card">
-          <h3>Exemplo de Agendamento Pendente</h3>
-          <p>Esta aba agora serve como um placeholder e ficará vazia.</p>
         </div>
-      </div>
     </div>
 
     <div id="tab-reservas" class="tab-content active">
@@ -68,14 +64,17 @@
       </div>
     </div>
 
-    <div id="tab-definicoes" class="tab-content">
-      <h2>Definições</h2>
-      <p>Configurações gerais do sistema de agendamentos.</p>
-      <div id="definicoes-content">
-        <div class="agendamento-card">
-          <h3>Exemplo de Definição</h3>
-          <p>Este card é um placeholder. A lista será preenchida dinamicamente.</p>
-        </div>
+    <div id="tab-ocupacao" class="tab-content">
+      <h2>Taxa de Ocupação</h2>
+      <p>Relatórios e cálculos de ocupação dos espaços da ULSAS.</p>
+      <div id="ocupacao-content">
+        <section>
+          <h3>Cálculo da Taxa de Ocupação</h3>
+          <div id="resultado-ocupacao" class="agendamento-card" style="white-space: pre-wrap;">
+             </div>
+          <button id="calcularOcupacaoBtn" class="botao-novo" style="margin-top: 15px;">Calcular Taxas</button>
+          <button id="exportarExcelBtn" class="botao-novo" style="margin-top: 15px;">Exportar para Excel</button>
+        </section>
       </div>
     </div>
   </div>
@@ -88,10 +87,8 @@
         tabs.forEach(tab => {
             tab.addEventListener("click", () => {
                 const targetTab = tab.getAttribute("data-tab");
-
                 tabs.forEach(btn => btn.classList.remove("active"));
                 contents.forEach(content => content.classList.remove("active"));
-
                 tab.classList.add("active");
                 document.getElementById(targetTab).classList.add("active");
             });
