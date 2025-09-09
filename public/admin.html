@@ -29,13 +29,13 @@
     <p>Área restrita a administradores para gerir agendamentos e ver relatórios.</p>
 
     <div class="tabs">
-        <button class="tab-button active" data-tab="tab-aprovado">Aprovado</button>
+        <button class="tab-button" data-tab="tab-aprovado">Aprovado</button>
         <button class="tab-button" data-tab="tab-pendente">Pendente</button>
-        <button class="tab-button" data-tab="tab-reservas">Reservas</button>
+        <button class="tab-button active" data-tab="tab-reservas">Reservas</button>
         <button class="tab-button" data-tab="tab-definicoes">Definições</button>
     </div>
 
-    <div id="tab-aprovado" class="tab-content active">
+    <div id="tab-aprovado" class="tab-content">
       <h2>Agendamentos Aprovados</h2>
       <div id="agendamentos-aprovados-list">
         <div class="agendamento-card">
@@ -50,20 +50,20 @@
       <div id="agendamentos-pendentes-list">
         <div class="agendamento-card">
           <h3>Exemplo de Agendamento Pendente</h3>
-          <p>Este card é um placeholder. A lista será preenchida dinamicamente.</p>
-          <button>Aprovar</button>
-          <button>Rejeitar</button>
+          <p>Esta aba agora serve como um placeholder e ficará vazia.</p>
         </div>
       </div>
     </div>
 
-    <div id="tab-reservas" class="tab-content">
+    <div id="tab-reservas" class="tab-content active">
       <h2>Reservas</h2>
-      <p>Aqui você pode ver as reservas e criar novas.</p>
+      <p>Aqui você pode ver as reservas pendentes para aprovação.</p>
       <div id="reservas-content">
         <div class="agendamento-card">
           <h3>Exemplo de Reserva</h3>
           <p>Este card é um placeholder. A lista será preenchida dinamicamente.</p>
+          <button>Aprovar</button>
+          <button>Rejeitar</button>
         </div>
       </div>
     </div>
@@ -89,11 +89,9 @@
             tab.addEventListener("click", () => {
                 const targetTab = tab.getAttribute("data-tab");
 
-                // Remove a classe 'active' de todas as abas e conteúdos
                 tabs.forEach(btn => btn.classList.remove("active"));
                 contents.forEach(content => content.classList.remove("active"));
 
-                // Adiciona a classe 'active' à aba e conteúdo clicados
                 tab.classList.add("active");
                 document.getElementById(targetTab).classList.add("active");
             });
@@ -102,5 +100,3 @@
   </script>
 </body>
 </html>
-
-
