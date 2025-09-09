@@ -28,7 +28,34 @@ function setupEventListeners() {
         });
     });
 }
+// Add this function to your scripts.js file
+// It sets up the listeners and initial state for the agendamentos page.
+function setupAgendamentosPage() {
+    mostrarAgendamentosSemana();
+    document.getElementById("filtroSala")?.addEventListener("change", mostrarAgendamentosSemana);
+    document.getElementById("agendamento-form")?.addEventListener("submit", submeterAgendamento);
+    document.getElementById("data")?.addEventListener("change", atualizarSalasDisponiveis);
+    document.getElementById("horaInicio")?.addEventListener("change", atualizarSalasDisponiveis);
+    document.getElementById("horaFim")?.addEventListener("change", atualizarSalasDisponiveis);
+}
 
+// Add this function to your scripts.js file
+// It handles opening the modal.
+function abrirModal() {
+    const modal = document.getElementById("modalAgendamento");
+    if (modal) {
+        modal.style.display = "block";
+    }
+}
+
+// Add this function to your scripts.js file
+// It handles closing the modal.
+function fecharModal() {
+    const modal = document.getElementById("modalAgendamento");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
 // =========================
 // Lógica de Carregamento e Renderização
 // =========================
