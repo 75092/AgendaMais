@@ -1,4 +1,4 @@
-/* style.css - Corrigido e Finalizado */
+/* style.css - Versão Completa e Final */
 
 /* Base e Reset */
 * {
@@ -45,13 +45,13 @@ body {
     width: 200px;
     background-color: #2e7d32;
     color: white;
-    height: calc(100vh - 80px); 
+    height: calc(100vh - 80px);
     padding: 20px 10px;
     position: fixed;
-    top: 80px; 
+    top: 80px;
     left: 0;
     z-index: 999;
-    overflow-y: auto; 
+    overflow-y: auto;
 }
 
 .sidebar ul {
@@ -77,10 +77,10 @@ body {
 
 /* Conteúdo Principal */
 .main-content {
-    margin-left: 200px; 
+    margin-left: 200px;
     padding: 20px;
-    padding-top: 100px; 
-    min-height: calc(100vh - 80px); 
+    padding-top: 100px;
+    min-height: calc(100vh - 80px);
     box-sizing: border-box;
 }
 
@@ -92,21 +92,76 @@ body {
     margin-bottom: 20px;
 }
 
-.botao-topo {
+/* Botões com a cor verde ULSAS */
+.botao-novo, #logoutBtn, .botao-topo,
+.agendamento-card button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #2b7cff;
+    background-color: #2e7d32;
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.botao-topo:hover {
-    background-color: #195ecb;
+.botao-novo:hover, #logoutBtn:hover, .botao-topo:hover,
+.agendamento-card button:hover {
+    background-color: #3e9a44;
 }
 
-/* Estilos para Formulários e Campos (do ficheiro agendamentos.html) */
+/* Estilos Específicos para Administração */
+
+/* Menus de Abas */
+.tabs {
+    margin-bottom: 1em;
+    display: flex;
+    gap: 10px;
+}
+
+.tab-button {
+    padding: 10px 15px;
+    background: #eee;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #ddd;
+}
+
+.tab-button.active {
+    background: #2e7d32;
+    color: white;
+    font-weight: bold;
+}
+
+/* Conteúdo das Abas */
+.tab-content {
+    display: none;
+    padding-top: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Estilos de Cards (aplicáveis em todas as páginas) */
+.agendamento-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    transition: box-shadow 0.3s ease;
+}
+
+.agendamento-card:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Formulários */
 fieldset {
     border: 1px solid #ccc;
     padding: 15px;
@@ -159,82 +214,9 @@ textarea {
     min-height: 100px;
 }
 
-.botao-novo, #logoutBtn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #2b7cff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.botao-novo:hover, #logoutBtn:hover {
-    background-color: #195ecb;
-}
-
-/* Estilos para cards (do ficheiro admin.html) */
-.agendamento-card {
-    background: white;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
-    transition: box-shadow 0.3s ease;
-}
-
-.agendamento-card:hover {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.agendamento-card button {
-    margin-top: 10px;
-    margin-right: 8px;
-    padding: 6px 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #2b7cff;
-    color: white;
-    cursor: pointer;
-}
-
-.agendamento-card button:hover {
-    background-color: #195ecb;
-}
-
-/* Estilos para tabs (do ficheiro admin.html) */
-.tabs {
-    margin-bottom: 1em;
-    display: flex;
-    gap: 10px;
-}
-
-.tab-button {
-    padding: 10px 15px;
-    margin-right: 5px;
-    background: #eee;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px 5px 0 0;
-}
-
-.tab-button.active {
-    background: #2b7cff;
-    color: white;
-}
-
-.tab-content {
-    display: none;
-    padding-top: 20px;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-/* Estilos para Modais e Popups */
+/* Estilos de Modal e Popup */
 .modal, .popup {
-    display: none; /* A CORREÇÃO PRINCIPAL: Esconde o modal por padrão */
+    display: none;
     position: fixed;
     z-index: 1001;
     left: 0;
@@ -243,13 +225,12 @@ textarea {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
-}
-
-/* Estilo para mostrar o modal quando a função 'abrirModal' for chamada */
-.modal.visible {
-    display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.modal.visible {
+    display: flex;
 }
 
 .modal-content, .popup-content {
