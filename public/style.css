@@ -232,9 +232,9 @@ textarea {
     display: block;
 }
 
-/* Estilos para Modais e Popups (do ficheiro agendamentos.html) */
+/* Estilos para Modais e Popups */
 .modal, .popup {
-    display: none;
+    display: none; /* A CORREÇÃO PRINCIPAL: Esconde o modal por padrão */
     position: fixed;
     z-index: 1001;
     left: 0;
@@ -243,6 +243,10 @@ textarea {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Estilo para mostrar o modal quando a função 'abrirModal' for chamada */
+.modal.visible {
     display: flex;
     justify-content: center;
     align-items: center;
