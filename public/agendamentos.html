@@ -1,51 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="UTF-8">
     <title>Agendamentos</title>
-    <link href="style.css" rel="stylesheet"/>
-    <style>
-        fieldset {
-            border: 1px solid #ccc;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px 20px;
-            margin-top: 5px;
-        }
-        label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        select {
-            margin-left: 10px;
-        }
-        textarea {
-            width: 50%;
-            resize: vertical;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
 </head>
 <body>
     <div class="header">
         <img alt="Logotipo ULSAS" class="logo" src="/ulsas_logotipo.png"/>
-        <button id="logoutBtn" onclick="logout()">Logout</button>
+        <div class="header-right">
+            <button id="logoutBtn" onclick="logout()">Logout</button>
+        </div>
     </div>
 
-    <div class="sidebar">
-        <ul>
-            <li><a href="index.html">Início</a></li>
-            <li><a href="agendamentos.html">Agendamentos</a></li>
-            <li><a href="calendario.html">Calendário</a></li>
-            <li><a href="salas.html">Salas</a></li>
-            <li><a href="admin.html">Administração</a></li>
-        </ul>
+    <div class="container-flex">
+        <div class="sidebar">
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="agendamentos.html">Agendamentos</a></li>
+                <li><a href="calendario.html">Calendário</a></li>
+                <li><a href="salas.html">Salas</a></li>
+                <li><a href="admin.html">Administração</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <h1>Agendamentos</h1>
+            </div>
     </div>
+    <div class="toast" id="toast"></div>
+    <script src="scripts.js"></script>
 
     <div class="main-content">
         <h1>Meus Agendamentos</h1>
