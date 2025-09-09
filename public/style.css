@@ -1,195 +1,153 @@
-* {
-  box-sizing: border-box;
-}
-
+/* Estilos Gerais do Corpo */
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f7f6;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
+/* Estilos do Cabeçalho */
 .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 10px 20px;
-    background-color: #f8f9fa; /* Cor de fundo do cabeçalho */
-    border-bottom: 1px solid #e7e7e7;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 70px;
+    z-index: 1000;
 }
 
 .logo {
-    height: 50px; /* Ajuste o tamanho do seu logo se precisar */
+    max-height: 50px;
 }
 
-.header-content {
-    margin-left: auto; /* Empurra o botão para a direita */
+.header-right {
+    position: absolute;
+    right: 20px;
+}
+
+/* Estilos do Conteúdo Principal */
+.container-flex {
+    display: flex;
+    padding-top: 70px; /* Adiciona espaço no topo para o cabeçalho fixo */
 }
 
 .sidebar {
-  width: 200px;
-  background-color: #2e7d32;
-  color: white;
-  height: 100vh;
-  padding: 20px 10px;
-  position: fixed;
-  top: 80px;
-  left: 0;
+    width: 250px;
+    background-color: #4CAF50;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    height: calc(100vh - 70px);
+    left: 0;
+    overflow-y: auto;
 }
 
 .sidebar ul {
-  list-style-type: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
-.sidebar li {
-  margin: 20px 0;
+.sidebar li a {
+    display: block;
+    color: white;
+    padding: 15px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
 }
 
-.sidebar a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
+.sidebar li a:hover {
+    background-color: #3e8e41;
 }
 
 .main-content {
-  margin-left: 200px;
-  padding: 100px 20px 20px 20px;
+    margin-left: 250px; /* Adiciona margem para o conteúdo não ficar por trás do sidebar */
+    padding: 20px;
+    width: calc(100% - 250px);
 }
 
-button, .botao-novo {
-  display: inline-block;
-  padding: 12px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: white;
-  background-color: #2e7d32;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.1s;
+/* Estilos dos Filtros e Tabs */
+.controls-container {
+    margin-bottom: 20px;
 }
 
-button:hover, .botao-novo:hover {
-  background-color: #1b5e20;
-  transform: translateY(-2px);
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: #2e7d32;
-  outline: none;
-  box-shadow: 0 0 6px rgba(46, 125, 50, 0.4);
-}
-
-label {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #333;
-  display: block;
-}
-
-fieldset {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #fff;
-}
-
-legend {
-  font-weight: bold;
-  color: #2e7d32;
-  padding: 0 8px;
-}
-
-.linha {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-.linha label {
-  flex: 1;
-  min-width: 220px;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1001;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-  background-color: #fff;
-  margin: 5% auto;
-  padding: 30px;
-  width: 70%;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-}
-.fechar {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-.fechar:hover,
-.fechar:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #2e7d32;
-  color: white;
-  padding: 15px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.4s, transform 0.4s;
-  z-index: 2000;
-}
-.toast.mostrar {
-  opacity: 1;
-  transform: translateY(0);
-}
-.toast.erro {
-  background: #d32f2f;
-}
-
-/* Opcional: centralizar e limitar a largura do conteúdo principal */
-.main-content .container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Opcional: link ativo na sidebar */
-.sidebar a.active {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
 .filter-date {
     display: flex;
     align-items: center;
-    gap: 10px; /* Espaço entre o campo de data e o botão */
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+input[type="date"] {
+    width: 150px; /* Torna o input mais compacto */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 10px;
     margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.tab-button.active {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+/* Estilos para Agendamento e Modal */
+.agendamento-card {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+}
+
+.agendamento-card button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    max-width: 500px;
 }
