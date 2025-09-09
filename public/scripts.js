@@ -3,50 +3,227 @@ const API_BASE = "https://forma-o.onrender.com";
 
 let agendamentos = [];
 
-// =========================
-//  Lógica Comum
-// =========================
-
-function mostrarToast(msg, erro = false) {
-    const toast = document.getElementById("toast");
-    if (!toast) return;
-    toast.textContent = msg;
-    toast.className = "toast mostrar" + (erro ? " erro" : "");
-    setTimeout(() => toast.className = "toast", 4000);
-}
-
-function abrirModal() {
-    const modal = document.getElementById("modalAgendamento");
-    if (modal) modal.style.display = "block";
-}
-
-function fecharModal() {
-    const modal = document.getElementById("modalAgendamento");
-    if (modal) modal.style.display = "none";
-}
-
-// ===================================
-//  Lógica Específica da Página de Agendamentos
-// ===================================
-function setupAgendamentosPage() {
-    const form = document.getElementById("agendamento-form");
-    if (form) {
-        form.addEventListener("submit", submeterAgendamento);
+// Funções de Autenticação e Configuração
+document.addEventListener("DOMContentLoaded", () => {
+    ensureAuthenticated();
+    showLogoutIfAuthenticated();
+    if (ensureRole("admin")) {
+        loadAndRender();
+        setupEventListeners();
+    } else {
+        alert("Acesso restrito a administradores.");
+        window.location.href = "/index.html";
     }
-    const salaFiltro = document.getElementById("filtroSala");
-    if (salaFiltro) {
-        salaFiltro.addEventListener("change", mostrarAgendamentosSemana);
+});
+
+function setupEventListeners() {
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const tab = button.getAttribute('data-tab');
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById(tab).classList.add('active');
+            renderAgendamentos();
+        });
+    });
+}
+
+// =========================
+// Lógica de Carregamento e Renderização
+// =========================
+
+async function loadAndRender() {
+    try {
+        const response = await fetch(`${API_BASE}/api/agendamentos`);
+        if (!response.ok) {
+            throw new Error('Erro ao carregar agendamentos.');
+        }
+        agendamentos = await response.json();
+        renderAgendamentos();
+    } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao carregar agendamentos. Verifique a sua conexão ou tente novamente mais tarde.");
     }
-    const dataInput = document.getElementById("data");
-    const horaInicioInput = document.getElementById("horaInicio");
-    const horaFimInput = document.getElementById("horaFim");
-    if (dataInput && horaInicioInput && horaFimInput) {
-        dataInput.addEventListener("change", atualizarSalasDisponiveis);
-        horaInicioInput.addEventListener("change", atualizarSalasDisponiveis);
-        horaFimInput.addEventListener("change", atualizarSalasDisponiveis);
+}
+
+function renderAgendamentos() {
+    const aprovadosList = document.getElementById("agendamentos-aprovados-list");
+    const pendentesList = document.getElementById("agendamentos-pendentes-list");
+    const reservasContent = document.getElementById("reservas-content");
+
+    if (aprovadosList) aprovadosList.innerHTML = '';
+    if (pendentesList) pendentesList.innerHTML = '';
+    if (reservasContent) reservasContent.innerHTML = '';
+
+    const tabAtiva = document.querySelector('.tab-button.active').getAttribute('data-tab');
+
+    agendamentos.forEach(agendamento => {
+        const agendamentoCard = criarCardAgendamento(agendamento);
+        
+        // Novos agendamentos (pendentes) agora vão para o menu "Reservas"
+        if (agendamento.status === "pendente" && tabAtiva === "tab-reservas") {
+            const aprovarBtn = document.createElement("button");
+            aprovarBtn.innerText = "Aprovar";
+            aprovarBtn.addEventListener('click', () => aprovarAgendamento(agendamento.id));
+            agendamentoCard.appendChild(aprovarBtn);
+
+            const rejeitarBtn = document.createElement("button");
+            rejeitarBtn.innerText = "Rejeitar";
+            rejeitarBtn.addEventListener('click', () => rejeitarAgendamento(agendamento.id));
+            agendamentoCard.appendChild(rejeitarBtn);
+
+            reservasContent.appendChild(agendamentoCard);
+        } else if (agendamento.status === "aprovado" && tabAtiva === "tab-aprovado") {
+            aprovadosList.appendChild(agendamentoCard);
+        } else if (agendamento.status === "pendente" && tabAtiva === "tab-pendente") {
+            // Se o utilizador quiser, pode mover a lógica de volta para esta aba, ou deixar vazia
+            // No momento, esta aba ficará vazia pois os agendamentos pendentes vão para as Reservas.
+        }
+    });
+
+    if (aprovadosList && aprovadosList.children.length === 0) {
+        aprovadosList.innerHTML = "<p>Nenhum agendamento aprovado.</p>";
+    }
+    if (pendentesList && pendentesList.children.length === 0) {
+        pendentesList.innerHTML = "<p>Nenhum agendamento pendente.</p>";
+    }
+    if (reservasContent && reservasContent.children.length === 0 && tabAtiva === "tab-reservas") {
+        reservasContent.innerHTML = "<p>Nenhuma nova reserva para aprovação.</p>";
+    }
+}
+
+function criarCardAgendamento(agendamento) {
+    const card = document.createElement("div");
+    card.className = "agendamento-card";
+
+    const data = new Date(agendamento.data_inicio).toLocaleDateString("pt-PT");
+    const horaInicio = new Date(agendamento.data_inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const horaFim = new Date(agendamento.data_fim).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    card.innerHTML = `
+        <h3>${agendamento.nome_evento}</h3>
+        <p><strong>Requerente:</strong> ${agendamento.nome_requerente}</p>
+        <p><strong>Serviço:</strong> ${agendamento.servico_requerente}</p>
+        <p><strong>Data:</strong> ${data}</p>
+        <p><strong>Hora:</strong> ${horaInicio} - ${horaFim}</p>
+        <p><strong>Sala:</strong> ${agendamento.sala}</p>
+        <p><strong>Observações:</strong> ${agendamento.observacoes || "N/D"}</p>
+    `;
+    return card;
+}
+
+// =========================
+// Lógica de Aprovação/Rejeição
+// =========================
+
+async function aprovarAgendamento(id) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`${API_BASE}/api/agendamentos/${id}/aprovar`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao aprovar agendamento.");
+        }
+
+        alert("Agendamento aprovado com sucesso!");
+        loadAndRender();
+    } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao aprovar agendamento.");
+    }
+}
+
+async function rejeitarAgendamento(id) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`${API_BASE}/api/agendamentos/${id}/rejeitar`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao rejeitar agendamento.");
+        }
+
+        alert("Agendamento rejeitado com sucesso!");
+        loadAndRender();
+    } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao rejeitar agendamento.");
     }
 
     mostrarAgendamentosSemana();
+}
+// =========================
+// Lógica de Taxa de Ocupação
+// =========================
+
+function calcularTaxaOcupacao() {
+    let participantesPrevistos = 0;
+    let participantesEfetivos = 0;
+    let horasPrevistas = 0;
+    let horasEfetivas = 0;
+    const salas = new Set();
+
+    agendamentos.forEach(agendamento => {
+        const dataInicio = new Date(agendamento.data_inicio);
+        const dataFim = new Date(agendamento.data_fim);
+        const duracaoHoras = (dataFim - dataInicio) / (1000 * 60 * 60);
+
+        salas.add(agendamento.sala);
+
+        if (agendamento.status === "aprovado") {
+            participantesPrevistos += agendamento.participantes_previstos || 0;
+            horasPrevistas += duracaoHoras;
+        }
+
+        if (agendamento.status === "concluido") { // Assume 'concluido' é um estado existente
+            participantesEfetivos += agendamento.participantes_efetivos || 0;
+            horasEfetivas += agendamento.horas_efetivas || duracaoHoras;
+        }
+    });
+
+    const totalSalas = salas.size || 1;
+    const totalHorasDisponiveis = totalSalas * 12; // 12 horas por sala, por dia
+    const totalHorasUtilizadas = horasPrevistas + horasEfetivas;
+    const taxaOcupacaoHoras = ((totalHorasUtilizadas / totalHorasDisponiveis) * 100).toFixed(2);
+    
+    const totalParticipantes = participantesPrevistos + participantesEfetivos;
+    const taxaOcupacaoParticipantes = totalParticipantes; // O calculo foi pedido como a soma
+
+    const resultado = `
+**Participantes Previstos:** ${participantesPrevistos}
+**Participantes Efetivos:** ${participantesEfetivos}
+
+**Horas Previstas:** ${horasPrevistas.toFixed(2)} horas
+**Horas Efetivas:** ${horasEfetivas.toFixed(2)} horas
+
+**Taxa de Ocupação (Horas):** ${taxaOcupacaoHoras}%
+**Taxa de Ocupação (Participantes):** ${taxaOcupacaoParticipantes}
+    `;
+
+    document.getElementById("resultado-ocupacao").innerText = resultado;
+}
+
+function exportarParaExcel() {
+    const texto = document.getElementById("resultado-ocupacao").innerText;
+    const blob = new Blob([texto], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "taxa_ocupacao.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 async function atualizarSalasDisponiveis() {
