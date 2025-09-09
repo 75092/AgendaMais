@@ -165,41 +165,66 @@ async function rejeitarAgendamento(id) {
     mostrarAgendamentosSemana();
 }
 // =========================
-// Lógica de Taxa de Ocupação
+// Lógica de Taxa de Ocupação com Filtros
 // =========================
 
 function calcularTaxaOcupacao() {
+    const filtroSala = document.getElementById("filtro-sala").value;
+    const filtroMesInicio = document.getElementById("filtro-mes-inicio").value;
+    const filtroMesFim = document.getElementById("filtro-mes-fim").value;
+    const filtroAno = document.getElementById("filtro-ano").value;
+
+    const agendamentosFiltrados = agendamentos.filter(agendamento => {
+        const dataAgendamento = new Date(agendamento.data_inicio);
+        const mesAgendamento = dataAgendamento.getMonth() + 1;
+        const anoAgendamento = dataAgendamento.getFullYear();
+
+        const salaCorresponde = !filtroSala || agendamento.sala === filtroSala;
+        const anoCorresponde = !filtroAno || anoAgendamento == filtroAno;
+
+        let mesCorresponde = false;
+        if (!filtroMesInicio && !filtroMesFim) {
+            mesCorresponde = true;
+        } else if (filtroMesInicio && !filtroMesFim) {
+            mesCorresponde = mesAgendamento == filtroMesInicio;
+        } else if (!filtroMesInicio && filtroMesFim) {
+            mesCorresponde = mesAgendamento == filtroMesFim;
+        } else {
+            mesCorresponde = mesAgendamento >= filtroMesInicio && mesAgendamento <= filtroMesFim;
+        }
+
+        return salaCorresponde && anoCorresponde && mesCorresponde;
+    });
+
     let participantesPrevistos = 0;
     let participantesEfetivos = 0;
     let horasPrevistas = 0;
     let horasEfetivas = 0;
-    const salas = new Set();
+    const salasUnicas = new Set(agendamentosFiltrados.map(ag => ag.sala));
 
-    agendamentos.forEach(agendamento => {
+    agendamentosFiltrados.forEach(agendamento => {
         const dataInicio = new Date(agendamento.data_inicio);
         const dataFim = new Date(agendamento.data_fim);
         const duracaoHoras = (dataFim - dataInicio) / (1000 * 60 * 60);
-
-        salas.add(agendamento.sala);
 
         if (agendamento.status === "aprovado") {
             participantesPrevistos += agendamento.participantes_previstos || 0;
             horasPrevistas += duracaoHoras;
         }
 
-        if (agendamento.status === "concluido") { // Assume 'concluido' é um estado existente
+        if (agendamento.status === "concluido") {
             participantesEfetivos += agendamento.participantes_efetivos || 0;
             horasEfetivas += agendamento.horas_efetivas || duracaoHoras;
         }
     });
 
-    const totalSalas = salas.size || 1;
-    const totalHorasDisponiveis = totalSalas * 12; // 12 horas por sala, por dia
+    const totalSalas = salasUnicas.size || 1;
+    const totalHorasDisponiveis = totalSalas * 12 * 365; // 12h/dia por ano
     const totalHorasUtilizadas = horasPrevistas + horasEfetivas;
     const taxaOcupacaoHoras = ((totalHorasUtilizadas / totalHorasDisponiveis) * 100).toFixed(2);
     
     const totalParticipantes = participantesPrevistos + participantesEfetivos;
-    const taxaOcupacaoParticipantes = totalParticipantes; // O calculo foi pedido como a soma
+    const taxaOcupacaoParticipantes = totalParticipantes;
 
     const resultado = `
 **Participantes Previstos:** ${participantesPrevistos}

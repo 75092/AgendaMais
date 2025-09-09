@@ -67,12 +67,64 @@
     <div id="tab-ocupacao" class="tab-content">
       <h2>Taxa de Ocupação</h2>
       <p>Relatórios e cálculos de ocupação dos espaços da ULSAS.</p>
+      <div id="filtros-ocupacao" style="margin-bottom: 20px;">
+          <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 180px;">
+                  <label for="filtro-sala">Filtrar por Sala:</label>
+                  <select id="filtro-sala" style="width: 100%;">
+                      <option value="">Todas as Salas</option>
+                  </select>
+              </div>
+              <div style="flex: 1; min-width: 180px;">
+                  <label for="filtro-mes-inicio">Mês Início:</label>
+                  <select id="filtro-mes-inicio" style="width: 100%;">
+                      <option value="">Todos os Meses</option>
+                      <option value="1">Janeiro</option>
+                      <option value="2">Fevereiro</option>
+                      <option value="3">Março</option>
+                      <option value="4">Abril</option>
+                      <option value="5">Maio</option>
+                      <option value="6">Junho</option>
+                      <option value="7">Julho</option>
+                      <option value="8">Agosto</option>
+                      <option value="9">Setembro</option>
+                      <option value="10">Outubro</option>
+                      <option value="11">Novembro</option>
+                      <option value="12">Dezembro</option>
+                  </select>
+              </div>
+              <div style="flex: 1; min-width: 180px;">
+                  <label for="filtro-mes-fim">Mês Fim:</label>
+                  <select id="filtro-mes-fim" style="width: 100%;">
+                      <option value="">Todos os Meses</option>
+                      <option value="1">Janeiro</option>
+                      <option value="2">Fevereiro</option>
+                      <option value="3">Março</option>
+                      <option value="4">Abril</option>
+                      <option value="5">Maio</option>
+                      <option value="6">Junho</option>
+                      <option value="7">Julho</option>
+                      <option value="8">Agosto</option>
+                      <option value="9">Setembro</option>
+                      <option value="10">Outubro</option>
+                      <option value="11">Novembro</option>
+                      <option value="12">Dezembro</option>
+                  </select>
+              </div>
+              <div style="flex: 1; min-width: 180px;">
+                  <label for="filtro-ano">Ano:</label>
+                  <input type="number" id="filtro-ano" placeholder="Ex: 2024" style="width: 100%;">
+              </div>
+          </div>
+          <button id="aplicarFiltrosBtn" class="botao-novo" style="margin-top: 15px;">Aplicar Filtros</button>
+          <button id="limparFiltrosBtn" class="botao-novo" style="margin-top: 15px;">Limpar Filtros</button>
+      </div>
+
       <div id="ocupacao-content">
         <section>
           <h3>Cálculo da Taxa de Ocupação</h3>
           <div id="resultado-ocupacao" class="agendamento-card" style="white-space: pre-wrap;">
              </div>
-          <button id="calcularOcupacaoBtn" class="botao-novo" style="margin-top: 15px;">Calcular Taxas</button>
           <button id="exportarExcelBtn" class="botao-novo" style="margin-top: 15px;">Exportar para Excel</button>
         </section>
       </div>
