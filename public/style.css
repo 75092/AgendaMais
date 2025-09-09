@@ -1,261 +1,239 @@
+/* style.css - Corrigido e Finalizado */
+
+/* Base e Reset */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f7f6;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
 }
 
+/* Layout Principal */
+
+/* Cabeçalho Fixo */
 .header {
-  width: 100%;
-  height: 80px;
-  background-color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 80px;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header img.logo {
-  height: 50px;
+    height: 50px;
 }
 
 .header-content {
     margin-left: auto;
 }
 
+/* Sidebar Fixo */
 .sidebar {
-  width: 200px;
-  background-color: #2e7d32;
-  color: white;
-  height: 100vh;
-  padding: 20px 10px;
-  position: fixed;
-  top: 80px;
-  left: 0;
-  z-index: 999;
+    width: 200px;
+    background-color: #2e7d32;
+    color: white;
+    height: calc(100vh - 80px); 
+    padding: 20px 10px;
+    position: fixed;
+    top: 80px; 
+    left: 0;
+    z-index: 999;
+    overflow-y: auto; 
 }
 
 .sidebar ul {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 
 .sidebar li {
-  margin: 20px 0;
+    margin: 20px 0;
 }
 
 .sidebar a {
-  color: white;
-  text-decoration: none;
-  font-size: 1.1em;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+    display: block;
+    padding: 5px 0;
 }
 
 .sidebar a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
+/* Conteúdo Principal */
 .main-content {
-  margin-left: 200px;
-  padding: 20px;
-  padding-top: 100px; /* Adiciona espaço para o header fixo */
+    margin-left: 200px; 
+    padding: 20px;
+    padding-top: 100px; 
+    min-height: calc(100vh - 80px); 
+    box-sizing: border-box;
 }
 
-.agendamento-card {
-  background: white;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  margin-bottom: 15px;
-  transition: box-shadow 0.3s ease;
+/* Estilos Específicos para Agendamentos */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.agendamento-card:hover {
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+.botao-topo {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2b7cff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.agendamento-card button {
-  margin-top: 10px;
-  margin-right: 8px;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #2b7cff;
-  color: white;
-  cursor: pointer;
+.botao-topo:hover {
+    background-color: #195ecb;
 }
 
-.agendamento-card button:hover {
-  background-color: #195ecb;
-}
-
-.tabs {
-  margin-bottom: 1em;
-  display: flex;
-  gap: 10px;
-}
-
-.tab-button {
-  padding: 10px 15px;
-  margin-right: 5px;
-  background: #eee;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px 5px 0 0;
-}
-
-.tab-button.active {
-  background: #2b7cff;
-  color: white;
-}
-
-/* Estilos de agendamentos.html */
+/* Estilos para Formulários e Campos (do ficheiro agendamentos.html) */
 fieldset {
-  border: 1px solid #ccc;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.checkbox-group {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px 20px;
-  margin-top: 5px;
-}
-
-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-select {
-  margin-left: 10px;
-}
-
-textarea {
-  width: 50%;
-  resize: vertical;
-}
-
-/* Popup */
-.popup {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  justify-content: center;
-  align-items: center;
-}
-
-.popup-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.popup button {
-  padding: 8px 16px;
-  background-color: #2b7cff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.popup-confirmacao {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  z-index: 1001;
-  display: none;
+legend {
+    font-weight: bold;
+    color: #2e7d32;
 }
 
 .linha {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 15px;
 }
 
 .linha label {
-  flex: 1;
-  min-width: 220px;
+    flex: 1;
+    min-width: 220px;
+    display: block;
 }
 
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1001;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-  background-color: #fff;
-  margin: 5% auto;
-  padding: 30px;
-  width: 70%;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
-.fechar {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 20px;
+    margin-top: 5px;
 }
-.fechar:hover,
-.fechar:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-/* Adicione estas classes ao seu ficheiro style.css */
 
-/* Estilos para o botão flutuante */
-.botao-flutuante {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background-color: #4CAF50;
-    color: white;
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+.botao-novo, #logoutBtn {
+    padding: 10px 20px;
     border: none;
-    border-radius: 50px;
-    padding: 15px 25px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    background-color: #2b7cff;
+    color: white;
     cursor: pointer;
-    transition: transform 0.3s ease;
-    z-index: 1000;
+    transition: background-color 0.3s;
 }
 
-.botao-flutuante:hover {
-    transform: scale(1.05);
+.botao-novo:hover, #logoutBtn:hover {
+    background-color: #195ecb;
 }
 
-/* Estilos para o modal de agendamento */
-.modal {
+/* Estilos para cards (do ficheiro admin.html) */
+.agendamento-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    transition: box-shadow 0.3s ease;
+}
+
+.agendamento-card:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.agendamento-card button {
+    margin-top: 10px;
+    margin-right: 8px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2b7cff;
+    color: white;
+    cursor: pointer;
+}
+
+.agendamento-card button:hover {
+    background-color: #195ecb;
+}
+
+/* Estilos para tabs (do ficheiro admin.html) */
+.tabs {
+    margin-bottom: 1em;
+    display: flex;
+    gap: 10px;
+}
+
+.tab-button {
+    padding: 10px 15px;
+    margin-right: 5px;
+    background: #eee;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+}
+
+.tab-button.active {
+    background: #2b7cff;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+    padding-top: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Estilos para Modais e Popups (do ficheiro agendamentos.html) */
+.modal, .popup {
     display: none;
     position: fixed;
     z-index: 1001;
@@ -265,18 +243,19 @@ textarea {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.modal-content {
+.modal-content, .popup-content {
     background-color: #fff;
     padding: 30px;
     width: 70%;
     max-width: 800px;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-    position: relative; /* Necessário para posicionar o botão de fechar */
+    position: relative;
 }
 
 .fechar {
@@ -292,13 +271,4 @@ textarea {
 .fechar:hover, .fechar:focus {
     color: black;
     text-decoration: none;
-}
-
-/* Assegurar que o conteúdo não fica por baixo do header e sidebar */
-.main-content {
-    margin-left: 200px;
-    padding: 20px;
-    padding-top: 100px;
-    min-height: calc(100vh - 80px);
-    box-sizing: border-box;
 }
